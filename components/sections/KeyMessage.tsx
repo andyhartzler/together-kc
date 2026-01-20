@@ -80,7 +80,7 @@ export default function KeyMessage() {
   const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
-    <section ref={containerRef} className="relative pt-10 pb-20 md:pt-16 md:pb-32 bg-gradient-to-b from-white via-light-gray/50 to-white overflow-hidden">
+    <section ref={containerRef} className="relative pt-6 pb-16 sm:pt-10 sm:pb-20 md:pt-16 md:pb-32 bg-gradient-to-b from-white via-light-gray/50 to-white overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
