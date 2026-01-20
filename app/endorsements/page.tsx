@@ -74,7 +74,7 @@ export default function EndorsementsPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-navy mb-4">
+            <h2 className="text-[clamp(1.5rem,6vw,2.25rem)] font-bold text-navy mb-4 whitespace-nowrap">
               Supporting Organizations
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
