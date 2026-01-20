@@ -308,7 +308,7 @@ export default function EndorsementsPage() {
       </section>
 
       {/* How Else Can I Help Section */}
-      <section className="section-padding pb-32 bg-navy">
+      <section className="section-padding pb-48 bg-navy">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
