@@ -56,7 +56,7 @@ export default function CallToAction() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-3 sm:gap-8">
           {actions.map((action, index) => (
             <motion.div
               key={action.title}
@@ -64,16 +64,17 @@ export default function CallToAction() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 text-center flex flex-col"
+              className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 text-center flex flex-col"
             >
-              <div className="text-4xl mb-4">{action.icon}</div>
-              <h3 className="text-xl font-semibold text-white mb-2">{action.title}</h3>
-              <p className="text-white/70 mb-6 flex-grow">{action.description}</p>
+              <div className="text-2xl sm:text-4xl mb-2 sm:mb-4">{action.icon}</div>
+              <h3 className="text-sm sm:text-xl font-semibold text-white mb-1 sm:mb-2">{action.title}</h3>
+              <p className="text-white/70 text-xs sm:text-base mb-3 sm:mb-6 flex-grow hidden sm:block">{action.description}</p>
               <div className="flex justify-center">
                 <InteractiveHoverButton
                   text={action.buttonText}
                   href={action.href}
                   variant={action.variant}
+                  size="default"
                 />
               </div>
             </motion.div>
