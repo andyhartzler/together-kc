@@ -1,28 +1,42 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
 // Interactive stat card
 function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value: string; label: string; delay: number }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(cardRef, { once: true, amount: 0.8 });
+
+  // Trigger animation when card comes into view (for mobile scroll effect)
+  useEffect(() => {
+    if (isInView && !hasAnimated) {
+      const timer = setTimeout(() => {
+        setHasAnimated(true);
+      }, delay * 1000 + 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isInView, hasAnimated, delay]);
+
+  const isActive = isHovered || hasAnimated;
 
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={() => setIsHovered(true)}
-      onTouchEnd={() => setTimeout(() => setIsHovered(false), 300)}
       className="group relative"
     >
       <motion.div
         animate={{
-          scale: isHovered ? 1.02 : 1,
-          y: isHovered ? -5 : 0,
+          scale: isActive ? 1.02 : 1,
+          y: isActive ? -5 : 0,
         }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
         className="relative bg-white rounded-2xl p-6 shadow-lg shadow-navy/5 border border-gray-100 overflow-hidden cursor-pointer"
@@ -30,15 +44,15 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
         {/* Hover gradient overlay */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
+          animate={{ opacity: isActive ? 1 : 0 }}
           className="absolute inset-0 bg-gradient-to-br from-coral/5 via-transparent to-sky/5"
         />
 
         {/* Animated corner accent */}
         <motion.div
           animate={{
-            scale: isHovered ? 1 : 0.8,
-            opacity: isHovered ? 1 : 0,
+            scale: isActive ? 1 : 0.8,
+            opacity: isActive ? 1 : 0,
           }}
           className="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-coral/20 to-golden/20 rounded-full blur-2xl"
         />
@@ -46,7 +60,7 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-4">
             <motion.div
-              animate={{ rotate: isHovered ? 360 : 0 }}
+              animate={{ rotate: isActive ? 360 : 0 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
               className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-coral/80 flex items-center justify-center text-white shadow-lg shadow-coral/30"
             >
@@ -61,7 +75,7 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
 
         {/* Bottom accent line */}
         <motion.div
-          animate={{ scaleX: isHovered ? 1 : 0 }}
+          animate={{ scaleX: isActive ? 1 : 0 }}
           transition={{ duration: 0.3 }}
           className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-coral via-golden to-sky origin-left"
         />
