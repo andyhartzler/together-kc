@@ -65,12 +65,12 @@ export default function Services() {
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           {SERVICES.map((service, index) => (
             <Card key={service.title} delay={index * 0.1}>
-              <div className="text-5xl mb-4">{service.icon}</div>
-              <h3 className="text-xl font-semibold text-navy mb-2">{service.title}</h3>
-              <p className="text-gray-600">{service.description}</p>
+              <div className="text-3xl sm:text-5xl mb-2 sm:mb-4">{service.icon}</div>
+              <h3 className="text-base sm:text-xl font-semibold text-navy mb-1 sm:mb-2">{service.title}</h3>
+              <p className="text-sm sm:text-base text-gray-600">{service.description}</p>
             </Card>
           ))}
         </div>

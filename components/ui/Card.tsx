@@ -26,7 +26,7 @@ export default function Card({
       transition={{ duration: 0.5, delay }}
       whileHover={hover ? { y: -5, scale: 1.02 } : undefined}
       className={cn(
-        'rounded-2xl p-6',
+        'rounded-2xl p-4 sm:p-6',
         glass
           ? 'glass'
           : 'bg-white shadow-xl shadow-navy/5 border border-gray-100',
