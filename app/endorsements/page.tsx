@@ -65,7 +65,7 @@ export default function EndorsementsPage() {
       </section>
 
       {/* Organizations Section */}
-      <section className="section-padding bg-gradient-to-b from-white to-light-gray">
+      <section className="section-padding pb-8 sm:pb-12 bg-gradient-to-b from-white to-light-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -96,7 +96,7 @@ export default function EndorsementsPage() {
       </section>
 
       {/* City Officials Section */}
-      <section className="section-padding bg-light-gray">
+      <section className="section-padding pt-8 sm:pt-12 bg-light-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
