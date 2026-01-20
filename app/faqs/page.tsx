@@ -9,7 +9,7 @@ export default function FAQsPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-b from-sky/10 via-white to-light-gray overflow-hidden">
+      <section className="relative pt-32 pb-8 bg-gradient-to-b from-sky/10 via-white to-light-gray overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-coral/5 rounded-full blur-3xl" />
         <div className="absolute top-40 right-20 w-80 h-80 bg-sky/5 rounded-full blur-3xl" />
@@ -35,7 +35,7 @@ export default function FAQsPage() {
       </section>
 
       {/* FAQ Content */}
-      <section className="section-padding bg-light-gray">
+      <section className="py-12 bg-light-gray">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Accordion items={FAQS} />
 
