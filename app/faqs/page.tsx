@@ -27,7 +27,7 @@ export default function FAQsPage() {
               <br />
               <span className="gradient-text">Questions</span>
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Everything you need to know about the Kansas City earnings tax renewal on {VOTE_DATE}.
             </p>
           </motion.div>
