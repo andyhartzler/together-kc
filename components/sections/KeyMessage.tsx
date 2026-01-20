@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import AnimatedTextCycle from '@/components/ui/AnimatedTextCycle';
 
 // Interactive stat card
 function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value: string; label: string; delay: number }) {
@@ -123,9 +122,6 @@ export default function KeyMessage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Animated Text Cycle Header */}
-        <AnimatedTextCycle />
-
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left Column - Animated Infographic */}
           <motion.div
