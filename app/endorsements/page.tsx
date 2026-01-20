@@ -61,13 +61,10 @@ export default function EndorsementsPage() {
         </div>
       </section>
 
-      {/* Gradient transition zone */}
-      <div
-        className="h-24 sm:h-32"
-        style={{
-          background: 'linear-gradient(to bottom, #1e3a5f 0%, #2a4a6f 30%, #6a9bc9 60%, #ffffff 100%)'
-        }}
-      />
+      {/* Gradient transition zone - continues hero gradient with white fade overlay */}
+      <div className="relative h-24 sm:h-32 bg-gradient-to-br from-navy via-navy/95 to-sky/80">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white" />
+      </div>
 
       {/* Organizations Section */}
       <section className="section-padding pt-8 sm:pt-12 pb-8 sm:pb-12 bg-gradient-to-b from-white to-light-gray">
