@@ -29,10 +29,9 @@ export default function EndorsementsPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-8">
-              Community Leaders Support
-              <br />
-              <span className="text-coral">Renewal</span>
+            <h1 className="font-bold text-white mb-8">
+              <span className="block text-[clamp(1.75rem,7vw,3.75rem)] whitespace-nowrap">Community Leaders Support</span>
+              <span className="block text-4xl sm:text-5xl md:text-6xl text-coral">Renewal</span>
             </h1>
 
             {/* Featured Quote */}
