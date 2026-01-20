@@ -265,7 +265,6 @@ export default function CallToAction() {
             </motion.div>
           </motion.button>
 
-          <p className="text-white/60 text-sm mt-3">Click to add to your calendar</p>
         </motion.div>
       </div>
     </section>

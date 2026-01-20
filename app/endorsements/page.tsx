@@ -13,7 +13,7 @@ export default function EndorsementsPage() {
   return (
     <>
       {/* Hero Section with Mayor Quote */}
-      <section className="relative pt-40 sm:pt-44 pb-72 sm:pb-96 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-x-hidden">
+      <section className="relative pt-44 sm:pt-52 pb-72 sm:pb-96 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-x-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-coral via-transparent to-transparent" />
@@ -34,8 +34,8 @@ export default function EndorsementsPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="font-bold text-white mb-8">
-              <span className="block text-2xl sm:text-5xl md:text-6xl">Community Leaders Support</span>
+            <h1 className="font-bold text-white mb-10 sm:mb-12">
+              <span className="block text-2xl sm:text-5xl md:text-6xl mb-2 sm:mb-3">Community Leaders Support</span>
               <span className="block text-3xl sm:text-5xl md:text-6xl text-coral">Renewal</span>
             </h1>
 
