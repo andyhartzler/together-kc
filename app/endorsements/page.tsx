@@ -19,8 +19,13 @@ export default function EndorsementsPage() {
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-coral via-transparent to-transparent" />
         </div>
 
-        {/* Bottom fade to white - positioned at very bottom, fades hero colors to white */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent via-white/50 to-white" />
+        {/* Bottom fade to white - tall gradient for smooth transition */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-64"
+          style={{
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.85) 80%, white 100%)'
+          }}
+        />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
