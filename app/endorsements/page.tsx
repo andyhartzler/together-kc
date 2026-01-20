@@ -375,7 +375,7 @@ export default function EndorsementsPage() {
             <Button
               variant="primary"
               size="lg"
-              href="mailto:info@togetherkc.com?subject=Volunteer for Together KC"
+              href="mailto:action@together-kc.com?subject=Volunteer for Together KC"
             >
               Contact Us to Volunteer
             </Button>
