@@ -1,10 +1,90 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { VOTE_DATE } from '@/lib/constants';
 
+// Generate ICS calendar file content
+function generateCalendarEvent(): string {
+  const eventTitle = 'Vote YES for Kansas City Earnings Tax Renewal';
+  const eventDescription = `Don't forget to vote!
+
+Check your registration: https://voteroutreach.sos.mo.gov/portal/
+
+Register to vote: https://s1.sos.mo.gov/elections/voterregistration/
+
+Find your polling location: https://www.kceb.org/elections/poll-locations/`;
+
+  // April 7, 2026 - CDT (UTC-5)
+  // 6:00 AM CDT = 11:00 UTC
+  // 7:00 PM CDT = 00:00 UTC (April 8)
+  const startDate = '20260407T110000Z';
+  const endDate = '20260408T000000Z';
+
+  // Generate a unique ID
+  const uid = `vote-yes-kc-${Date.now()}@together-kc.com`;
+  const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+  // Escape special characters for ICS format
+  const escapeICS = (text: string) => {
+    return text
+      .replace(/\\/g, '\\\\')
+      .replace(/;/g, '\\;')
+      .replace(/,/g, '\\,')
+      .replace(/\n/g, '\\n');
+  };
+
+  const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Together KC//Vote YES//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${now}
+DTSTART:${startDate}
+DTEND:${endDate}
+SUMMARY:${escapeICS(eventTitle)}
+DESCRIPTION:${escapeICS(eventDescription)}
+LOCATION:Kansas City, MO
+BEGIN:VALARM
+TRIGGER:-P5D
+ACTION:DISPLAY
+DESCRIPTION:${escapeICS(eventTitle)} - 5 days away!
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-P3D
+ACTION:DISPLAY
+DESCRIPTION:${escapeICS(eventTitle)} - 3 days away!
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:${escapeICS(eventTitle)} - Tomorrow!
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+
+  return icsContent;
+}
+
+function downloadCalendarEvent() {
+  const icsContent = generateCalendarEvent();
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'vote-yes-kc-april-7-2026.ics';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export default function CallToAction() {
+  const [isCalendarClicked, setIsCalendarClicked] = useState(false);
   const actions = [
     {
       icon: '✍️',
@@ -98,7 +178,7 @@ export default function CallToAction() {
           ))}
         </div>
 
-        {/* Big Vote Date */}
+        {/* Big Vote Date - Calendar Download Button */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -106,10 +186,85 @@ export default function CallToAction() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-16 text-center"
         >
-          <div className="inline-block bg-coral rounded-2xl px-6 py-4 sm:px-8 sm:py-6 shadow-2xl shadow-coral/30">
-            <p className="text-white font-medium text-lg mb-1">Mark your calendar!</p>
-            <p className="text-white font-bold text-3xl md:text-4xl">{VOTE_DATE}</p>
-          </div>
+          <motion.button
+            onClick={() => {
+              setIsCalendarClicked(true);
+              downloadCalendarEvent();
+              setTimeout(() => setIsCalendarClicked(false), 600);
+            }}
+            whileHover={{
+              scale: 1.05,
+              boxShadow: '0 25px 50px -12px rgba(229, 57, 53, 0.5)',
+            }}
+            whileTap={{ scale: 0.95 }}
+            animate={isCalendarClicked ? {
+              scale: [1, 1.1, 1],
+              rotate: [0, -2, 2, -2, 0],
+            } : {}}
+            transition={{
+              type: 'spring',
+              stiffness: 400,
+              damping: 17,
+            }}
+            className="group relative inline-block bg-coral rounded-2xl px-6 py-4 sm:px-8 sm:py-6 shadow-2xl shadow-coral/30 cursor-pointer overflow-hidden border-0"
+          >
+            {/* Animated background shimmer on hover */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+              initial={{ x: '-100%' }}
+              whileHover={{ x: '100%' }}
+              transition={{ duration: 0.6, ease: 'easeInOut' }}
+            />
+
+            {/* Pulsing ring animation */}
+            <motion.div
+              className="absolute inset-0 rounded-2xl border-2 border-white/30"
+              animate={{
+                scale: [1, 1.05, 1],
+                opacity: [0.5, 0, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
+            <div className="relative z-10 flex items-center justify-center gap-3">
+              <div>
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <motion.span
+                    className="text-xl"
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
+                  >
+                    📅
+                  </motion.span>
+                  <p className="text-white font-medium text-lg">Mark your calendar!</p>
+                </div>
+                <p className="text-white font-bold text-3xl md:text-4xl">{VOTE_DATE}</p>
+              </div>
+            </div>
+
+            {/* Click feedback checkmark */}
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center bg-green-500 rounded-2xl"
+              initial={{ opacity: 0 }}
+              animate={isCalendarClicked ? { opacity: [0, 1, 1, 0] } : { opacity: 0 }}
+              transition={{ duration: 0.6, times: [0, 0.2, 0.8, 1] }}
+            >
+              <motion.span
+                className="text-white text-4xl"
+                initial={{ scale: 0 }}
+                animate={isCalendarClicked ? { scale: [0, 1.2, 1] } : { scale: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                ✓
+              </motion.span>
+            </motion.div>
+          </motion.button>
+
+          <p className="text-white/60 text-sm mt-3">Click to add to your calendar</p>
         </motion.div>
       </div>
     </section>
