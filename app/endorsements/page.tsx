@@ -13,14 +13,14 @@ export default function EndorsementsPage() {
   return (
     <>
       {/* Hero Section with Mayor Quote */}
-      <section className="relative pt-32 pb-28 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-hidden">
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-navy via-navy/95 to-sky/80">
         {/* Background Decorations */}
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-20 overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-coral via-transparent to-transparent" />
         </div>
 
-        {/* Bottom blend into next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 sm:h-40 bg-gradient-to-t from-white via-white/60 to-transparent" />
+        {/* Bottom blend into next section - extends below hero */}
+        <div className="absolute -bottom-16 sm:-bottom-20 left-0 right-0 h-48 sm:h-56 bg-gradient-to-t from-white via-white/80 to-transparent z-20 pointer-events-none" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
