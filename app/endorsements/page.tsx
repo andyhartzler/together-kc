@@ -19,8 +19,13 @@ export default function EndorsementsPage() {
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-coral via-transparent to-transparent" />
         </div>
 
-        {/* Bottom fade overlay - fades the existing gradient to white */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 sm:h-56 bg-gradient-to-b from-transparent to-white" />
+        {/* Bottom fade overlay - very gradual fade that eases in slowly */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-48 sm:h-64"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.25) 55%, rgba(255,255,255,0.5) 70%, rgba(255,255,255,0.8) 85%, rgba(255,255,255,1) 100%)'
+          }}
+        />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
