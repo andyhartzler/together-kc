@@ -22,7 +22,7 @@ export default function Footer() {
       {/* Bottom disclaimer - centered */}
       <div className="px-4 sm:px-6 lg:px-8 pb-4 pt-2">
         <p className="text-white/60 text-xs text-center leading-tight">
-          Paid for by Together KC.
+          <span className="whitespace-nowrap">Paid for by Together KC, Dan Kopp, Treasurer.</span>
           <br />
           Not authorized by any candidate or candidate committee.
         </p>
