@@ -75,8 +75,13 @@ export default function Hero() {
         }}
       />
 
-      {/* Bottom blend into next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 sm:h-48 bg-gradient-to-t from-white via-white/50 to-transparent" />
+      {/* Bottom blend into next section - very gradual fade */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-48 sm:h-64"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.25) 55%, rgba(255,255,255,0.5) 70%, rgba(255,255,255,0.8) 85%, rgba(255,255,255,1) 100%)'
+        }}
+      />
 
       {/* Content */}
       <motion.div
