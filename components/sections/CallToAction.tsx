@@ -132,7 +132,8 @@ export default function CallToAction() {
             Make Your Voice Heard
           </h2>
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
-            Vote YES on {VOTE_DATE} to keep Kansas City strong.
+            Vote YES on {VOTE_DATE} to keep<br className="sm:hidden" />
+            <span className="whitespace-nowrap"> Kansas City strong.</span>
           </p>
         </motion.div>
 
