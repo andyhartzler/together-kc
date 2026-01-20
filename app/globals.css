@@ -69,6 +69,11 @@ html {
   background-clip: text;
 }
 
+/* Radial gradient utility */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
 /* Animation utilities */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
@@ -91,6 +96,15 @@ html {
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient {
+  animation: gradient 8s ease infinite;
 }
 
 /* Section spacing */

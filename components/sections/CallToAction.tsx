@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Button from '@/components/ui/Button';
+import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { VOTE_DATE } from '@/lib/constants';
 
 export default function CallToAction() {
@@ -64,14 +64,18 @@ export default function CallToAction() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 text-center"
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 text-center flex flex-col"
             >
               <div className="text-4xl mb-4">{action.icon}</div>
               <h3 className="text-xl font-semibold text-white mb-2">{action.title}</h3>
-              <p className="text-white/70 mb-6">{action.description}</p>
-              <Button variant={action.variant} href={action.href}>
-                {action.buttonText}
-              </Button>
+              <p className="text-white/70 mb-6 flex-grow">{action.description}</p>
+              <div className="flex justify-center">
+                <InteractiveHoverButton
+                  text={action.buttonText}
+                  href={action.href}
+                  variant={action.variant}
+                />
+              </div>
             </motion.div>
           ))}
         </div>

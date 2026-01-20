@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ENDORSERS } from '@/lib/constants';
 import Button from '@/components/ui/Button';
+import { EndorserCard } from '@/components/ui/EndorserCard';
 
 export default function EndorsersPreview() {
   const featuredEndorser = ENDORSERS.featured[0];
@@ -37,9 +39,13 @@ export default function EndorsersPreview() {
               &#34;{featuredEndorser.quote}&#34;
             </blockquote>
             <div className="flex items-center justify-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-navy/10 flex items-center justify-center text-2xl font-bold text-navy">
-                QL
-              </div>
+              <Image
+                src="/images/mayor-quinton-lucas.jpg"
+                alt={featuredEndorser.name}
+                width={64}
+                height={64}
+                className="w-16 h-16 rounded-full object-cover"
+              />
               <div className="text-left">
                 <div className="font-semibold text-navy">{featuredEndorser.name}</div>
                 <div className="text-gray-600">{featuredEndorser.role}</div>
@@ -59,18 +65,14 @@ export default function EndorsersPreview() {
             Supported by organizations across Kansas City
           </h3>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
             {previewOrgs.map((org, index) => (
-              <motion.div
-                key={org}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="bg-white rounded-xl p-4 text-center shadow-lg shadow-navy/5 border border-gray-100 hover:shadow-xl transition-shadow"
-              >
-                <span className="text-sm font-medium text-navy">{org}</span>
-              </motion.div>
+              <EndorserCard
+                key={org.name}
+                name={org.name}
+                logo={org.logo}
+                index={index}
+              />
             ))}
           </div>
 

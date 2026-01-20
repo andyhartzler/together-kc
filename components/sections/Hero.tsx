@@ -1,101 +1,105 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
-import Image from 'next/image';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import Button from '@/components/ui/Button';
+import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { VOTE_DATE } from '@/lib/constants';
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 20;
-      const y = (e.clientY / window.innerHeight - 0.5) * 20;
-      setMousePosition({ x, y });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   return (
     <section
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-sky/10 via-white to-light-gray" />
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy/95 to-sky/80" />
 
-      {/* Parallax Skyline Image */}
-      <motion.div
-        style={{ y }}
-        className="absolute inset-0 z-0"
-      >
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden">
         <motion.div
           animate={{
-            x: mousePosition.x * 0.5,
-            y: mousePosition.y * 0.5,
+            x: [0, 100, 0],
+            y: [0, -50, 0],
+            scale: [1, 1.2, 1],
           }}
-          transition={{ type: 'spring', stiffness: 50, damping: 30 }}
-          className="absolute inset-0"
-        >
-          <Image
-            src="/images/cover.png"
-            alt="Kansas City Skyline"
-            fill
-            className="object-cover object-bottom opacity-90"
-            priority
-          />
-        </motion.div>
-      </motion.div>
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-coral/20 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{
+            x: [0, -80, 0],
+            y: [0, 80, 0],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute -bottom-1/4 -right-1/4 w-2/3 h-2/3 bg-sky/20 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{
+            x: [0, 50, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute top-1/3 right-1/4 w-1/3 h-1/3 bg-golden/10 rounded-full blur-3xl"
+        />
+      </div>
 
-      {/* Floating Clouds Layer */}
-      <motion.div
-        animate={{
-          x: mousePosition.x * -0.3,
-          y: mousePosition.y * -0.3,
+      {/* Subtle grid pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)`,
+          backgroundSize: '50px 50px',
         }}
-        transition={{ type: 'spring', stiffness: 30, damping: 20 }}
-        className="absolute inset-0 z-10 pointer-events-none"
-      >
-        <div className="absolute top-20 left-10 w-40 h-20 bg-white/40 rounded-full blur-2xl animate-float" />
-        <div className="absolute top-32 right-20 w-60 h-24 bg-white/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-16 left-1/3 w-32 h-16 bg-white/50 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }} />
-      </motion.div>
+      />
+
+      {/* Bottom blend into next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white via-white/50 to-transparent" />
 
       {/* Content */}
       <motion.div
         style={{ opacity }}
-        className="relative z-20 text-center px-4 pt-20 pb-32 max-w-4xl mx-auto"
+        className="relative z-20 text-center px-4 pt-20 pb-32 max-w-5xl mx-auto"
       >
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-navy mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
             Together KC
             <br />
-            <span className="gradient-text">Grows Stronger</span>
+            <span className="text-coral">Grows Stronger</span>
           </h1>
         </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-lg sm:text-xl md:text-2xl text-navy/80 mb-8 max-w-2xl mx-auto"
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="text-lg sm:text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto"
         >
           Vote <span className="font-bold text-coral">YES</span> to renew the earnings tax on{' '}
           <span className="font-semibold">{VOTE_DATE}</span>
@@ -104,15 +108,21 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={{ duration: 0.8, delay: 0.7 }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          <Button variant="primary" size="lg" href="/endorsements#endorse">
-            Vote YES
-          </Button>
-          <Button variant="outline" size="lg" href="#services">
-            Learn More
-          </Button>
+          <InteractiveHoverButton
+            text="Vote YES"
+            href="/endorsements#endorse"
+            variant="primary"
+            size="lg"
+          />
+          <InteractiveHoverButton
+            text="Learn More"
+            href="#services"
+            variant="outline"
+            size="lg"
+          />
         </motion.div>
 
         {/* Scroll Indicator */}
@@ -125,12 +135,12 @@ export default function Hero() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2 }}
-            className="w-6 h-10 rounded-full border-2 border-navy/30 flex justify-center"
+            className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center"
           >
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="w-1.5 h-3 bg-navy/50 rounded-full mt-2"
+              className="w-1.5 h-3 bg-white/50 rounded-full mt-2"
             />
           </motion.div>
         </motion.div>

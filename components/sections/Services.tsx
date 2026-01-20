@@ -3,6 +3,35 @@
 import { motion } from 'framer-motion';
 import { SERVICES } from '@/lib/constants';
 import Card from '@/components/ui/Card';
+import { FlipText } from '@/components/ui/FlipText';
+
+const FUNDED_SERVICES = [
+  'Firefighters',
+  'EMTs',
+  'Emergency Response',
+  'Street Repairs',
+  'Trash Pickup',
+  'Bulky Item Pickup',
+  'Recycling',
+  'Illegal Dumping Cleanup',
+  'Snow Removal',
+  'Street Lighting',
+  'Road Maintenance',
+  'Infrastructure',
+  'City Jobs',
+  'Transportation',
+  'Parks',
+  'Recreation Centers',
+  'City Programs',
+  'Housing Services',
+  'Water Services',
+  'Public Works',
+  'Municipal Court',
+  'Economic Development',
+  'City Planning',
+  'Neighborhood Services',
+  'Community Investment',
+];
 
 export default function Services() {
   return (
@@ -12,18 +41,27 @@ export default function Services() {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Animated Text Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy mb-4">
-            Services Funded by the E-Tax
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy mb-6">
+            The E-Tax Funds
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            The earnings tax funds nearly half the cost of essential city services that Kansas Citians depend on every day.
+          <div className="flex justify-center">
+            <FlipText
+              words={FUNDED_SERVICES}
+              finalWord="Kansas City"
+              duration={700}
+              className="text-3xl sm:text-4xl md:text-5xl text-coral"
+            />
+          </div>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mt-20">
+            Nearly half of all city services depend on the 1% earnings tax
           </p>
         </motion.div>
 
