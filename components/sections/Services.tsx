@@ -1,0 +1,60 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { SERVICES } from '@/lib/constants';
+import Card from '@/components/ui/Card';
+
+export default function Services() {
+  return (
+    <section id="services" className="section-padding bg-white relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy mb-4">
+            Services Funded by the E-Tax
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            The earnings tax funds nearly half the cost of essential city services that Kansas Citians depend on every day.
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {SERVICES.map((service, index) => (
+            <Card key={service.title} delay={index * 0.1}>
+              <div className="text-5xl mb-4">{service.icon}</div>
+              <h3 className="text-xl font-semibold text-navy mb-2">{service.title}</h3>
+              <p className="text-gray-600">{service.description}</p>
+            </Card>
+          ))}
+        </div>
+
+        {/* Impact statement */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-16 text-center"
+        >
+          <div className="bg-gradient-to-r from-navy via-sky to-navy p-[2px] rounded-2xl inline-block">
+            <div className="bg-white rounded-2xl px-8 py-6">
+              <p className="text-lg md:text-xl text-navy font-medium">
+                Without the earnings tax, we would face{' '}
+                <span className="text-coral font-bold">devastating cuts</span> to these essential services.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
