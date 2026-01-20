@@ -28,19 +28,75 @@ export default function EndorsementsPage() {
         />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
+          <div className="text-center">
             <h1 className="font-bold text-white mb-10 sm:mb-12">
-              <span className="block text-2xl sm:text-5xl md:text-6xl mb-2 sm:mb-3">Community Leaders Support</span>
-              <span className="block text-3xl sm:text-5xl md:text-6xl text-coral">Renewal</span>
+              {/* Community Leaders Support - word by word reveal */}
+              <span className="block text-2xl sm:text-5xl md:text-6xl mb-2 sm:mb-3">
+                {['Community', 'Leaders', 'Support'].map((word, i) => (
+                  <motion.span
+                    key={word}
+                    initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.2 + i * 0.15,
+                      ease: [0.25, 0.46, 0.45, 0.94]
+                    }}
+                    className="inline-block mr-[0.3em] last:mr-0"
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+              </span>
+
+              {/* Renewal - dramatic entrance with glow */}
+              <motion.span
+                initial={{
+                  opacity: 0,
+                  scale: 0.5,
+                  filter: 'blur(20px)',
+                  textShadow: '0 0 0px rgba(229, 57, 53, 0)'
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  filter: 'blur(0px)',
+                  textShadow: [
+                    '0 0 0px rgba(229, 57, 53, 0)',
+                    '0 0 60px rgba(229, 57, 53, 0.8)',
+                    '0 0 30px rgba(229, 57, 53, 0.4)'
+                  ]
+                }}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.8,
+                  ease: [0.34, 1.56, 0.64, 1],
+                  textShadow: {
+                    duration: 1.2,
+                    delay: 0.8,
+                    times: [0, 0.5, 1]
+                  }
+                }}
+                className="block text-3xl sm:text-5xl md:text-6xl text-coral relative"
+              >
+                Renewal
+                {/* Animated underline sweep */}
+                <motion.span
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 1.4, ease: 'easeOut' }}
+                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-32 sm:w-48 h-1 bg-gradient-to-r from-transparent via-coral to-transparent origin-center"
+                />
+              </motion.span>
             </h1>
 
             {/* Featured Quote */}
-            <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
+              className="max-w-3xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
+            >
               <svg
                 className="w-12 h-12 text-coral/60 mx-auto mb-4"
                 fill="currentColor"
@@ -64,13 +120,13 @@ export default function EndorsementsPage() {
                   <div className="text-white/70">{featuredEndorser.role}</div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Organizations Section */}
-      <section className="section-padding pt-8 sm:pt-12 pb-8 sm:pb-12 bg-gradient-to-b from-white to-light-gray">
+      <section className="section-padding pt-8 sm:pt-12 pb-6 sm:pb-8 bg-gradient-to-b from-white to-light-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -101,7 +157,7 @@ export default function EndorsementsPage() {
       </section>
 
       {/* City Officials Section */}
-      <section className="section-padding pt-8 sm:pt-12 bg-light-gray">
+      <section className="section-padding pt-6 sm:pt-8 bg-light-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
