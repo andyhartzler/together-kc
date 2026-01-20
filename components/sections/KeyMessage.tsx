@@ -15,6 +15,8 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
       transition={{ duration: 0.6, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={() => setIsHovered(true)}
+      onTouchEnd={() => setTimeout(() => setIsHovered(false), 300)}
       className="group relative"
     >
       <motion.div
@@ -106,7 +108,7 @@ export default function KeyMessage() {
             className="relative"
           >
             {/* Central coin visualization */}
-            <div className="relative mx-auto w-80 h-80 md:w-96 md:h-96">
+            <div className="relative mx-auto w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96">
               {/* Outer rotating ring */}
               <motion.div
                 animate={{ rotate: 360 }}
@@ -254,14 +256,14 @@ export default function KeyMessage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4">
               <StatCard
-                icon={<span className="text-xl font-bold">%</span>}
+                icon={<span className="text-2xl font-bold">%</span>}
                 value="1%"
                 label="Tax on income earned in KC"
                 delay={0}
               />
               <StatCard
                 icon={
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9v-2h2v2zm0-4H9V6h2v4z" />
                   </svg>
                 }
@@ -271,7 +273,7 @@ export default function KeyMessage() {
               />
               <StatCard
                 icon={
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
                   </svg>
                 }
@@ -281,7 +283,7 @@ export default function KeyMessage() {
               />
               <StatCard
                 icon={
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
                   </svg>
                 }

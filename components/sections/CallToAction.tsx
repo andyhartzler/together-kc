@@ -88,7 +88,7 @@ export default function CallToAction() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-16 text-center"
         >
-          <div className="inline-block bg-coral rounded-2xl px-8 py-6 shadow-2xl shadow-coral/30">
+          <div className="inline-block bg-coral rounded-2xl px-6 py-4 sm:px-8 sm:py-6 shadow-2xl shadow-coral/30">
             <p className="text-white font-medium text-lg mb-1">Mark your calendar!</p>
             <p className="text-white font-bold text-3xl md:text-4xl">{VOTE_DATE}</p>
           </div>
