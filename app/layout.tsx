@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://ticket-kc.vercel.app'),
   title: SITE_CONFIG.title,
   description: SITE_CONFIG.description,
   keywords: [
