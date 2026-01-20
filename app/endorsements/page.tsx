@@ -13,14 +13,11 @@ export default function EndorsementsPage() {
   return (
     <>
       {/* Hero Section with Mayor Quote */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-br from-navy via-navy/95 to-sky/80">
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-hidden">
         {/* Background Decorations */}
-        <div className="absolute inset-0 opacity-20 overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-coral via-transparent to-transparent" />
         </div>
-
-        {/* Bottom blend into next section - extends below hero */}
-        <div className="absolute -bottom-16 sm:-bottom-20 left-0 right-0 h-48 sm:h-56 bg-gradient-to-t from-white via-white/80 to-transparent z-20 pointer-events-none" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
@@ -30,7 +27,7 @@ export default function EndorsementsPage() {
             className="text-center"
           >
             <h1 className="font-bold text-white mb-8">
-              <span className="block text-[clamp(1.75rem,7vw,3.75rem)] whitespace-nowrap">Community Leaders Support</span>
+              <span className="block text-[clamp(1.4rem,5.5vw,3.75rem)]">Community Leaders Support</span>
               <span className="block text-4xl sm:text-5xl md:text-6xl text-coral">Renewal</span>
             </h1>
 
@@ -65,7 +62,9 @@ export default function EndorsementsPage() {
       </section>
 
       {/* Organizations Section */}
-      <section className="section-padding bg-gradient-to-b from-white to-light-gray">
+      <section className="relative section-padding bg-gradient-to-b from-white to-light-gray">
+        {/* Top blend from hero section */}
+        <div className="absolute -top-20 left-0 right-0 h-40 bg-gradient-to-b from-sky/30 via-white/80 to-white pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
