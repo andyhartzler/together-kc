@@ -327,7 +327,7 @@ export default function EndorsementsPage() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               How Else Can I Help?
             </h2>
-            <p className="text-lg text-white/80">
+            <p className="text-base sm:text-lg text-white/80">
               There are many ways to support the renewal campaign.
             </p>
           </motion.div>
