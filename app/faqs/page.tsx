@@ -96,7 +96,7 @@ export default function FAQsPage() {
               We&#39;re here to help. Reach out to learn more about how you can support the renewal.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="primary" href="mailto:info@togetherkc.com">
+              <Button variant="primary" href="mailto:action@together-kc.com">
                 Contact Us
               </Button>
               <Button
