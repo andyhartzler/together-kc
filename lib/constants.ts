@@ -82,6 +82,7 @@ export const ENDORSERS = {
     { name: 'Labor Management Council', logo: '/images/endorsers/Labor Managment Council.PNG' },
     { name: 'South KC Chamber of Commerce', logo: '/images/endorsers/South Kansas City Chamber.PNG' },
     { name: 'MO Budget Project', logo: '/images/endorsers/MO Budget Project.png' },
+    { name: 'MO Immigrant & Refugee Advocates', logo: '/images/endorsers/MO Immigrant & Refugee Advocates.PNG' },
     { name: 'MO Healthcare for All', logo: '/images/endorsers/MO Healthcare for All.PNG' },
     { name: 'Heartland Black Chamber of Commerce', logo: '/images/endorsers/Heartland Black Chamber.PNG' },
     { name: 'Empower Missouri', logo: '/images/endorsers/Empower Missouri.PNG' },
