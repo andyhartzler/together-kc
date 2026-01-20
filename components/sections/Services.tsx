@@ -49,7 +49,7 @@ export default function Services() {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy mb-2">
             The E-Tax Funds
           </h2>
           <div className="flex justify-center">
@@ -60,7 +60,7 @@ export default function Services() {
               className="text-3xl sm:text-4xl md:text-5xl text-coral"
             />
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mt-20">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mt-6">
             Nearly half of all city services depend on the 1% earnings tax
           </p>
         </motion.div>
