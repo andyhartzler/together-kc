@@ -13,7 +13,7 @@ export default function EndorsementsPage() {
   return (
     <>
       {/* Hero Section with Mayor Quote */}
-      <section className="relative pt-32 pb-24 sm:pb-32 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-x-hidden">
+      <section className="relative pt-32 pb-48 sm:pb-64 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-x-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-coral via-transparent to-transparent" />
