@@ -2,25 +2,36 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import AnimatedTextCycle from '@/components/ui/AnimatedTextCycle';
 
 // Interactive stat card
 function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value: string; label: string; delay: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardRef, { once: true, amount: 0.8 });
 
-  // Trigger animation when card comes into view (for mobile scroll effect)
+  // Check if mobile on mount and resize
   useEffect(() => {
-    if (isInView && !hasAnimated) {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Trigger animation when card comes into view (for mobile scroll effect only)
+  useEffect(() => {
+    if (isMobile && isInView && !hasAnimated) {
       const timer = setTimeout(() => {
         setHasAnimated(true);
       }, delay * 1000 + 300);
       return () => clearTimeout(timer);
     }
-  }, [isInView, hasAnimated, delay]);
+  }, [isMobile, isInView, hasAnimated, delay]);
 
-  const isActive = isHovered || hasAnimated;
+  // On desktop: hover triggers animation. On mobile: scroll triggers animation
+  const isActive = isMobile ? hasAnimated : isHovered;
 
   return (
     <motion.div
@@ -112,6 +123,9 @@ export default function KeyMessage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Animated Text Cycle Header */}
+        <AnimatedTextCycle />
+
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left Column - Animated Infographic */}
           <motion.div
@@ -171,7 +185,7 @@ export default function KeyMessage() {
                 { label: 'Since 1963', angle: -45, delay: 0.1 },
                 { label: 'Same Rate', angle: 45, delay: 0.2 },
                 { label: 'No Increase', angle: 135, delay: 0.3 },
-                { label: 'Proven', angle: 225, delay: 0.4 },
+                { label: 'Proven', angle: 210, delay: 0.4 },
               ].map((badge) => (
                 <motion.div
                   key={badge.label}
@@ -181,8 +195,8 @@ export default function KeyMessage() {
                   transition={{ duration: 0.5, delay: badge.delay + 0.5 }}
                   className="absolute w-20 h-20 flex items-center justify-center"
                   style={{
-                    top: `${50 + 45 * Math.sin((badge.angle * Math.PI) / 180)}%`,
-                    left: `${50 + 45 * Math.cos((badge.angle * Math.PI) / 180)}%`,
+                    top: `${50 + 48 * Math.sin((badge.angle * Math.PI) / 180)}%`,
+                    left: `${50 + 48 * Math.cos((badge.angle * Math.PI) / 180)}%`,
                     transform: 'translate(-50%, -50%)',
                   }}
                 >
