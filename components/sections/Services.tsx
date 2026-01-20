@@ -56,7 +56,7 @@ export default function Services() {
             <FlipText
               words={FUNDED_SERVICES}
               finalWord="Kansas City"
-              duration={1000}
+              duration={1800}
               className="text-3xl sm:text-4xl md:text-5xl text-coral"
             />
           </div>
