@@ -147,10 +147,10 @@ export default function EndorsementsPage() {
                     sizes="48px"
                   />
                 </div>
-                <div className="flex flex-col">
-                  <span className="font-medium text-navy">{official.name}, {official.title}</span>
+                <div className="flex flex-col min-w-0">
+                  <span className="font-medium text-navy text-sm sm:text-base">{official.name}, {official.title}</span>
                   {official.district && (
-                    <span className="text-gray-500 text-sm">{official.district}</span>
+                    <span className="text-gray-500 text-xs sm:text-sm">{official.district}</span>
                   )}
                 </div>
               </motion.div>
@@ -217,10 +217,10 @@ export default function EndorsementsPage() {
                       sizes="48px"
                     />
                   </div>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-navy">{official.name}, {official.title}</span>
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-medium text-navy text-sm sm:text-base">{official.name}, {official.title}</span>
                     {official.district && (
-                      <span className="text-gray-500 text-sm">{official.district}</span>
+                      <span className="text-gray-500 text-xs sm:text-sm">{official.district}</span>
                     )}
                   </div>
                 </motion.div>
