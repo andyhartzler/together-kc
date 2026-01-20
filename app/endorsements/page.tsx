@@ -13,19 +13,11 @@ export default function EndorsementsPage() {
   return (
     <>
       {/* Hero Section with Mayor Quote */}
-      <section className="relative pt-32 pb-32 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-x-hidden">
+      <section className="relative pt-32 pb-16 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-x-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-coral via-transparent to-transparent" />
         </div>
-
-        {/* Bottom fade to white - tall gradient for smooth transition */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-64"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.85) 80%, white 100%)'
-          }}
-        />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
@@ -69,8 +61,16 @@ export default function EndorsementsPage() {
         </div>
       </section>
 
+      {/* Gradient transition zone */}
+      <div
+        className="h-24 sm:h-32"
+        style={{
+          background: 'linear-gradient(to bottom, #1e3a5f 0%, #2a4a6f 30%, #6a9bc9 60%, #ffffff 100%)'
+        }}
+      />
+
       {/* Organizations Section */}
-      <section className="section-padding pb-8 sm:pb-12 bg-gradient-to-b from-white to-light-gray">
+      <section className="section-padding pt-8 sm:pt-12 pb-8 sm:pb-12 bg-gradient-to-b from-white to-light-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
