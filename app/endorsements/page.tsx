@@ -13,11 +13,14 @@ export default function EndorsementsPage() {
   return (
     <>
       {/* Hero Section with Mayor Quote */}
-      <section className="relative pt-32 pb-16 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-x-hidden">
+      <section className="relative pt-32 pb-24 sm:pb-32 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-x-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-coral via-transparent to-transparent" />
         </div>
+
+        {/* Bottom fade overlay - fades the existing gradient to white */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 bg-gradient-to-b from-transparent to-white" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
@@ -60,11 +63,6 @@ export default function EndorsementsPage() {
           </motion.div>
         </div>
       </section>
-
-      {/* Gradient transition zone - continues hero gradient with white fade overlay */}
-      <div className="relative h-24 sm:h-32 bg-gradient-to-br from-navy via-navy/95 to-sky/80">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white" />
-      </div>
 
       {/* Organizations Section */}
       <section className="section-padding pt-8 sm:pt-12 pb-8 sm:pb-12 bg-gradient-to-b from-white to-light-gray">
