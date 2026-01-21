@@ -108,13 +108,15 @@ export default function EndorsementsPage() {
                 &#34;{featuredEndorser.quote}&#34;
               </blockquote>
               <div className="flex items-center justify-center gap-4">
-                <Image
-                  src="/images/mayor-quinton-lucas.jpg"
-                  alt={featuredEndorser.name}
-                  width={64}
-                  height={64}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-white/30"
-                />
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 flex-shrink-0">
+                  <Image
+                    src="/images/mayor-quinton-lucas.jpg"
+                    alt={featuredEndorser.name}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover scale-125 object-top"
+                  />
+                </div>
                 <div className="text-left">
                   <div className="font-semibold text-white">{featuredEndorser.name}</div>
                   <div className="text-white/70">{featuredEndorser.role}</div>
