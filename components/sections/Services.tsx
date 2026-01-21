@@ -55,7 +55,6 @@ export default function Services() {
           <div className="flex justify-center">
             <FlipText
               words={FUNDED_SERVICES}
-              finalWord="Kansas City"
               duration={1500}
               className="text-3xl sm:text-4xl md:text-5xl text-coral"
             />

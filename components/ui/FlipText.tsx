@@ -8,47 +8,34 @@ interface FlipTextProps {
   words: string[];
   duration?: number;
   className?: string;
-  finalWord?: string;
 }
 
 export function FlipText({
   words,
   duration = 2000,
   className,
-  finalWord,
 }: FlipTextProps) {
   const [index, setIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Only start when 80% in view
   const isInView = useInView(containerRef, { once: true, amount: 0.8 });
 
-  const allWords = finalWord ? [...words, finalWord] : words;
-
-  // Auto-advance, pause on hover
+  // Continuous loop - never stops
   useEffect(() => {
-    if (!isInView || isPaused) return;
+    if (!isInView) return;
 
     const interval = setInterval(() => {
-      setIndex((prev) => {
-        const next = prev + 1;
-        if (next >= allWords.length) return 0;
-        return next;
-      });
+      setIndex((prev) => (prev + 1) % words.length);
     }, duration);
 
     return () => clearInterval(interval);
-  }, [isInView, isPaused, duration, allWords.length]);
-
-  const isFinal = finalWord && index === allWords.length - 1;
+  }, [isInView, duration, words.length]);
 
   return (
     <div
       ref={containerRef}
-      className="relative inline-flex items-center select-none cursor-default"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      className="relative inline-flex items-center select-none"
     >
       {/* Main text */}
       <div className="relative overflow-hidden py-2">
@@ -64,11 +51,10 @@ export function FlipText({
             }}
             className={cn(
               "inline-block font-bold",
-              className,
-              isFinal && "text-coral"
+              className
             )}
           >
-            {allWords[index]}
+            {words[index]}
           </motion.span>
         </AnimatePresence>
       </div>
