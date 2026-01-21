@@ -32,7 +32,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-light-gray flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg shadow-navy/5 p-8 border border-gray-100">
+        <form onSubmit={handleSubmit} autoComplete="off" className="bg-white rounded-2xl shadow-lg shadow-navy/5 p-8 border border-gray-100">
           <div className="text-center mb-6">
             <svg
               className="w-12 h-12 mx-auto text-gray-400"
@@ -59,6 +59,9 @@ export default function LoginPage() {
               }}
               placeholder="Password"
               autoFocus
+              autoComplete="one-time-code"
+              data-lpignore="true"
+              data-form-type="other"
               className={`w-full px-4 py-3 rounded-xl border ${
                 error ? 'border-red-400 bg-red-50' : 'border-gray-200'
               } focus:outline-none focus:ring-2 focus:ring-coral/50 focus:border-coral transition-colors text-navy placeholder:text-gray-400`}
