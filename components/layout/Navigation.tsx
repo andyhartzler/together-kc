@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { downloadCalendarEvent } from '@/lib/calendar';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -145,7 +146,7 @@ export default function Navigation() {
                       {link.label}
                     </Link>
                   ))}
-                  <div className="pt-4">
+                  <div className="pt-4 space-y-3">
                     <Link
                       href="/endorsements#endorse"
                       onClick={() => setIsMobileMenuOpen(false)}
@@ -153,6 +154,15 @@ export default function Navigation() {
                     >
                       Vote YES
                     </Link>
+                    <button
+                      onClick={() => {
+                        downloadCalendarEvent();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="block w-full px-6 py-3 bg-navy text-white font-semibold rounded-full text-center hover:bg-navy/90 transition-all"
+                    >
+                      Remind Me to Vote
+                    </button>
                   </div>
                 </div>
               </div>
