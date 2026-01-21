@@ -105,7 +105,7 @@ export default function CallToAction() {
     {
       icon: '📧',
       title: 'Stay Informed',
-      description: 'Get updates on the campaign and how to help.',
+      description: 'Get campaign updates and ways to help.',
       buttonText: 'Sign Up',
       href: '#signup',
       variant: 'outline' as const,
