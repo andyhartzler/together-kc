@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BackgroundGradient } from '@/components/ui/BackgroundGradient';
 import { CoinTrail } from '@/components/ui/CoinTrail';
+import { Button } from '@/components/ui/3d-button';
 
 export default function LoginPage() {
   const [password, setPassword] = useState('');
@@ -86,17 +87,16 @@ export default function LoginPage() {
                     password ? 'opacity-60' : 'opacity-0'
                   }`}
                 />
-                <button
+                <Button
                   type="submit"
-                  disabled={isLoading || !password}
-                  className={`relative w-full py-3 font-medium rounded-xl transition-all duration-300 ${
-                    password
-                      ? 'bg-slate-900 text-white hover:bg-slate-800 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#E79C24]/30'
-                      : 'bg-slate-300 text-slate-500 cursor-not-allowed'
-                  }`}
+                  disabled={!password}
+                  isLoading={isLoading}
+                  size="full"
+                  variant={password ? 'default' : 'outline'}
+                  className="relative"
                 >
-                  {isLoading ? '...' : 'Enter'}
-                </button>
+                  Enter
+                </Button>
               </div>
             </div>
           </form>
