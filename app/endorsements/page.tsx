@@ -264,7 +264,7 @@ export default function EndorsementsPage() {
       </section>
 
       {/* Endorsement Form Section */}
-      <section id="endorse" className="section-padding bg-gradient-to-b from-white to-light-gray">
+      <section id="endorse" className="section-padding bg-gradient-to-b from-white to-light-gray relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-start">
             {/* Left Column - Message */}
@@ -340,18 +340,19 @@ export default function EndorsementsPage() {
             <EndorsementForm />
           </div>
         </div>
+
+        {/* Bottom gradient transition to navy */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-32 sm:h-48"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(10,25,47,0) 0%, rgba(10,25,47,0.03) 20%, rgba(10,25,47,0.1) 40%, rgba(10,25,47,0.25) 55%, rgba(10,25,47,0.5) 70%, rgba(10,25,47,0.8) 85%, rgba(10,25,47,1) 100%)'
+          }}
+        />
       </section>
 
       {/* How Else Can I Help Section */}
-      <section className="section-padding pb-48 bg-navy relative">
-        {/* Top gradient transition from white */}
-        <div
-          className="absolute top-0 left-0 right-0 h-24 sm:h-32"
-          style={{
-            background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 15%, rgba(255,255,255,0.5) 30%, rgba(255,255,255,0.25) 45%, rgba(255,255,255,0.1) 60%, rgba(255,255,255,0.03) 80%, rgba(255,255,255,0) 100%)'
-          }}
-        />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="section-padding pb-48 bg-navy">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
