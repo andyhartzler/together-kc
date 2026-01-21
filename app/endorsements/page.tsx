@@ -343,8 +343,15 @@ export default function EndorsementsPage() {
       </section>
 
       {/* How Else Can I Help Section */}
-      <section className="section-padding pb-48 bg-navy">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="section-padding pb-48 bg-navy relative">
+        {/* Top gradient transition from white */}
+        <div
+          className="absolute top-0 left-0 right-0 h-24 sm:h-32"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 15%, rgba(255,255,255,0.5) 30%, rgba(255,255,255,0.25) 45%, rgba(255,255,255,0.1) 60%, rgba(255,255,255,0.03) 80%, rgba(255,255,255,0) 100%)'
+          }}
+        />
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
