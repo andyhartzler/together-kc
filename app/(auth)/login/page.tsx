@@ -33,9 +33,14 @@ export default function LoginPage() {
     <div className="min-h-screen bg-light-gray flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg shadow-navy/5 p-8 border border-gray-100">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-navy">Together KC</h1>
-            <p className="text-gray-500 text-sm mt-1">Enter password to continue</p>
+          <div className="text-center mb-6">
+            <svg
+              className="w-16 h-16 mx-auto text-gray-400"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2L9.5 9H7l-4 12h18l-4-12h-2.5L12 2zm0 3.24L13.58 9h-3.16L12 5.24zM7.92 11h8.16l3 9H4.92l3-9z" />
+            </svg>
           </div>
 
           <div className="space-y-4">
