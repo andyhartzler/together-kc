@@ -174,29 +174,15 @@ export default function EndorsementsPage() {
             </p>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.08
-                }
-              }
-            }}
-            className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto"
-          >
-            {ENDORSERS.cityOfficials.map((official) => (
+          <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {ENDORSERS.cityOfficials.map((official, index) => (
               <motion.div
                 key={official.name}
-                variants={{
-                  hidden: { opacity: 0, y: 30, scale: 0.9 },
-                  visible: { opacity: 1, y: 0, scale: 1 }
-                }}
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
                 whileHover={{ scale: 1.03, y: -4 }}
-                transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.5, delay: index * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
                 className="bg-white rounded-xl p-4 shadow-lg shadow-navy/5 border border-gray-100 flex items-center gap-4 cursor-pointer hover:shadow-xl"
               >
                 <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 relative">
@@ -216,7 +202,7 @@ export default function EndorsementsPage() {
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -238,21 +224,8 @@ export default function EndorsementsPage() {
             </p>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.1
-                }
-              }
-            }}
-            className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto"
-          >
-            {ENDORSERS.electedOfficials.map((official) => {
+          <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {ENDORSERS.electedOfficials.map((official, index) => {
               const getObjectPosition = () => {
                 if (official.name === 'Michael Johnson') return 'object-[center_30%]';
                 if (official.name === 'Maggie Nurrenbern') return 'object-top';
@@ -261,12 +234,11 @@ export default function EndorsementsPage() {
               return (
                 <motion.div
                   key={official.name}
-                  variants={{
-                    hidden: { opacity: 0, y: 30, scale: 0.9 },
-                    visible: { opacity: 1, y: 0, scale: 1 }
-                  }}
+                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.5 }}
                   whileHover={{ scale: 1.03, y: -4 }}
-                  transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  transition={{ duration: 0.5, delay: index * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="bg-light-gray rounded-xl p-4 shadow-lg shadow-navy/5 border border-gray-100 flex items-center gap-4 cursor-pointer hover:shadow-xl"
                 >
                   <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 relative">
@@ -287,7 +259,7 @@ export default function EndorsementsPage() {
                 </motion.div>
               );
             })}
-          </motion.div>
+          </div>
         </div>
       </section>
 
