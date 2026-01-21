@@ -64,12 +64,13 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   type="text"
+                  name="access_code"
+                  id="access_code"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
                     setError(false);
                   }}
-                  placeholder="Enter password"
                   autoFocus
                   autoComplete="off"
                   autoCorrect="off"
@@ -78,10 +79,11 @@ export default function LoginPage() {
                   data-lpignore="true"
                   data-1p-ignore="true"
                   data-form-type="other"
-                  className={`w-full px-4 py-3 rounded-xl border-2 border-b-4 font-medium transition-all ${
+                  data-bwignore="true"
+                  className={`w-full px-4 py-3 rounded-xl border-2 border-b-4 font-medium transition-all text-center tracking-widest ${
                     error
-                      ? 'border-red-400 border-b-red-500 bg-red-50 text-red-800 placeholder:text-red-400'
-                      : 'border-[#1a2736] border-b-[#0f1a24] bg-[#1a2736] text-white placeholder:text-slate-400'
+                      ? 'border-red-400 border-b-red-500 bg-red-50 text-red-800'
+                      : 'border-[#1a2736] border-b-[#0f1a24] bg-[#1a2736] text-white'
                   } focus:outline-none focus:ring-2 focus:ring-[#FDBE19]/50`}
                   style={{ WebkitTextSecurity: 'disc' } as React.CSSProperties}
                 />
