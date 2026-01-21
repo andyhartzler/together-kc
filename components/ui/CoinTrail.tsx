@@ -201,20 +201,26 @@ interface CoinDotProps {
 const CoinDot: React.FC<CoinDotProps> = React.memo(
   ({ id, size, fadeDuration, delay }) => {
     const controls = useAnimationControls();
-    const [activeCoin, setActiveCoin] = React.useState(COINS[0]);
+    // Use ref for synchronous coin updates + state to trigger re-render
+    const coinRef = React.useRef(COIN_VOTE_YES);
+    const [, forceRender] = React.useReducer(x => x + 1, 0);
 
     const animatePixel = useCallback(() => {
-      // Use the current session coin
-      setActiveCoin(sessionState.currentCoin);
-      controls.start({
-        opacity: [1, 0],
-        scale: [0.5, 1, 0.8],
-        rotate: [0, 15, -10, 0],
-        transition: {
-          duration: fadeDuration / 1000,
-          delay: delay / 1000,
-          ease: 'easeOut'
-        },
+      // Update ref synchronously
+      coinRef.current = sessionState.currentCoin;
+      // Force synchronous re-render, then start animation after paint
+      forceRender();
+      requestAnimationFrame(() => {
+        controls.start({
+          opacity: [1, 0],
+          scale: [0.5, 1, 0.8],
+          rotate: [0, 15, -10, 0],
+          transition: {
+            duration: fadeDuration / 1000,
+            delay: delay / 1000,
+            ease: 'easeOut'
+          },
+        });
       });
     }, [controls, fadeDuration, delay]);
 
@@ -227,6 +233,7 @@ const CoinDot: React.FC<CoinDotProps> = React.memo(
       [animatePixel]
     );
 
+    const activeCoin = coinRef.current;
     const coinSize = Math.round((size - 10) * activeCoin.sizeMultiplier);
 
     return (
