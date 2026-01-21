@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -16,6 +16,21 @@ interface AccordionProps {
 
 export default function Accordion({ items, className }: AccordionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Check if desktop on mount and resize
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  const handleMouseEnter = (index: number) => {
+    if (isDesktop) {
+      setOpenIndex(index);
+    }
+  };
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -27,6 +42,7 @@ export default function Accordion({ items, className }: AccordionProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: index * 0.1 }}
           className="bg-white rounded-xl shadow-lg shadow-navy/5 overflow-hidden border border-gray-100"
+          onMouseEnter={() => handleMouseEnter(index)}
         >
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
