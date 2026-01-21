@@ -94,8 +94,8 @@ export default function LoginPage() {
               {/* 3D Button with glow */}
               <div className="relative pt-1">
                 <div
-                  className={`absolute inset-0 rounded-xl bg-[#FDBE19] blur-lg transition-opacity duration-500 ${
-                    password ? 'opacity-50' : 'opacity-0'
+                  className={`absolute inset-x-2 inset-y-1 rounded-xl bg-[#FDBE19] blur-md transition-opacity duration-500 ${
+                    password ? 'opacity-40' : 'opacity-0'
                   }`}
                 />
                 <Button
