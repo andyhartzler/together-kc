@@ -30,12 +30,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-light-gray flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <form onSubmit={handleSubmit} autoComplete="off" className="bg-white rounded-2xl shadow-lg shadow-navy/5 p-8 border border-gray-100">
+        <form onSubmit={handleSubmit} autoComplete="off" className="bg-gradient-to-br from-navy via-navy/95 to-sky/80 rounded-2xl shadow-2xl shadow-navy/20 p-8">
           <div className="text-center mb-6">
             <svg
-              className="w-12 h-12 mx-auto text-gray-400"
+              className="w-12 h-12 mx-auto text-white/70"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -63,12 +63,12 @@ export default function LoginPage() {
               data-lpignore="true"
               data-form-type="other"
               className={`w-full px-4 py-3 rounded-xl border ${
-                error ? 'border-red-400 bg-red-50' : 'border-gray-200'
-              } focus:outline-none focus:ring-2 focus:ring-coral/50 focus:border-coral transition-colors text-navy placeholder:text-gray-400`}
+                error ? 'border-red-400 bg-red-50' : 'border-white/20 bg-white/10'
+              } focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors text-white placeholder:text-white/50`}
             />
 
             {error && (
-              <p className="text-red-500 text-sm text-center">Incorrect password</p>
+              <p className="text-red-300 text-sm text-center">Incorrect password</p>
             )}
 
             <button
