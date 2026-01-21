@@ -156,12 +156,12 @@ export default function KeyMessage() {
                 </div>
               </div>
 
-              {/* Floating badges around the coin - all on outer ring */}
+              {/* Floating badges around the coin - individually tuned positions */}
               {[
-                { label: 'Since 1963', angle: -30, delay: 0.1 },  // upper-right
-                { label: 'Same Rate', angle: 30, delay: 0.2 },    // lower-right (mirror of -30)
-                { label: 'No Increase', angle: 150, delay: 0.3 }, // lower-left
-                { label: 'Proven', angle: 210, delay: 0.4 },      // upper-left (mirror of 150)
+                { label: 'Since 1963', angle: -30, radius: 48, delay: 0.1 },  // upper-right (works)
+                { label: 'Same Rate', angle: 30, radius: 44, delay: 0.2 },    // lower-right (pulled in)
+                { label: 'No Increase', angle: 150, radius: 48, delay: 0.3 }, // lower-left (works)
+                { label: 'Proven', angle: 210, radius: 52, delay: 0.4 },      // upper-left (pushed out)
               ].map((badge) => (
                 <motion.div
                   key={badge.label}
@@ -171,8 +171,8 @@ export default function KeyMessage() {
                   transition={{ duration: 0.5, delay: badge.delay + 0.5 }}
                   className="absolute w-20 h-20 flex items-center justify-center"
                   style={{
-                    top: `${50 + 48 * Math.sin((badge.angle * Math.PI) / 180)}%`,
-                    left: `${50 + 48 * Math.cos((badge.angle * Math.PI) / 180)}%`,
+                    top: `${50 + badge.radius * Math.sin((badge.angle * Math.PI) / 180)}%`,
+                    left: `${50 + badge.radius * Math.cos((badge.angle * Math.PI) / 180)}%`,
                     transform: 'translate(-50%, -50%)',
                   }}
                 >
