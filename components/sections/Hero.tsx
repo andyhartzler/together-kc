@@ -5,106 +5,13 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { VOTE_DATE } from '@/lib/constants';
 
-// "Together" - Letters magnetically pull together (symbolizing unity)
-function TogetherAnimation({ delay = 0 }: { delay?: number }) {
-  const letters = 'Together'.split('');
-  // Starting X positions - spread out, will converge to center
-  const startPositions = [-120, -80, -45, -15, 15, 45, 80, 120];
-
-  return (
-    <span className="relative inline-block">
-      {letters.map((letter, i) => (
-        <motion.span
-          key={i}
-          initial={{
-            opacity: 0,
-            x: startPositions[i],
-            scale: 0.5,
-          }}
-          animate={{
-            opacity: 1,
-            x: 0,
-            scale: 1,
-          }}
-          transition={{
-            duration: 0.8,
-            delay: delay + 0.1,
-            ease: [0.25, 0.1, 0.25, 1],
-            x: {
-              duration: 1,
-              delay: delay + 0.1,
-              ease: [0.34, 1.56, 0.64, 1], // Spring-like overshoot
-            },
-          }}
-          className="inline-block"
-        >
-          {letter}
-        </motion.span>
-      ))}
-    </span>
-  );
-}
-
-// "KC" - Stamps down with weight and impact
-function KCAnimation({ delay = 0 }: { delay?: number }) {
-  const [hasLanded, setHasLanded] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setHasLanded(true), (delay + 0.5) * 1000);
-    return () => clearTimeout(timer);
-  }, [delay]);
-
-  return (
-    <span className="relative inline-block">
-      {/* Impact ring */}
-      <motion.span
-        className="absolute inset-0 -inset-x-4"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={hasLanded ? { opacity: [0, 0.6, 0], scale: [0.8, 1.5, 2] } : {}}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-      >
-        <span className="absolute inset-0 border-2 border-white/30 rounded-full" />
-      </motion.span>
-
-      <motion.span
-        initial={{
-          opacity: 0,
-          y: -80,
-          scale: 1.5,
-        }}
-        animate={{
-          opacity: 1,
-          y: [null, 5, 0],
-          scale: [1.5, 0.95, 1],
-        }}
-        transition={{
-          duration: 0.5,
-          delay: delay,
-          ease: [0.22, 1, 0.36, 1],
-          y: {
-            duration: 0.5,
-            delay: delay,
-            times: [0, 0.7, 1],
-            ease: [0.55, 0, 1, 0.45],
-          },
-        }}
-        className="inline-block"
-      >
-        KC
-      </motion.span>
-    </span>
-  );
-}
-
-// "Grows Stronger" - Rises from below with escalating power
+// "Grows Stronger" - Glow and pulse effects (no drop-in animation)
 function GrowsStrongerAnimation({ delay = 0 }: { delay?: number }) {
   const [phase, setPhase] = useState(0);
-  const text = 'Grows Stronger';
-  const letters = text.split('');
 
   useEffect(() => {
-    const timer1 = setTimeout(() => setPhase(1), (delay + 0.7) * 1000);
-    const timer2 = setTimeout(() => setPhase(2), (delay + 1.4) * 1000);
+    const timer1 = setTimeout(() => setPhase(1), (delay + 0.3) * 1000);
+    const timer2 = setTimeout(() => setPhase(2), (delay + 1.0) * 1000);
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
@@ -112,93 +19,51 @@ function GrowsStrongerAnimation({ delay = 0 }: { delay?: number }) {
   }, [delay]);
 
   return (
-    <span className="relative inline-block">
+    <span className="relative inline-block text-coral">
       {/* Energy glow that builds up */}
       <motion.span
-        className="absolute -inset-4 -inset-x-8"
+        className="absolute -inset-4 -inset-x-8 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{
-          opacity: phase >= 1 ? [0, 0.4, 0.6] : 0,
+          opacity: phase >= 1 ? [0, 0.5, 0.7] : 0,
         }}
         transition={{ duration: 1.2, ease: 'easeOut' }}
       >
         <span
           className="absolute inset-0 rounded-lg blur-2xl"
           style={{
-            background: 'radial-gradient(ellipse at center, rgba(229, 57, 53, 0.4) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(229, 57, 53, 0.5) 0%, transparent 70%)',
           }}
         />
       </motion.span>
 
-      {/* Ground line that cracks open */}
+      {/* Main text with glow */}
       <motion.span
-        className="absolute -bottom-2 left-1/2 h-0.5 bg-gradient-to-r from-transparent via-coral to-transparent"
-        initial={{ width: 0, x: '-50%', opacity: 0 }}
-        animate={{
-          width: phase >= 1 ? '120%' : 0,
-          opacity: phase >= 1 ? [0, 1, 0] : 0
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: delay }}
+        className="relative"
+        style={{
+          textShadow: phase >= 2
+            ? '0 0 30px rgba(229, 57, 53, 0.6), 0 0 60px rgba(229, 57, 53, 0.4)'
+            : 'none',
+          transition: 'text-shadow 0.5s ease-out',
         }}
-        transition={{ duration: 0.4, delay: delay }}
-      />
-
-      {/* Main text */}
-      <span className="relative">
-        {letters.map((letter, i) => {
-          const isSecondWord = i >= 6; // "Stronger" starts at index 6
-          const letterDelay = delay + (i * 0.04) + (isSecondWord ? 0.15 : 0);
-
-          return (
-            <motion.span
-              key={i}
-              initial={{
-                opacity: 0,
-                y: 60,
-                rotateX: -90,
-                scale: 0.5,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                rotateX: 0,
-                scale: [0.5, 1.1, 1],
-              }}
-              transition={{
-                duration: 0.6,
-                delay: letterDelay,
-                ease: [0.22, 1, 0.36, 1],
-                scale: {
-                  duration: 0.5,
-                  delay: letterDelay,
-                  times: [0, 0.6, 1],
-                  ease: [0.34, 1.56, 0.64, 1],
-                },
-              }}
-              className="inline-block text-coral"
-              style={{
-                display: letter === ' ' ? 'inline' : 'inline-block',
-                textShadow: phase >= 2
-                  ? '0 0 30px rgba(229, 57, 53, 0.6), 0 0 60px rgba(229, 57, 53, 0.4), 0 4px 20px rgba(0,0,0,0.3)'
-                  : '0 4px 20px rgba(0,0,0,0.3)',
-                transformStyle: 'preserve-3d',
-              }}
-            >
-              {letter === ' ' ? '\u00A0' : letter}
-            </motion.span>
-          );
-        })}
-      </span>
+      >
+        Grows Stronger
+      </motion.span>
 
       {/* Final unified pulse */}
       <motion.span
         className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={phase >= 2 ? {
-          opacity: [0, 0.3, 0],
-          scale: [1, 1.05, 1],
+          opacity: [0, 0.4, 0],
+          scale: [1, 1.08, 1],
         } : {}}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5 }}
       >
-        <span className="absolute inset-0 bg-coral/20 rounded-lg blur-xl" />
+        <span className="absolute inset-0 bg-coral/30 rounded-lg blur-xl" />
       </motion.span>
     </span>
   );
@@ -287,16 +152,17 @@ export default function Hero() {
         style={{ opacity }}
         className="relative z-20 text-center px-4 pt-16 pb-20 sm:pt-20 sm:pb-32 max-w-5xl mx-auto"
       >
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            <span className="block">
-              <TogetherAnimation delay={0.3} />
-              {' '}
-              <KCAnimation delay={1.2} />
-            </span>
-            <GrowsStrongerAnimation delay={1.6} />
+            Together KC
+            <br />
+            <GrowsStrongerAnimation delay={0.8} />
           </h1>
-        </div>
+        </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
