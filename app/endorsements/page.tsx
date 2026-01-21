@@ -29,66 +29,17 @@ export default function EndorsementsPage() {
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="font-bold text-white mb-14 sm:mb-20">
-              {/* Community Leaders Support - word by word reveal */}
-              <span className="block text-2xl sm:text-5xl md:text-6xl mb-2 sm:mb-3">
-                {['Community', 'Leaders', 'Support'].map((word, i) => (
-                  <motion.span
-                    key={word}
-                    initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                    transition={{
-                      duration: 0.5,
-                      delay: 0.2 + i * 0.15,
-                      ease: [0.25, 0.46, 0.45, 0.94]
-                    }}
-                    className="inline-block mr-[0.3em] last:mr-0"
-                  >
-                    {word}
-                  </motion.span>
-                ))}
-              </span>
-
-              {/* Renewal - dramatic entrance with glow */}
-              <motion.span
-                initial={{
-                  opacity: 0,
-                  scale: 0.5,
-                  filter: 'blur(20px)',
-                  textShadow: '0 0 0px rgba(229, 57, 53, 0)'
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  filter: 'blur(0px)',
-                  textShadow: [
-                    '0 0 0px rgba(229, 57, 53, 0)',
-                    '0 0 60px rgba(229, 57, 53, 0.8)',
-                    '0 0 30px rgba(229, 57, 53, 0.4)'
-                  ]
-                }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.8,
-                  ease: [0.34, 1.56, 0.64, 1],
-                  textShadow: {
-                    duration: 1.2,
-                    delay: 0.8,
-                    times: [0, 0.5, 1]
-                  }
-                }}
-                className="block text-3xl sm:text-5xl md:text-6xl text-coral relative"
-              >
-                Renewal
-                {/* Animated underline sweep */}
-                <motion.span
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  animate={{ scaleX: 1, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 1.4, ease: 'easeOut' }}
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-32 sm:w-48 h-1 bg-gradient-to-r from-transparent via-coral to-transparent origin-center"
-                />
-              </motion.span>
-            </h1>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+                Community Leaders
+                <br />
+                <span className="text-coral">Support Renewal</span>
+              </h1>
+            </motion.div>
 
             {/* Featured Quote */}
             <motion.div
