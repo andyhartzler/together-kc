@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useMemo, useRef, useId } from 'react';
+import React, { useCallback, useMemo, useRef, useId, useState, useLayoutEffect } from 'react';
 import { motion, useAnimationControls } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useDimensions } from '@/components/hooks/use-debounced-dimensions';
@@ -201,16 +201,15 @@ interface CoinDotProps {
 const CoinDot: React.FC<CoinDotProps> = React.memo(
   ({ id, size, fadeDuration, delay }) => {
     const controls = useAnimationControls();
-    // Use ref for synchronous coin updates + state to trigger re-render
-    const coinRef = React.useRef(COIN_VOTE_YES);
-    const [, forceRender] = React.useReducer(x => x + 1, 0);
+    const [activeCoin, setActiveCoin] = useState(COIN_VOTE_YES);
+    const pendingAnimationRef = useRef(false);
+    const nodeRef = useRef<HTMLDivElement | null>(null);
 
-    const animatePixel = useCallback(() => {
-      // Update ref synchronously
-      coinRef.current = sessionState.currentCoin;
-      // Force synchronous re-render, then start animation after paint
-      forceRender();
-      requestAnimationFrame(() => {
+    // useLayoutEffect runs AFTER React updates DOM but BEFORE browser paint
+    // This guarantees the new Image src is in the DOM when animation starts
+    useLayoutEffect(() => {
+      if (pendingAnimationRef.current) {
+        pendingAnimationRef.current = false;
         controls.start({
           opacity: [1, 0],
           scale: [0.5, 1, 0.8],
@@ -221,11 +220,24 @@ const CoinDot: React.FC<CoinDotProps> = React.memo(
             ease: 'easeOut'
           },
         });
-      });
-    }, [controls, fadeDuration, delay]);
+      }
+    }, [activeCoin, controls, fadeDuration, delay]);
+
+    const animatePixel = useCallback(() => {
+      // 1. Stop any running animation and hide immediately
+      controls.stop();
+      controls.set({ opacity: 0 });
+
+      // 2. Mark that we want to animate after re-render
+      pendingAnimationRef.current = true;
+
+      // 3. Update state - this triggers re-render, then useLayoutEffect
+      setActiveCoin(sessionState.currentCoin);
+    }, [controls]);
 
     const ref = useCallback(
       (node: HTMLDivElement | null) => {
+        nodeRef.current = node;
         if (node) {
           (node as unknown as { __animatePixel: () => void }).__animatePixel = animatePixel;
         }
@@ -233,7 +245,6 @@ const CoinDot: React.FC<CoinDotProps> = React.memo(
       [animatePixel]
     );
 
-    const activeCoin = coinRef.current;
     const coinSize = Math.round((size - 10) * activeCoin.sizeMultiplier);
 
     return (
