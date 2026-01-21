@@ -68,11 +68,11 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
         />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-2 sm:gap-4 mb-4">
             <motion.div
               animate={{ rotate: isActive ? 360 : 0 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-coral/80 flex items-center justify-center text-white shadow-lg shadow-coral/30"
+              className="w-10 h-10 sm:w-12 sm:h-12 min-w-[40px] min-h-[40px] rounded-xl bg-gradient-to-br from-coral to-coral/80 flex items-center justify-center text-white shadow-lg shadow-coral/30 flex-shrink-0"
             >
               {icon}
             </motion.div>
