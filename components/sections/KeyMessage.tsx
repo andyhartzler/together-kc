@@ -156,13 +156,15 @@ export default function KeyMessage() {
                 </div>
               </div>
 
-              {/* Floating badges around the coin - positioned at cardinal directions */}
+              {/* Floating badges around the coin - positioned on outer ring at diagonals */}
               {[
-                { label: 'Since 1963', position: { top: '0%', left: '50%' }, delay: 0.1 },    // top center
-                { label: 'Same Rate', position: { top: '50%', left: '100%' }, delay: 0.2 },   // right center
-                { label: 'No Increase', position: { top: '100%', left: '50%' }, delay: 0.3 }, // bottom center
-                { label: 'Proven', position: { top: '50%', left: '0%' }, delay: 0.4 },        // left center
-              ].map((badge) => (
+                { label: 'Since 1963', angle: -45, delay: 0.1 },  // upper-right
+                { label: 'Same Rate', angle: 45, delay: 0.2 },    // lower-right
+                { label: 'No Increase', angle: 135, delay: 0.3 }, // lower-left
+                { label: 'Proven', angle: 225, delay: 0.4 },      // upper-left
+              ].map((badge) => {
+                const radius = 58; // Push badges far outside the golden circle
+                return (
                 <motion.div
                   key={badge.label}
                   initial={{ opacity: 0, scale: 0 }}
@@ -171,8 +173,8 @@ export default function KeyMessage() {
                   transition={{ duration: 0.5, delay: badge.delay + 0.5 }}
                   className="absolute w-20 h-20 flex items-center justify-center"
                   style={{
-                    top: badge.position.top,
-                    left: badge.position.left,
+                    top: `${50 + radius * Math.sin((badge.angle * Math.PI) / 180)}%`,
+                    left: `${50 + radius * Math.cos((badge.angle * Math.PI) / 180)}%`,
                     transform: 'translate(-50%, -50%)',
                   }}
                 >
@@ -183,7 +185,8 @@ export default function KeyMessage() {
                     {badge.label}
                   </motion.div>
                 </motion.div>
-              ))}
+              );
+              })}
             </div>
 
             {/* Connection lines (decorative) */}
