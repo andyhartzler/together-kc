@@ -6,8 +6,7 @@ import { motion, useInView } from 'framer-motion';
 // Interactive stat card
 function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value: string; label: string; delay: number }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isTapped, setIsTapped] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardRef, { once: true, amount: 0.8 });
@@ -20,27 +19,27 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Trigger animation when card comes into view (for mobile scroll effect only)
+  // Trigger animation when card comes into view on mobile
   useEffect(() => {
-    if (isMobile && isInView && !hasAnimated) {
+    if (isMobile && isInView) {
       const timer = setTimeout(() => {
-        setHasAnimated(true);
+        setIsActive(true);
       }, delay * 1000 + 300);
       return () => clearTimeout(timer);
     }
-  }, [isMobile, isInView, hasAnimated, delay]);
+  }, [isMobile, isInView, delay]);
 
-  // Handle tap to re-trigger animation on mobile
+  // Handle tap to replay animation on mobile
   const handleTap = () => {
     if (isMobile) {
-      setIsTapped(true);
-      // Reset after animation completes
-      setTimeout(() => setIsTapped(false), 600);
+      // Reset to inactive first, then activate after brief delay to replay animation
+      setIsActive(false);
+      setTimeout(() => setIsActive(true), 50);
     }
   };
 
-  // On desktop: hover triggers animation. On mobile: scroll or tap triggers animation
-  const isActive = isMobile ? (hasAnimated || isTapped) : isHovered;
+  // On desktop: hover controls active state
+  const cardIsActive = isMobile ? isActive : isHovered;
 
   return (
     <motion.div
@@ -56,8 +55,8 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
     >
       <motion.div
         animate={{
-          scale: isActive ? 1.02 : 1,
-          y: isActive ? -5 : 0,
+          scale: cardIsActive ? 1.02 : 1,
+          y: cardIsActive ? -5 : 0,
         }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
         className="relative bg-white rounded-2xl p-6 shadow-lg shadow-navy/5 border border-gray-100 overflow-hidden cursor-pointer"
@@ -65,15 +64,15 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
         {/* Hover gradient overlay */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: isActive ? 1 : 0 }}
+          animate={{ opacity: cardIsActive ? 1 : 0 }}
           className="absolute inset-0 bg-gradient-to-br from-coral/5 via-transparent to-sky/5"
         />
 
         {/* Animated corner accent */}
         <motion.div
           animate={{
-            scale: isActive ? 1 : 0.8,
-            opacity: isActive ? 1 : 0,
+            scale: cardIsActive ? 1 : 0.8,
+            opacity: cardIsActive ? 1 : 0,
           }}
           className="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-coral/20 to-golden/20 rounded-full blur-2xl"
         />
@@ -81,7 +80,7 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
         <div className="relative z-10">
           <div className="flex items-center gap-2 sm:gap-4 mb-4">
             <motion.div
-              animate={{ rotate: isActive ? 360 : 0 }}
+              animate={{ rotate: cardIsActive ? 360 : 0 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
               className="w-10 h-10 sm:w-12 sm:h-12 min-w-[40px] min-h-[40px] rounded-xl bg-gradient-to-br from-coral to-coral/80 flex items-center justify-center text-white shadow-lg shadow-coral/30 flex-shrink-0"
             >
@@ -96,7 +95,7 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
 
         {/* Bottom accent line */}
         <motion.div
-          animate={{ scaleX: isActive ? 1 : 0 }}
+          animate={{ scaleX: cardIsActive ? 1 : 0 }}
           transition={{ duration: 0.3 }}
           className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-coral via-golden to-sky origin-left"
         />
