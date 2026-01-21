@@ -161,7 +161,7 @@ export default function KeyMessage() {
                 { label: 'Since 1963', angle: -30, delay: 0.1 },
                 { label: 'Same Rate', angle: 30, delay: 0.2 },
                 { label: 'No Increase', angle: 150, delay: 0.3 },
-                { label: 'Proven', angle: 225, delay: 0.4 },
+                { label: 'Proven', angle: 255, delay: 0.4 },
               ].map((badge) => (
                 <motion.div
                   key={badge.label}
