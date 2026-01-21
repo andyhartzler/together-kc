@@ -1,112 +1,185 @@
 'use client';
 
-import { useRef, useState, useEffect, useMemo } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { VOTE_DATE } from '@/lib/constants';
 
-// Seeded pseudo-random number generator for deterministic values
-function seededRandom(seed: number): number {
-  const x = Math.sin(seed * 9999) * 10000;
-  return x - Math.floor(x);
-}
-
-// Staggered letter animation for "Together KC"
-function AnimatedTitle({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
-  const letters = text.split('');
+// "Together" - Letters magnetically pull together (symbolizing unity)
+function TogetherAnimation({ delay = 0 }: { delay?: number }) {
+  const letters = 'Together'.split('');
+  // Starting X positions - spread out, will converge to center
+  const startPositions = [-120, -80, -45, -15, 15, 45, 80, 120];
 
   return (
-    <span className={className}>
+    <span className="relative inline-block">
       {letters.map((letter, i) => (
         <motion.span
           key={i}
-          initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          initial={{
+            opacity: 0,
+            x: startPositions[i],
+            scale: 0.5,
+          }}
+          animate={{
+            opacity: 1,
+            x: 0,
+            scale: 1,
+          }}
           transition={{
-            duration: 0.5,
-            delay: delay + i * 0.04,
-            ease: [0.25, 0.46, 0.45, 0.94],
+            duration: 0.8,
+            delay: delay + 0.1,
+            ease: [0.25, 0.1, 0.25, 1],
+            x: {
+              duration: 1,
+              delay: delay + 0.1,
+              ease: [0.34, 1.56, 0.64, 1], // Spring-like overshoot
+            },
           }}
           className="inline-block"
-          style={{ display: letter === ' ' ? 'inline' : 'inline-block' }}
         >
-          {letter === ' ' ? '\u00A0' : letter}
+          {letter}
         </motion.span>
       ))}
     </span>
   );
 }
 
-// Explosive growing animation for "Grows Stronger"
-function GrowsStrongerAnimation({ delay = 0 }: { delay?: number }) {
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const text = 'Grows Stronger';
-  const letters = text.split('');
-
-  // Generate deterministic random values for each letter
-  const letterAnimations = useMemo(() => {
-    return letters.map((_, i) => ({
-      randomX: (seededRandom(i * 3) - 0.5) * 100,
-      randomY: (seededRandom(i * 3 + 1) - 0.5) * 60,
-      randomRotate: (seededRandom(i * 3 + 2) - 0.5) * 45,
-    }));
-  }, [letters]);
+// "KC" - Stamps down with weight and impact
+function KCAnimation({ delay = 0 }: { delay?: number }) {
+  const [hasLanded, setHasLanded] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setHasAnimated(true), (delay + 0.8) * 1000);
+    const timer = setTimeout(() => setHasLanded(true), (delay + 0.5) * 1000);
     return () => clearTimeout(timer);
   }, [delay]);
 
   return (
     <span className="relative inline-block">
-      {/* Glow burst effect behind text */}
+      {/* Impact ring */}
       <motion.span
-        className="absolute inset-0 -inset-x-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.8, 0] }}
-        transition={{ duration: 1.2, delay: delay + 0.3, ease: 'easeOut' }}
+        className="absolute inset-0 -inset-x-4"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={hasLanded ? { opacity: [0, 0.6, 0], scale: [0.8, 1.5, 2] } : {}}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-coral/50 to-transparent blur-2xl" />
+        <span className="absolute inset-0 border-2 border-white/30 rounded-full" />
       </motion.span>
 
-      {/* Main text with letter animations */}
+      <motion.span
+        initial={{
+          opacity: 0,
+          y: -80,
+          scale: 1.5,
+        }}
+        animate={{
+          opacity: 1,
+          y: [null, 5, 0],
+          scale: [1.5, 0.95, 1],
+        }}
+        transition={{
+          duration: 0.5,
+          delay: delay,
+          ease: [0.22, 1, 0.36, 1],
+          y: {
+            duration: 0.5,
+            delay: delay,
+            times: [0, 0.7, 1],
+            ease: [0.55, 0, 1, 0.45],
+          },
+        }}
+        className="inline-block"
+      >
+        KC
+      </motion.span>
+    </span>
+  );
+}
+
+// "Grows Stronger" - Rises from below with escalating power
+function GrowsStrongerAnimation({ delay = 0 }: { delay?: number }) {
+  const [phase, setPhase] = useState(0);
+  const text = 'Grows Stronger';
+  const letters = text.split('');
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setPhase(1), (delay + 0.7) * 1000);
+    const timer2 = setTimeout(() => setPhase(2), (delay + 1.4) * 1000);
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, [delay]);
+
+  return (
+    <span className="relative inline-block">
+      {/* Energy glow that builds up */}
+      <motion.span
+        className="absolute -inset-4 -inset-x-8"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: phase >= 1 ? [0, 0.4, 0.6] : 0,
+        }}
+        transition={{ duration: 1.2, ease: 'easeOut' }}
+      >
+        <span
+          className="absolute inset-0 rounded-lg blur-2xl"
+          style={{
+            background: 'radial-gradient(ellipse at center, rgba(229, 57, 53, 0.4) 0%, transparent 70%)',
+          }}
+        />
+      </motion.span>
+
+      {/* Ground line that cracks open */}
+      <motion.span
+        className="absolute -bottom-2 left-1/2 h-0.5 bg-gradient-to-r from-transparent via-coral to-transparent"
+        initial={{ width: 0, x: '-50%', opacity: 0 }}
+        animate={{
+          width: phase >= 1 ? '120%' : 0,
+          opacity: phase >= 1 ? [0, 1, 0] : 0
+        }}
+        transition={{ duration: 0.4, delay: delay }}
+      />
+
+      {/* Main text */}
       <span className="relative">
         {letters.map((letter, i) => {
-          const { randomX, randomY, randomRotate } = letterAnimations[i];
+          const isSecondWord = i >= 6; // "Stronger" starts at index 6
+          const letterDelay = delay + (i * 0.04) + (isSecondWord ? 0.15 : 0);
 
           return (
             <motion.span
               key={i}
               initial={{
                 opacity: 0,
-                scale: 0,
-                x: randomX,
-                y: randomY,
-                rotate: randomRotate,
-                filter: 'blur(8px)',
+                y: 60,
+                rotateX: -90,
+                scale: 0.5,
               }}
               animate={{
                 opacity: 1,
-                scale: [0, 1.3, 1],
-                x: 0,
                 y: 0,
-                rotate: 0,
-                filter: 'blur(0px)',
+                rotateX: 0,
+                scale: [0.5, 1.1, 1],
               }}
               transition={{
-                duration: 0.7,
-                delay: delay + 0.4 + i * 0.05,
-                ease: [0.175, 0.885, 0.32, 1.275], // Back easing for bounce
+                duration: 0.6,
+                delay: letterDelay,
+                ease: [0.22, 1, 0.36, 1],
                 scale: {
-                  duration: 0.6,
-                  delay: delay + 0.4 + i * 0.05,
-                  ease: [0.175, 0.885, 0.32, 1.275],
+                  duration: 0.5,
+                  delay: letterDelay,
+                  times: [0, 0.6, 1],
+                  ease: [0.34, 1.56, 0.64, 1],
                 },
               }}
               className="inline-block text-coral"
               style={{
                 display: letter === ' ' ? 'inline' : 'inline-block',
-                textShadow: hasAnimated ? '0 0 40px rgba(229, 57, 53, 0.5), 0 0 80px rgba(229, 57, 53, 0.3)' : 'none',
+                textShadow: phase >= 2
+                  ? '0 0 30px rgba(229, 57, 53, 0.6), 0 0 60px rgba(229, 57, 53, 0.4), 0 4px 20px rgba(0,0,0,0.3)'
+                  : '0 4px 20px rgba(0,0,0,0.3)',
+                transformStyle: 'preserve-3d',
               }}
             >
               {letter === ' ' ? '\u00A0' : letter}
@@ -115,23 +188,17 @@ function GrowsStrongerAnimation({ delay = 0 }: { delay?: number }) {
         })}
       </span>
 
-      {/* Shimmer effect that sweeps across after animation */}
+      {/* Final unified pulse */}
       <motion.span
-        className="absolute inset-0 overflow-hidden pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: delay + 1.2 }}
+        animate={phase >= 2 ? {
+          opacity: [0, 0.3, 0],
+          scale: [1, 1.05, 1],
+        } : {}}
+        transition={{ duration: 0.4 }}
       >
-        <motion.span
-          className="absolute inset-y-0 w-32 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
-          initial={{ left: '-20%' }}
-          animate={{ left: '120%' }}
-          transition={{
-            duration: 1,
-            delay: delay + 1.3,
-            ease: 'easeInOut',
-          }}
-        />
+        <span className="absolute inset-0 bg-coral/20 rounded-lg blur-xl" />
       </motion.span>
     </span>
   );
@@ -222,9 +289,12 @@ export default function Hero() {
       >
         <div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            <AnimatedTitle text="Together KC" delay={0.3} />
-            <br />
-            <GrowsStrongerAnimation delay={0.5} />
+            <span className="block">
+              <TogetherAnimation delay={0.3} />
+              {' '}
+              <KCAnimation delay={1.2} />
+            </span>
+            <GrowsStrongerAnimation delay={1.6} />
           </h1>
         </div>
 
