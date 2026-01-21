@@ -30,9 +30,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-xs">
-        <form onSubmit={handleSubmit} autoComplete="off" className="bg-white rounded-3xl shadow-sm p-8 border border-slate-100">
+        {/* Gradient border wrapper */}
+        <div className="relative rounded-3xl p-[2px] bg-gradient-to-br from-sky via-coral to-navy">
+          {/* Animated glow effect */}
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-sky via-coral to-navy opacity-50 blur-xl" />
+          <form onSubmit={handleSubmit} autoComplete="off" className="relative bg-white rounded-[22px] p-8">
           <div className="text-center mb-8">
             <div className="w-14 h-14 mx-auto bg-slate-100 rounded-2xl flex items-center justify-center">
               <svg
@@ -82,6 +86,7 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );
