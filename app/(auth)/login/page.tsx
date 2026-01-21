@@ -35,11 +35,17 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg shadow-navy/5 p-8 border border-gray-100">
           <div className="text-center mb-6">
             <svg
-              className="w-16 h-16 mx-auto text-gray-400"
-              fill="currentColor"
+              className="w-12 h-12 mx-auto text-gray-400"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
+              strokeWidth={1.5}
             >
-              <path d="M12 2L9.5 9H7l-4 12h18l-4-12h-2.5L12 2zm0 3.24L13.58 9h-3.16L12 5.24zM7.92 11h8.16l3 9H4.92l3-9z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+              />
             </svg>
           </div>
 
