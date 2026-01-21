@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,8 +23,11 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
-      router.push('/');
-      router.refresh();
+      setIsUnlocked(true);
+      setTimeout(() => {
+        router.push('/');
+        router.refresh();
+      }, 600);
     } else {
       setError(true);
       setIsLoading(false);
@@ -33,20 +38,77 @@ export default function LoginPage() {
     <div className="min-h-screen bg-light-gray flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg shadow-navy/5 p-8 border border-gray-100">
-          <div className="text-center mb-6">
-            <svg
-              className="w-12 h-12 mx-auto text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-              />
-            </svg>
+          <div className="text-center mb-6 h-16 flex items-center justify-center">
+            <div className="relative">
+              {/* Success burst effect */}
+              <AnimatePresence>
+                {isUnlocked && (
+                  <>
+                    <motion.div
+                      initial={{ scale: 0, opacity: 1 }}
+                      animate={{ scale: 3, opacity: 0 }}
+                      transition={{ duration: 0.6, ease: 'easeOut' }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-green-500/30" />
+                    </motion.div>
+                    <motion.div
+                      initial={{ scale: 0, opacity: 1 }}
+                      animate={{ scale: 2.5, opacity: 0 }}
+                      transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <div className="w-12 h-12 rounded-full border-2 border-green-500" />
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+
+              {/* Padlock */}
+              <motion.div
+                animate={isUnlocked ? {
+                  scale: [1, 1.2, 1],
+                  rotate: [0, -10, 10, 0],
+                } : {}}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              >
+                <svg
+                  className={`w-12 h-12 transition-colors duration-300 ${isUnlocked ? 'text-green-500' : 'text-gray-400'}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                >
+                  {/* Lock body */}
+                  <motion.rect
+                    x="4.5"
+                    y="10.5"
+                    width="15"
+                    height="11.25"
+                    rx="2.25"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  {/* Shackle - animates open */}
+                  <motion.path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ d: "M7.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75" }}
+                    animate={isUnlocked ? {
+                      d: "M7.5 10.5V6.75a4.5 4.5 0 1 1 9 0v-1.5",
+                      x: 2,
+                      rotate: -30,
+                      originX: "16.5px",
+                      originY: "6.75px",
+                    } : {
+                      d: "M7.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75"
+                    }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                  />
+                </svg>
+              </motion.div>
+            </div>
           </div>
 
           <div className="space-y-4">
