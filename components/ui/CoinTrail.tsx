@@ -23,13 +23,13 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
   const dimensions = useDimensions(containerRef);
   const trailId = useId();
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
+  const triggerPixel = useCallback(
+    (clientX: number, clientY: number) => {
       if (!containerRef.current) return;
 
       const rect = containerRef.current.getBoundingClientRect();
-      const x = Math.floor((e.clientX - rect.left) / pixelSize);
-      const y = Math.floor((e.clientY - rect.top) / pixelSize);
+      const x = Math.floor((clientX - rect.left) / pixelSize);
+      const y = Math.floor((clientY - rect.top) / pixelSize);
 
       const pixelElement = document.getElementById(
         `${trailId}-pixel-${x}-${y}`
@@ -40,6 +40,23 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
       }
     },
     [pixelSize, trailId]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      triggerPixel(e.clientX, e.clientY);
+    },
+    [triggerPixel]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      const touch = e.touches[0];
+      if (touch) {
+        triggerPixel(touch.clientX, touch.clientY);
+      }
+    },
+    [triggerPixel]
   );
 
   const columns = useMemo(
@@ -55,10 +72,12 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
     <div
       ref={containerRef}
       className={cn(
-        'absolute inset-0 w-full h-full overflow-hidden',
+        'absolute inset-0 w-full h-full overflow-hidden touch-none',
         className
       )}
       onMouseMove={handleMouseMove}
+      onTouchMove={handleTouchMove}
+      onTouchStart={handleTouchMove}
     >
       {dimensions.width > 0 && Array.from({ length: rows }).map((_, rowIndex) => (
         <div key={rowIndex} className="flex">
