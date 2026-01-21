@@ -207,7 +207,7 @@ export default function EndorsementsPage() {
       </section>
 
       {/* Other Elected Officials Section */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-light-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
