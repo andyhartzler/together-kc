@@ -93,20 +93,14 @@ export default function LoginPage() {
                 <p className="text-[#FDBE19] text-sm text-center font-medium">Wrong password!</p>
               )}
 
-              {/* 3D Button with glow */}
-              <div className="relative pt-1">
-                <div
-                  className={`absolute inset-x-2 inset-y-1 rounded-xl bg-[#FDBE19] blur-md transition-opacity duration-500 ${
-                    password ? 'opacity-40' : 'opacity-0'
-                  }`}
-                />
+              {/* 3D Button */}
+              <div className="pt-1">
                 <Button
                   type="submit"
                   disabled={!password}
                   isLoading={isLoading}
                   size="full"
                   variant={password ? 'default' : 'dark'}
-                  className="relative"
                 >
                   Enter
                 </Button>
