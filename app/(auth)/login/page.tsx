@@ -38,16 +38,17 @@ export default function LoginPage() {
       <CoinTrail pixelSize={70} fadeDuration={1400} />
 
       <div className="w-full max-w-xs relative z-10">
-        <BackgroundGradient className="rounded-3xl p-8 bg-white">
+        <BackgroundGradient className="rounded-3xl p-6 bg-[#23374D] border-4 border-[#1a2736] border-b-[6px]">
           <form onSubmit={handleSubmit} autoComplete="off">
-            <div className="text-center mb-8">
-              <div className="w-14 h-14 mx-auto bg-slate-100 rounded-2xl flex items-center justify-center">
+            {/* Retro coin-style padlock */}
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 mx-auto bg-[#FDBE19] rounded-full flex items-center justify-center border-4 border-[#c4960e] border-b-[5px] shadow-lg">
                 <svg
-                  className="w-7 h-7 text-slate-400"
+                  className="w-8 h-8 text-[#23374D]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
+                  strokeWidth={2}
                 >
                   <path
                     strokeLinecap="round"
@@ -58,33 +59,38 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="space-y-3">
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setError(false);
-                }}
-                placeholder="Password"
-                autoFocus
-                autoComplete="one-time-code"
-                data-lpignore="true"
-                data-form-type="other"
-                className={`w-full px-4 py-3 rounded-xl border ${
-                  error ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-slate-50'
-                } focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-300 transition-all text-slate-800 placeholder:text-slate-400`}
-              />
+            <div className="space-y-4">
+              {/* Retro 3D input field */}
+              <div className="relative">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setError(false);
+                  }}
+                  placeholder="Enter password"
+                  autoFocus
+                  autoComplete="one-time-code"
+                  data-lpignore="true"
+                  data-form-type="other"
+                  className={`w-full px-4 py-3 rounded-xl border-2 border-b-4 font-medium transition-all ${
+                    error
+                      ? 'border-red-400 border-b-red-500 bg-red-50 text-red-800 placeholder:text-red-400'
+                      : 'border-[#1a2736] border-b-[#0f1a24] bg-[#1a2736] text-white placeholder:text-slate-400'
+                  } focus:outline-none focus:ring-2 focus:ring-[#FDBE19]/50`}
+                />
+              </div>
 
               {error && (
-                <p className="text-red-500 text-xs text-center">Incorrect password</p>
+                <p className="text-[#FDBE19] text-sm text-center font-medium">Wrong password!</p>
               )}
 
-              <div className="relative">
-                {/* Glow effect - only shows when password has text */}
+              {/* 3D Button with glow */}
+              <div className="relative pt-1">
                 <div
-                  className={`absolute inset-0 rounded-xl bg-gradient-to-r from-[#FDBE19] via-[#E79C24] to-[#FDBE19] blur-lg transition-opacity duration-500 ${
-                    password ? 'opacity-60' : 'opacity-0'
+                  className={`absolute inset-0 rounded-xl bg-[#FDBE19] blur-lg transition-opacity duration-500 ${
+                    password ? 'opacity-50' : 'opacity-0'
                   }`}
                 />
                 <Button
@@ -92,7 +98,7 @@ export default function LoginPage() {
                   disabled={!password}
                   isLoading={isLoading}
                   size="full"
-                  variant={password ? 'default' : 'outline'}
+                  variant={password ? 'default' : 'dark'}
                   className="relative"
                 >
                   Enter
