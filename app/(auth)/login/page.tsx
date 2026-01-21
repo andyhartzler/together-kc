@@ -79,13 +79,25 @@ export default function LoginPage() {
                 <p className="text-red-500 text-xs text-center">Incorrect password</p>
               )}
 
-              <button
-                type="submit"
-                disabled={isLoading || !password}
-                className="w-full py-3 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {isLoading ? '...' : 'Enter'}
-              </button>
+              <div className="relative">
+                {/* Glow effect - only shows when password has text */}
+                <div
+                  className={`absolute inset-0 rounded-xl bg-gradient-to-r from-[#FDBE19] via-[#E79C24] to-[#FDBE19] blur-lg transition-opacity duration-500 ${
+                    password ? 'opacity-60' : 'opacity-0'
+                  }`}
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading || !password}
+                  className={`relative w-full py-3 font-medium rounded-xl transition-all duration-300 ${
+                    password
+                      ? 'bg-slate-900 text-white hover:bg-slate-800 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#E79C24]/30'
+                      : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                  }`}
+                >
+                  {isLoading ? '...' : 'Enter'}
+                </button>
+              </div>
             </div>
           </form>
         </BackgroundGradient>
