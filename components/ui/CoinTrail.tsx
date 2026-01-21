@@ -6,30 +6,56 @@ import { cn } from '@/lib/utils';
 import { useDimensions } from '@/components/hooks/use-debounced-dimensions';
 import Image from 'next/image';
 
-// Coin types with their weights and size multipliers
-const COINS = [
-  { src: '/images/coin-1-percent.png', weight: 1, sizeMultiplier: 0.9 },
-  { src: '/images/coin-cent.png', weight: 1, sizeMultiplier: 0.9 },
-  { src: '/images/coin-vote-yes.png', weight: 1.35, sizeMultiplier: 1.2 },
+// Coin types
+const COIN_PERCENT = { src: '/images/coin-1-percent.png', sizeMultiplier: 0.9 };
+const COIN_CENT = { src: '/images/coin-cent.png', sizeMultiplier: 0.9 };
+const COIN_VOTE_YES = { src: '/images/coin-vote-yes.png', sizeMultiplier: 1.2 };
+
+const COINS = [COIN_PERCENT, COIN_CENT, COIN_VOTE_YES];
+
+// First round sequence: 6 vote yes → cent → percent → cent → percent → 6 vote yes
+const FIRST_ROUND_SEQUENCE = [
+  ...Array(6).fill(COIN_VOTE_YES),
+  COIN_CENT,
+  COIN_PERCENT,
+  COIN_CENT,
+  COIN_PERCENT,
+  ...Array(6).fill(COIN_VOTE_YES),
 ];
 
-// Get weighted random coin
+// Get weighted random coin (vote yes is 2x more likely)
 function getRandomCoin() {
-  const totalWeight = COINS.reduce((sum, coin) => sum + coin.weight, 0);
+  const weights = [1, 1, 2]; // percent, cent, vote yes
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
   let random = Math.random() * totalWeight;
 
-  for (const coin of COINS) {
-    random -= coin.weight;
-    if (random <= 0) return coin;
+  for (let i = 0; i < COINS.length; i++) {
+    random -= weights[i];
+    if (random <= 0) return COINS[i];
   }
-  return COINS[0];
+  return COIN_VOTE_YES;
 }
 
 // Session state - only accessed on client side
 const sessionState = {
-  currentCoin: COINS[0],
+  currentCoin: COIN_VOTE_YES,
   isActive: false,
+  coinIndex: 0,
+  isFirstRound: true,
 };
+
+// Get next coin in sequence or random after first round
+function getNextCoin() {
+  if (sessionState.isFirstRound) {
+    const coin = FIRST_ROUND_SEQUENCE[sessionState.coinIndex];
+    sessionState.coinIndex++;
+    if (sessionState.coinIndex >= FIRST_ROUND_SEQUENCE.length) {
+      sessionState.isFirstRound = false;
+    }
+    return coin;
+  }
+  return getRandomCoin();
+}
 
 interface CoinTrailProps {
   pixelSize?: number;
@@ -50,13 +76,17 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
 
   const startSession = useCallback(() => {
     if (!sessionState.isActive) {
-      sessionState.currentCoin = getRandomCoin();
       sessionState.isActive = true;
     }
   }, []);
 
   const endSession = useCallback(() => {
     sessionState.isActive = false;
+  }, []);
+
+  // Get next coin for each pixel trigger
+  const advanceCoin = useCallback(() => {
+    sessionState.currentCoin = getNextCoin();
   }, []);
 
   const triggerPixel = useCallback(
@@ -71,11 +101,13 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
         `${trailId}-pixel-${x}-${y}`
       );
       if (pixelElement) {
+        // Advance to next coin before animating
+        advanceCoin();
         const animatePixel = (pixelElement as unknown as { __animatePixel?: () => void }).__animatePixel;
         if (animatePixel) animatePixel();
       }
     },
-    [pixelSize, trailId]
+    [pixelSize, trailId, advanceCoin]
   );
 
   const handleMouseEnter = useCallback(() => {
