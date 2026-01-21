@@ -96,6 +96,25 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
   );
 };
 
+// Coin types with their weights and size multipliers
+const COINS = [
+  { src: '/images/coin-1-percent.png', weight: 1, sizeMultiplier: 0.9 },
+  { src: '/images/coin-cent.png', weight: 1, sizeMultiplier: 0.9 },
+  { src: '/images/coin-vote-yes.png', weight: 1.35, sizeMultiplier: 1.2 },
+];
+
+// Get weighted random coin
+function getRandomCoin() {
+  const totalWeight = COINS.reduce((sum, coin) => sum + coin.weight, 0);
+  let random = Math.random() * totalWeight;
+
+  for (const coin of COINS) {
+    random -= coin.weight;
+    if (random <= 0) return coin;
+  }
+  return COINS[0];
+}
+
 interface CoinDotProps {
   id: string;
   size: number;
@@ -106,8 +125,11 @@ interface CoinDotProps {
 const CoinDot: React.FC<CoinDotProps> = React.memo(
   ({ id, size, fadeDuration, delay }) => {
     const controls = useAnimationControls();
+    const coinRef = useRef(getRandomCoin());
 
     const animatePixel = useCallback(() => {
+      // Get a new random coin each time
+      coinRef.current = getRandomCoin();
       controls.start({
         opacity: [1, 0],
         scale: [0.5, 1, 0.8],
@@ -129,6 +151,9 @@ const CoinDot: React.FC<CoinDotProps> = React.memo(
       [animatePixel]
     );
 
+    const coin = coinRef.current;
+    const coinSize = Math.round((size - 10) * coin.sizeMultiplier);
+
     return (
       <motion.div
         id={id}
@@ -142,10 +167,10 @@ const CoinDot: React.FC<CoinDotProps> = React.memo(
         animate={controls}
       >
         <Image
-          src="/images/coin.png"
+          src={coin.src}
           alt=""
-          width={size - 10}
-          height={size - 10}
+          width={coinSize}
+          height={coinSize}
           className="pointer-events-none select-none"
           draggable={false}
         />
