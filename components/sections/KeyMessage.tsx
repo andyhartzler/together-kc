@@ -156,12 +156,12 @@ export default function KeyMessage() {
                 </div>
               </div>
 
-              {/* Floating badges around the coin - all on outer ring at 90° intervals */}
+              {/* Floating badges around the coin - all on outer ring */}
               {[
                 { label: 'Since 1963', angle: -30, delay: 0.1 },  // upper-right
-                { label: 'Same Rate', angle: 60, delay: 0.2 },    // lower-right
+                { label: 'Same Rate', angle: 30, delay: 0.2 },    // lower-right (mirror of -30)
                 { label: 'No Increase', angle: 150, delay: 0.3 }, // lower-left
-                { label: 'Proven', angle: 240, delay: 0.4 },      // upper-left
+                { label: 'Proven', angle: 210, delay: 0.4 },      // upper-left (mirror of 150)
               ].map((badge) => (
                 <motion.div
                   key={badge.label}
