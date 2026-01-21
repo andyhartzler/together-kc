@@ -77,9 +77,9 @@ export default function Hero() {
 
       {/* Bottom blend into next section - very gradual fade */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-48 sm:h-64"
+        className="absolute -bottom-1 left-0 right-0 h-52 sm:h-72"
         style={{
-          background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.25) 55%, rgba(255,255,255,0.5) 70%, rgba(255,255,255,0.8) 85%, rgba(255,255,255,1) 100%)'
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.02) 15%, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.7) 75%, rgba(255,255,255,0.9) 90%, rgba(255,255,255,1) 100%)'
         }}
       />
 
