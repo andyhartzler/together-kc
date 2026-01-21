@@ -34,7 +34,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 relative overflow-hidden">
       {/* Coin trail background */}
-      <CoinTrail pixelSize={60} fadeDuration={1200} />
+      <CoinTrail pixelSize={70} fadeDuration={1400} />
 
       <div className="w-full max-w-xs relative z-10">
         <BackgroundGradient className="rounded-3xl p-8 bg-white">
