@@ -29,7 +29,7 @@ export default function EndorsementsPage() {
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="font-bold text-white mb-10 sm:mb-12">
+            <h1 className="font-bold text-white mb-12 sm:mb-16">
               {/* Community Leaders Support - word by word reveal */}
               <span className="block text-2xl sm:text-5xl md:text-6xl mb-2 sm:mb-3">
                 {['Community', 'Leaders', 'Support'].map((word, i) => (
