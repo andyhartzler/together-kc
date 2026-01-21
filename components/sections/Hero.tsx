@@ -1,71 +1,36 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { VOTE_DATE } from '@/lib/constants';
 
-// "Grows Stronger" - Glow and pulse effects (no drop-in animation)
+// Simplified "Grows Stronger" animation - graceful fade in with subtle glow
 function GrowsStrongerAnimation({ delay = 0 }: { delay?: number }) {
-  const [phase, setPhase] = useState(0);
-
-  useEffect(() => {
-    const timer1 = setTimeout(() => setPhase(1), (delay + 0.3) * 1000);
-    const timer2 = setTimeout(() => setPhase(2), (delay + 1.0) * 1000);
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, [delay]);
-
   return (
-    <span className="relative inline-block text-coral">
-      {/* Energy glow that builds up */}
-      <motion.span
-        className="absolute -inset-4 -inset-x-8 pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: phase >= 1 ? [0, 0.5, 0.7] : 0,
+    <motion.span
+      className="relative inline-block text-coral"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8, delay, ease: 'easeOut' }}
+    >
+      {/* Subtle glow - CSS only, no JS animation */}
+      <span
+        className="absolute -inset-4 -inset-x-8 pointer-events-none opacity-50"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(229, 57, 53, 0.4) 0%, transparent 70%)',
+          filter: 'blur(20px)',
         }}
-        transition={{ duration: 1.2, ease: 'easeOut' }}
-      >
-        <span
-          className="absolute inset-0 rounded-lg blur-2xl"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(229, 57, 53, 0.5) 0%, transparent 70%)',
-          }}
-        />
-      </motion.span>
-
-      {/* Main text with glow */}
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: delay }}
+      />
+      <span
         className="relative"
         style={{
-          textShadow: phase >= 2
-            ? '0 0 30px rgba(229, 57, 53, 0.6), 0 0 60px rgba(229, 57, 53, 0.4)'
-            : 'none',
-          transition: 'text-shadow 0.5s ease-out',
+          textShadow: '0 0 30px rgba(229, 57, 53, 0.5), 0 0 60px rgba(229, 57, 53, 0.3)',
         }}
       >
         Grows Stronger
-      </motion.span>
-
-      {/* Final unified pulse */}
-      <motion.span
-        className="absolute inset-0 pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={phase >= 2 ? {
-          opacity: [0, 0.4, 0],
-          scale: [1, 1.08, 1],
-        } : {}}
-        transition={{ duration: 0.5 }}
-      >
-        <span className="absolute inset-0 bg-coral/30 rounded-lg blur-xl" />
-      </motion.span>
-    </span>
+      </span>
+    </motion.span>
   );
 }
 
@@ -87,46 +52,11 @@ export default function Hero() {
       {/* Animated Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy/95 to-sky/80" />
 
-      {/* Animated gradient orbs */}
+      {/* Static gradient orbs - CSS only for better mobile performance */}
       <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-coral/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            x: [0, -80, 0],
-            y: [0, 80, 0],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute -bottom-1/4 -right-1/4 w-2/3 h-2/3 bg-sky/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 50, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-1/3 right-1/4 w-1/3 h-1/3 bg-golden/10 rounded-full blur-3xl"
-        />
+        <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-coral/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/4 -right-1/4 w-2/3 h-2/3 bg-sky/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-1/3 h-1/3 bg-golden/10 rounded-full blur-3xl" />
       </div>
 
       {/* Subtle grid pattern overlay */}
@@ -147,27 +77,40 @@ export default function Hero() {
         }}
       />
 
-      {/* Content */}
+      {/* Content - unified stagger animation */}
       <motion.div
         style={{ opacity }}
         className="relative z-20 text-center px-4 pt-16 pb-32 sm:pt-20 sm:pb-40 max-w-5xl mx-auto"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.15,
+              delayChildren: 0.2,
+            },
+          },
+        }}
       >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { duration: 0.6, ease: 'easeOut' } },
+          }}
         >
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
             Together KC
             <br />
-            <GrowsStrongerAnimation delay={0.8} />
+            <GrowsStrongerAnimation delay={0.5} />
           </h1>
         </motion.div>
 
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { duration: 0.6, ease: 'easeOut' } },
+          }}
           className="text-lg sm:text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto"
         >
           Vote <span className="font-bold text-coral">YES</span> to renew the earnings tax
@@ -176,9 +119,10 @@ export default function Hero() {
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { duration: 0.6, ease: 'easeOut' } },
+          }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
           <InteractiveHoverButton
@@ -200,20 +144,12 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-24 sm:bottom-32 left-1/2 -translate-x-1/2 z-20"
+        transition={{ delay: 1.2, duration: 0.5 }}
+        className="absolute bottom-32 sm:bottom-32 left-1/2 -translate-x-1/2 z-20"
       >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center"
-        >
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="w-1.5 h-3 bg-white/50 rounded-full mt-2"
-          />
-        </motion.div>
+        <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center animate-bounce">
+          <div className="w-1.5 h-3 bg-white/50 rounded-full mt-2" />
+        </div>
       </motion.div>
     </section>
   );

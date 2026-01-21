@@ -1,11 +1,12 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 
 // Interactive stat card
 function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value: string; label: string; delay: number }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isTapped, setIsTapped] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -13,7 +14,7 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
 
   // Check if mobile on mount and resize
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -29,18 +30,28 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
     }
   }, [isMobile, isInView, hasAnimated, delay]);
 
-  // On desktop: hover triggers animation. On mobile: scroll triggers animation
-  const isActive = isMobile ? hasAnimated : isHovered;
+  // Handle tap to re-trigger animation on mobile
+  const handleTap = () => {
+    if (isMobile) {
+      setIsTapped(true);
+      // Reset after animation completes
+      setTimeout(() => setIsTapped(false), 600);
+    }
+  };
+
+  // On desktop: hover triggers animation. On mobile: scroll or tap triggers animation
+  const isActive = isMobile ? (hasAnimated || isTapped) : isHovered;
 
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.5, delay, ease: 'easeOut' }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTap}
       className="group relative"
     >
       <motion.div
@@ -96,29 +107,14 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
 
 export default function KeyMessage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
     <section ref={containerRef} className="relative pt-6 pb-8 sm:pt-10 sm:pb-12 md:pt-16 md:pb-16 bg-gradient-to-b from-white via-light-gray/50 to-white overflow-hidden">
-      {/* Animated background elements */}
+      {/* Static background elements - no scroll animations for better performance */}
       <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          style={{ y }}
-          className="absolute top-20 left-10 w-72 h-72 bg-coral/5 rounded-full blur-3xl"
-        />
-        <motion.div
-          style={{ y: useTransform(scrollYProgress, [0, 1], [-30, 30]) }}
-          className="absolute bottom-20 right-10 w-96 h-96 bg-sky/5 rounded-full blur-3xl"
-        />
-        <motion.div
-          style={{ y: useTransform(scrollYProgress, [0, 1], [20, -60]) }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-golden/5 rounded-full blur-3xl"
-        />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-coral/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-sky/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-golden/5 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -133,34 +129,19 @@ export default function KeyMessage() {
           >
             {/* Central coin visualization */}
             <div className="relative mx-auto w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96">
-              {/* Outer rotating ring */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 rounded-full border-2 border-dashed border-golden/30"
+              {/* Outer rotating ring - CSS animation for better performance */}
+              <div
+                className="absolute inset-0 rounded-full border-2 border-dashed border-golden/30 animate-spin"
+                style={{ animationDuration: '30s' }}
               />
 
-              {/* Middle pulsing ring */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.05, 1],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute inset-4 rounded-full border-4 border-coral/20"
-              />
+              {/* Middle ring - static for performance */}
+              <div className="absolute inset-4 rounded-full border-4 border-coral/20" />
 
-              {/* Inner gradient circle */}
-              <motion.div
-                animate={{
-                  boxShadow: [
-                    "0 0 60px rgba(245, 166, 35, 0.3)",
-                    "0 0 100px rgba(245, 166, 35, 0.5)",
-                    "0 0 60px rgba(245, 166, 35, 0.3)",
-                  ],
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              {/* Inner gradient circle - static glow for performance */}
+              <div
                 className="absolute inset-12 rounded-full bg-gradient-to-br from-golden via-golden/90 to-coral/80 flex items-center justify-center shadow-2xl"
+                style={{ boxShadow: '0 0 60px rgba(245, 166, 35, 0.4)' }}
               >
                 <div className="text-center">
                   <motion.div
@@ -174,14 +155,14 @@ export default function KeyMessage() {
                   </motion.div>
                   <div className="text-white/90 text-lg font-medium mt-1">earnings tax</div>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Floating badges around the coin */}
               {[
-                { label: 'Since 1963', angle: -45, delay: 0.1, radius: 48 },
-                { label: 'Same Rate', angle: 45, delay: 0.2, radius: 42 },
-                { label: 'No Increase', angle: 135, delay: 0.3, radius: 48 },
-                { label: 'Proven', angle: 230, delay: 0.4, radius: 48 },
+                { label: 'Since 1963', angle: -45, delay: 0.1, radius: 52 },
+                { label: 'Same Rate', angle: 45, delay: 0.2, radius: 52 },
+                { label: 'No Increase', angle: 135, delay: 0.3, radius: 52 },
+                { label: 'Proven', angle: 225, delay: 0.4, radius: 55 },
               ].map((badge) => (
                 <motion.div
                   key={badge.label}

@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 
 interface InteractiveHoverButtonProps
@@ -34,20 +33,31 @@ const InteractiveHoverButton = React.forwardRef<
   InteractiveHoverButtonProps
 >(({ text = 'Button', className, href, variant = 'primary', size = 'default', ...props }, ref) => {
   const [isActive, setIsActive] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const variantStyles = {
     primary: {
       base: 'border-coral bg-white text-coral',
+      activeBase: 'border-coral bg-coral text-white',
       circle: 'bg-coral',
       hoverText: 'text-white',
     },
     secondary: {
       base: 'border-navy bg-white text-navy',
+      activeBase: 'border-navy bg-navy text-white',
       circle: 'bg-navy',
       hoverText: 'text-white',
     },
     outline: {
       base: 'border-white/80 bg-white/10 text-white',
+      activeBase: 'border-white bg-white text-navy',
       circle: 'bg-white',
       hoverText: 'text-navy',
     },
@@ -60,72 +70,87 @@ const InteractiveHoverButton = React.forwardRef<
 
   const styles = variantStyles[variant];
 
-  const buttonContent = (
+  // Simple mobile content - just text with background color change
+  const mobileContent = (
+    <span className="relative z-10 select-none">{text}</span>
+  );
+
+  // Desktop content - full animation
+  const desktopContent = (
     <>
       {/* Default text - slides out */}
-      <motion.span
-        className="inline-block"
-        animate={{
-          x: isActive ? 48 : 0,
-          opacity: isActive ? 0 : 1,
-        }}
-        transition={{ duration: 0.3 }}
+      <span
+        className={cn(
+          'inline-block transition-all duration-300 select-none',
+          isActive ? 'translate-x-12 opacity-0' : 'translate-x-0 opacity-100'
+        )}
       >
         {text}
-      </motion.span>
+      </span>
 
       {/* Hover text with arrow - slides in */}
-      <motion.div
+      <div
         className={cn(
-          'absolute inset-0 z-10 flex items-center justify-center gap-2',
-          styles.hoverText
+          'absolute inset-0 z-10 flex items-center justify-center gap-2 transition-all duration-300 select-none',
+          styles.hoverText,
+          isActive ? 'translate-x-0 opacity-100' : 'translate-x-12 opacity-0'
         )}
-        animate={{
-          x: isActive ? 0 : 48,
-          opacity: isActive ? 1 : 0,
-        }}
-        transition={{ duration: 0.3 }}
       >
         <span>{text}</span>
         <ArrowRight />
-      </motion.div>
+      </div>
 
       {/* Expanding circle background */}
-      <motion.div
+      <div
         className={cn(
-          'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full',
-          styles.circle
+          'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300 ease-out',
+          styles.circle,
+          isActive ? 'w-[400px] h-[400px]' : 'w-0 h-0'
         )}
-        animate={{
-          width: isActive ? 400 : 0,
-          height: isActive ? 400 : 0,
-        }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
       />
     </>
   );
 
   const baseClasses = cn(
-    'relative cursor-pointer overflow-hidden rounded-full border-2 text-center font-semibold transition-colors',
-    styles.base,
+    'relative cursor-pointer overflow-hidden rounded-full border-2 text-center font-semibold select-none',
+    // Mobile: simple bg transition, Desktop: keep base for animation
+    isMobile
+      ? cn(styles.base, 'transition-colors duration-150 active:scale-95', isActive && styles.activeBase)
+      : cn(styles.base, 'transition-colors'),
     sizeStyles[size],
     className
   );
 
-  const handleInteractionStart = () => setIsActive(true);
-  const handleInteractionEnd = () => setIsActive(false);
+  const handleMouseEnter = useCallback(() => {
+    if (!isMobile) setIsActive(true);
+  }, [isMobile]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!isMobile) setIsActive(false);
+  }, [isMobile]);
+
+  const handleTouchStart = useCallback(() => {
+    if (isMobile) setIsActive(true);
+  }, [isMobile]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (isMobile) {
+      // Brief delay so user sees the active state
+      setTimeout(() => setIsActive(false), 150);
+    }
+  }, [isMobile]);
 
   if (href) {
     return (
       <a
         href={href}
         className={baseClasses}
-        onMouseEnter={handleInteractionStart}
-        onMouseLeave={handleInteractionEnd}
-        onTouchStart={handleInteractionStart}
-        onTouchEnd={handleInteractionEnd}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
-        {buttonContent}
+        {isMobile ? mobileContent : desktopContent}
       </a>
     );
   }
@@ -134,13 +159,13 @@ const InteractiveHoverButton = React.forwardRef<
     <button
       ref={ref}
       className={baseClasses}
-      onMouseEnter={handleInteractionStart}
-      onMouseLeave={handleInteractionEnd}
-      onTouchStart={handleInteractionStart}
-      onTouchEnd={handleInteractionEnd}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       {...props}
     >
-      {buttonContent}
+      {isMobile ? mobileContent : desktopContent}
     </button>
   );
 });
