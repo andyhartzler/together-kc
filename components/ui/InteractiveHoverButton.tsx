@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface InteractiveHoverButtonProps
@@ -32,6 +33,8 @@ const InteractiveHoverButton = React.forwardRef<
   HTMLButtonElement,
   InteractiveHoverButtonProps
 >(({ text = 'Button', className, href, variant = 'primary', size = 'default', ...props }, ref) => {
+  const [isActive, setIsActive] = useState(false);
+
   const variantStyles = {
     primary: {
       base: 'border-coral bg-white text-coral',
@@ -60,48 +63,83 @@ const InteractiveHoverButton = React.forwardRef<
   const buttonContent = (
     <>
       {/* Default text - slides out */}
-      <span className="inline-block transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0">
+      <motion.span
+        className="inline-block"
+        animate={{
+          x: isActive ? 48 : 0,
+          opacity: isActive ? 0 : 1,
+        }}
+        transition={{ duration: 0.3 }}
+      >
         {text}
-      </span>
+      </motion.span>
 
       {/* Hover text with arrow - slides in */}
-      <div
+      <motion.div
         className={cn(
-          'absolute inset-0 z-10 flex items-center justify-center gap-2 translate-x-12 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100',
+          'absolute inset-0 z-10 flex items-center justify-center gap-2',
           styles.hoverText
         )}
+        animate={{
+          x: isActive ? 0 : 48,
+          opacity: isActive ? 1 : 0,
+        }}
+        transition={{ duration: 0.3 }}
       >
         <span>{text}</span>
         <ArrowRight />
-      </div>
+      </motion.div>
 
       {/* Expanding circle background */}
-      <div
+      <motion.div
         className={cn(
-          'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0 rounded-full transition-all duration-300 ease-out group-hover:w-[400px] group-hover:h-[400px]',
+          'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full',
           styles.circle
         )}
+        animate={{
+          width: isActive ? 400 : 0,
+          height: isActive ? 400 : 0,
+        }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
       />
     </>
   );
 
   const baseClasses = cn(
-    'group relative cursor-pointer overflow-hidden rounded-full border-2 text-center font-semibold transition-colors',
+    'relative cursor-pointer overflow-hidden rounded-full border-2 text-center font-semibold transition-colors',
     styles.base,
     sizeStyles[size],
     className
   );
 
+  const handleInteractionStart = () => setIsActive(true);
+  const handleInteractionEnd = () => setIsActive(false);
+
   if (href) {
     return (
-      <a href={href} className={baseClasses}>
+      <a
+        href={href}
+        className={baseClasses}
+        onMouseEnter={handleInteractionStart}
+        onMouseLeave={handleInteractionEnd}
+        onTouchStart={handleInteractionStart}
+        onTouchEnd={handleInteractionEnd}
+      >
         {buttonContent}
       </a>
     );
   }
 
   return (
-    <button ref={ref} className={baseClasses} {...props}>
+    <button
+      ref={ref}
+      className={baseClasses}
+      onMouseEnter={handleInteractionStart}
+      onMouseLeave={handleInteractionEnd}
+      onTouchStart={handleInteractionStart}
+      onTouchEnd={handleInteractionEnd}
+      {...props}
+    >
       {buttonContent}
     </button>
   );

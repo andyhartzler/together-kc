@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { SERVICES } from '@/lib/constants';
 import Card from '@/components/ui/Card';
 import { FlipText } from '@/components/ui/FlipText';
+import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 
 const FUNDED_SERVICES = [
   'Firefighters',
@@ -84,10 +85,15 @@ export default function Services() {
         >
           <div className="bg-gradient-to-r from-navy via-sky to-navy p-[2px] rounded-2xl inline-block">
             <div className="bg-white rounded-2xl px-8 py-6">
-              <p className="text-lg md:text-xl text-navy font-medium">
+              <p className="text-lg md:text-xl text-navy font-medium mb-4">
                 Without the earnings tax, we would face{' '}
                 <span className="text-coral font-bold">devastating cuts</span> to these essential services.
               </p>
+              <InteractiveHoverButton
+                text="Read the FAQs"
+                href="/faqs"
+                variant="secondary"
+              />
             </div>
           </div>
         </motion.div>

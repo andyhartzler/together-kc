@@ -83,7 +83,7 @@ export default function LoginPage() {
                   className={`w-full px-4 py-3 rounded-xl border-2 border-b-4 font-medium transition-all text-center tracking-widest ${
                     error
                       ? 'border-red-400 border-b-red-500 bg-red-50 text-red-800'
-                      : 'border-[#1a2736] border-b-[#0f1a24] bg-[#1a2736] text-white'
+                      : 'border-[#1a2736] border-b-[#0f1a24] bg-[#2D445D] text-white'
                   } focus:outline-none focus:ring-2 focus:ring-[#FDBE19]/50`}
                   style={{ WebkitTextSecurity: 'disc' } as React.CSSProperties}
                 />

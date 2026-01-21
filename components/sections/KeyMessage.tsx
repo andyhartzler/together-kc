@@ -178,10 +178,10 @@ export default function KeyMessage() {
 
               {/* Floating badges around the coin */}
               {[
-                { label: 'Since 1963', angle: -45, delay: 0.1 },
-                { label: 'Same Rate', angle: 45, delay: 0.2 },
-                { label: 'No Increase', angle: 135, delay: 0.3 },
-                { label: 'Proven', angle: 210, delay: 0.4 },
+                { label: 'Since 1963', angle: -45, delay: 0.1, radius: 48 },
+                { label: 'Same Rate', angle: 45, delay: 0.2, radius: 42 },
+                { label: 'No Increase', angle: 135, delay: 0.3, radius: 48 },
+                { label: 'Proven', angle: 230, delay: 0.4, radius: 48 },
               ].map((badge) => (
                 <motion.div
                   key={badge.label}
@@ -191,8 +191,8 @@ export default function KeyMessage() {
                   transition={{ duration: 0.5, delay: badge.delay + 0.5 }}
                   className="absolute w-20 h-20 flex items-center justify-center"
                   style={{
-                    top: `${50 + 48 * Math.sin((badge.angle * Math.PI) / 180)}%`,
-                    left: `${50 + 48 * Math.cos((badge.angle * Math.PI) / 180)}%`,
+                    top: `${50 + badge.radius * Math.sin((badge.angle * Math.PI) / 180)}%`,
+                    left: `${50 + badge.radius * Math.cos((badge.angle * Math.PI) / 180)}%`,
                     transform: 'translate(-50%, -50%)',
                   }}
                 >
