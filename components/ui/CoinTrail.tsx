@@ -6,6 +6,31 @@ import { cn } from '@/lib/utils';
 import { useDimensions } from '@/components/hooks/use-debounced-dimensions';
 import Image from 'next/image';
 
+// Coin types with their weights and size multipliers
+const COINS = [
+  { src: '/images/coin-1-percent.png', weight: 1, sizeMultiplier: 0.9 },
+  { src: '/images/coin-cent.png', weight: 1, sizeMultiplier: 0.9 },
+  { src: '/images/coin-vote-yes.png', weight: 1.35, sizeMultiplier: 1.2 },
+];
+
+// Get weighted random coin
+function getRandomCoin() {
+  const totalWeight = COINS.reduce((sum, coin) => sum + coin.weight, 0);
+  let random = Math.random() * totalWeight;
+
+  for (const coin of COINS) {
+    random -= coin.weight;
+    if (random <= 0) return coin;
+  }
+  return COINS[0];
+}
+
+// Session state - only accessed on client side
+const sessionState = {
+  currentCoin: COINS[0],
+  isActive: false,
+};
+
 interface CoinTrailProps {
   pixelSize?: number;
   fadeDuration?: number;
@@ -22,6 +47,17 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useDimensions(containerRef);
   const trailId = useId();
+
+  const startSession = useCallback(() => {
+    if (!sessionState.isActive) {
+      sessionState.currentCoin = getRandomCoin();
+      sessionState.isActive = true;
+    }
+  }, []);
+
+  const endSession = useCallback(() => {
+    sessionState.isActive = false;
+  }, []);
 
   const triggerPixel = useCallback(
     (clientX: number, clientY: number) => {
@@ -42,12 +78,36 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
     [pixelSize, trailId]
   );
 
+  const handleMouseEnter = useCallback(() => {
+    startSession();
+  }, [startSession]);
+
+  const handleMouseLeave = useCallback(() => {
+    endSession();
+  }, [endSession]);
+
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      startSession();
       triggerPixel(e.clientX, e.clientY);
     },
-    [triggerPixel]
+    [triggerPixel, startSession]
   );
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      startSession();
+      const touch = e.touches[0];
+      if (touch) {
+        triggerPixel(touch.clientX, touch.clientY);
+      }
+    },
+    [triggerPixel, startSession]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    endSession();
+  }, [endSession]);
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
@@ -75,9 +135,12 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
         'absolute inset-0 w-full h-full overflow-hidden touch-none',
         className
       )}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
+      onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
-      onTouchStart={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {dimensions.width > 0 && Array.from({ length: rows }).map((_, rowIndex) => (
         <div key={rowIndex} className="flex">
@@ -96,25 +159,6 @@ const CoinTrail: React.FC<CoinTrailProps> = ({
   );
 };
 
-// Coin types with their weights and size multipliers
-const COINS = [
-  { src: '/images/coin-1-percent.png', weight: 1, sizeMultiplier: 0.9 },
-  { src: '/images/coin-cent.png', weight: 1, sizeMultiplier: 0.9 },
-  { src: '/images/coin-vote-yes.png', weight: 1.35, sizeMultiplier: 1.2 },
-];
-
-// Get weighted random coin
-function getRandomCoin() {
-  const totalWeight = COINS.reduce((sum, coin) => sum + coin.weight, 0);
-  let random = Math.random() * totalWeight;
-
-  for (const coin of COINS) {
-    random -= coin.weight;
-    if (random <= 0) return coin;
-  }
-  return COINS[0];
-}
-
 interface CoinDotProps {
   id: string;
   size: number;
@@ -125,11 +169,11 @@ interface CoinDotProps {
 const CoinDot: React.FC<CoinDotProps> = React.memo(
   ({ id, size, fadeDuration, delay }) => {
     const controls = useAnimationControls();
-    const coinRef = useRef(getRandomCoin());
+    const [activeCoin, setActiveCoin] = React.useState(COINS[0]);
 
     const animatePixel = useCallback(() => {
-      // Get a new random coin each time
-      coinRef.current = getRandomCoin();
+      // Use the current session coin
+      setActiveCoin(sessionState.currentCoin);
       controls.start({
         opacity: [1, 0],
         scale: [0.5, 1, 0.8],
@@ -151,8 +195,7 @@ const CoinDot: React.FC<CoinDotProps> = React.memo(
       [animatePixel]
     );
 
-    const coin = coinRef.current;
-    const coinSize = Math.round((size - 10) * coin.sizeMultiplier);
+    const coinSize = Math.round((size - 10) * activeCoin.sizeMultiplier);
 
     return (
       <motion.div
@@ -167,7 +210,7 @@ const CoinDot: React.FC<CoinDotProps> = React.memo(
         animate={controls}
       >
         <Image
-          src={coin.src}
+          src={activeCoin.src}
           alt=""
           width={coinSize}
           height={coinSize}
