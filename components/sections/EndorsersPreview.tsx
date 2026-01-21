@@ -62,7 +62,7 @@ export default function EndorsersPreview() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <h3 className="text-xl font-semibold text-navy text-center mb-8">
-            Supported by organizations across Kansas City
+            Supported by organizations<br className="sm:hidden" /> across Kansas City
           </h3>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
