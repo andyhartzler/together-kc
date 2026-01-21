@@ -195,7 +195,7 @@ export default function EndorsementsPage() {
                   />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="font-medium text-navy text-sm sm:text-base">{official.name}, {official.title}</span>
+                  <span className="font-medium text-navy text-xs sm:text-base whitespace-nowrap">{official.name}, {official.title}</span>
                   {official.district && (
                     <span className="text-gray-500 text-xs sm:text-sm">{official.district}</span>
                   )}
