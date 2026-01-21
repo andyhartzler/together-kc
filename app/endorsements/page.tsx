@@ -29,7 +29,7 @@ export default function EndorsementsPage() {
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="font-bold text-white mb-12 sm:mb-16">
+            <h1 className="font-bold text-white mb-14 sm:mb-20">
               {/* Community Leaders Support - word by word reveal */}
               <span className="block text-2xl sm:text-5xl md:text-6xl mb-2 sm:mb-3">
                 {['Community', 'Leaders', 'Support'].map((word, i) => (
@@ -264,7 +264,7 @@ export default function EndorsementsPage() {
       </section>
 
       {/* Endorsement Form Section */}
-      <section id="endorse" className="section-padding bg-gradient-to-b from-white to-light-gray relative">
+      <section id="endorse" className="section-padding bg-gradient-to-b from-white to-light-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-start">
             {/* Left Column - Message */}
@@ -340,14 +340,6 @@ export default function EndorsementsPage() {
             <EndorsementForm />
           </div>
         </div>
-
-        {/* Bottom gradient transition to navy */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-32 sm:h-48"
-          style={{
-            background: 'linear-gradient(to bottom, rgba(10,25,47,0) 0%, rgba(10,25,47,0.03) 20%, rgba(10,25,47,0.1) 40%, rgba(10,25,47,0.25) 55%, rgba(10,25,47,0.5) 70%, rgba(10,25,47,0.8) 85%, rgba(10,25,47,1) 100%)'
-          }}
-        />
       </section>
 
       {/* How Else Can I Help Section */}
