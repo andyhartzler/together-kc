@@ -384,9 +384,10 @@ export default function EndorsementsPage() {
                 key={item.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.03, y: -5 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20"
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 cursor-pointer"
               >
                 <div className="text-4xl mb-4">{item.icon}</div>
                 <h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
