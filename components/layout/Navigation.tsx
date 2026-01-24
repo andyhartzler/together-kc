@@ -25,6 +25,12 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Determine active nav item based on pathname
+  const getIsActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
+
   return (
     <>
       <motion.header
@@ -52,26 +58,77 @@ export default function Navigation() {
               />
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-2">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    'relative px-4 py-2 rounded-lg text-base font-semibold transition-all duration-200 hover:scale-105',
-                    isScrolled || !hasDarkHero
-                      ? 'text-navy hover:text-coral'
-                      : 'text-white hover:text-coral',
-                    'after:absolute after:bottom-1 after:left-4 after:right-4 after:h-0.5 after:bg-coral after:scale-x-0 after:transition-transform after:duration-200 hover:after:scale-x-100'
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
+            {/* Desktop Navigation - Lamp Style */}
+            <div className="hidden md:flex items-center">
+              <div
+                className={cn(
+                  "flex items-center gap-1 py-1 px-1 rounded-full border transition-all duration-300",
+                  isScrolled
+                    ? "bg-slate-100/80 border-slate-200 backdrop-blur-sm"
+                    : hasDarkHero
+                      ? "bg-white/10 border-white/20 backdrop-blur-sm"
+                      : "bg-slate-100/80 border-slate-200 backdrop-blur-sm"
+                )}
+              >
+                {NAV_LINKS.map((link) => {
+                  const isActive = getIsActive(link.href);
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                        "relative cursor-pointer text-sm font-semibold px-5 py-2 rounded-full transition-colors",
+                        isScrolled || !hasDarkHero
+                          ? "text-navy/80 hover:text-coral"
+                          : "text-white/90 hover:text-white",
+                        isActive && (isScrolled || !hasDarkHero ? "text-coral" : "text-white")
+                      )}
+                    >
+                      {link.label}
+                      {isActive && (
+                        <motion.div
+                          layoutId="nav-lamp"
+                          className={cn(
+                            "absolute inset-0 rounded-full -z-10",
+                            isScrolled || !hasDarkHero
+                              ? "bg-coral/10"
+                              : "bg-white/20"
+                          )}
+                          initial={false}
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 30,
+                          }}
+                        >
+                          {/* Lamp glow effect */}
+                          <div className={cn(
+                            "absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 rounded-t-full",
+                            isScrolled || !hasDarkHero ? "bg-coral" : "bg-white"
+                          )}>
+                            <div className={cn(
+                              "absolute w-12 h-6 rounded-full blur-md -top-2 -left-2",
+                              isScrolled || !hasDarkHero ? "bg-coral/30" : "bg-white/30"
+                            )} />
+                            <div className={cn(
+                              "absolute w-8 h-6 rounded-full blur-md -top-1",
+                              isScrolled || !hasDarkHero ? "bg-coral/30" : "bg-white/30"
+                            )} />
+                            <div className={cn(
+                              "absolute w-4 h-4 rounded-full blur-sm top-0 left-2",
+                              isScrolled || !hasDarkHero ? "bg-coral/30" : "bg-white/30"
+                            )} />
+                          </div>
+                        </motion.div>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+
               <Link
                 href="/endorsements#endorse"
-                className="ml-2 px-5 py-2.5 bg-coral text-white font-semibold rounded-full hover:bg-coral/90 transition-all hover:scale-105 shadow-lg"
+                className="ml-4 px-5 py-2.5 bg-coral text-white font-semibold rounded-full hover:bg-coral/90 transition-all hover:scale-105 shadow-lg"
               >
                 Vote YES
               </Link>
