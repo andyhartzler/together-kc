@@ -105,7 +105,7 @@ const InteractiveHoverButton = React.forwardRef<
         className={cn(
           'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300 ease-out',
           styles.circle,
-          isActive ? 'w-[400px] h-[400px]' : 'w-0 h-0'
+          isActive ? 'w-[200%] h-[300%]' : 'w-0 h-0'
         )}
       />
     </>

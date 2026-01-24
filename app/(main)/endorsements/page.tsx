@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import { EndorserCard } from '@/components/ui/EndorserCard';
+import { LinkCard } from '@/components/ui/LinkCard';
 import EndorsementForm from '@/components/forms/EndorsementForm';
 import { ENDORSERS, VOTE_DATE } from '@/lib/constants';
 
@@ -363,37 +364,27 @@ export default function EndorsementsPage() {
           </motion.div>
 
           <div className="grid sm:grid-cols-3 gap-6">
-            {[
-              {
-                icon: '📢',
-                title: 'Spread the Word',
-                description: 'Share with friends, family, and coworkers. Every conversation matters.',
-              },
-              {
-                icon: '🏠',
-                title: 'Display a Sign',
-                description: 'Show your neighborhood that you support renewal with a yard sign.',
-              },
-              {
-                icon: '🗳️',
-                title: 'Vote Early',
-                description: 'Don\'t wait until Election Day. Vote early to make sure your voice counts.',
-              },
-            ].map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.03, y: -5 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 cursor-pointer"
-              >
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
-                <p className="text-white/70 text-sm">{item.description}</p>
-              </motion.div>
-            ))}
+            <LinkCard
+              title="Spread the Word"
+              description="Share with friends, family, and coworkers. Every conversation matters."
+              icon="📢"
+              href="mailto:?subject=Vote YES to Renew the KC Earnings Tax&body=Learn more at https://renewkc.com"
+              buttonText="Share Now"
+            />
+            <LinkCard
+              title="Display a Sign"
+              description="Show your neighborhood that you support renewal with a yard sign."
+              icon="🏠"
+              href="mailto:action@together-kc.com?subject=Request a Yard Sign"
+              buttonText="Get a Sign"
+            />
+            <LinkCard
+              title="Vote Early"
+              description="Don't wait until Election Day. Vote early to make sure your voice counts."
+              icon="🗳️"
+              href="https://www.kceb.org/voters/how-do-i-vote"
+              buttonText="Learn How"
+            />
           </div>
 
           <motion.div
