@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import { EndorserCard } from '@/components/ui/EndorserCard';
+import { LinkCard } from '@/components/ui/LinkCard';
 import EndorsementForm from '@/components/forms/EndorsementForm';
 import { ENDORSERS, VOTE_DATE } from '@/lib/constants';
 
@@ -362,7 +363,8 @@ export default function EndorsementsPage() {
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-3 gap-6">
+          {/* Mobile: compact layout */}
+          <div className="grid gap-4 sm:hidden">
             {[
               {
                 icon: '📢',
@@ -386,11 +388,57 @@ export default function EndorsementsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20"
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 flex items-center gap-4"
               >
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
-                <p className="text-white/70 text-sm">{item.description}</p>
+                <div className="text-3xl flex-shrink-0">{item.icon}</div>
+                <div>
+                  <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                  <p className="text-white/70 text-sm">{item.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Desktop: LinkCard layout */}
+          <div className="hidden sm:grid sm:grid-cols-3 gap-6">
+            {[
+              {
+                icon: '📢',
+                title: 'Spread the Word',
+                description: 'Share with friends, family, and coworkers. Every conversation matters.',
+                href: 'mailto:?subject=Vote YES to Renew the KC Earnings Tax&body=Learn more at https://renewkc.com',
+                buttonText: 'Share Now',
+              },
+              {
+                icon: '🏠',
+                title: 'Display a Sign',
+                description: 'Show your neighborhood that you support renewal with a yard sign.',
+                href: 'mailto:action@together-kc.com?subject=Request a Yard Sign',
+                buttonText: 'Get a Sign',
+              },
+              {
+                icon: '🗳️',
+                title: 'Vote Early',
+                description: 'Don\'t wait until Election Day. Vote early to make sure your voice counts.',
+                href: 'https://www.kceb.org/voters/how-do-i-vote',
+                buttonText: 'Learn How',
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <LinkCard
+                  title={item.title}
+                  description={item.description}
+                  icon={item.icon}
+                  href={item.href}
+                  buttonText={item.buttonText}
+                  variant="dark"
+                />
               </motion.div>
             ))}
           </div>
