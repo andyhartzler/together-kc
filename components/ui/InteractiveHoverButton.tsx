@@ -100,12 +100,12 @@ const InteractiveHoverButton = React.forwardRef<
         <ArrowRight />
       </div>
 
-      {/* Expanding circle background */}
+      {/* Expanding background - full width/height instead of circle */}
       <div
         className={cn(
-          'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300 ease-out',
+          'absolute inset-0 transition-transform duration-300 ease-out origin-center',
           styles.circle,
-          isActive ? 'w-[200%] h-[300%]' : 'w-0 h-0'
+          isActive ? 'scale-100' : 'scale-0'
         )}
       />
     </>
