@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  // TEMPORARY BYPASS - Remove this line to re-enable auth
+  return NextResponse.next();
+
   const { pathname } = request.nextUrl;
 
   // Allow access to login page, API routes, and static files
