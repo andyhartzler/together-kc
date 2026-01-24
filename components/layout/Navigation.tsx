@@ -98,11 +98,23 @@ export default function Navigation() {
                   </Link>
                 );
               })}
+              {/* Shimmer Vote YES Button */}
               <Link
                 href="/endorsements#endorse"
-                className="ml-2 px-5 py-2.5 bg-coral text-white font-semibold rounded-full hover:bg-coral/90 transition-all hover:scale-105 shadow-lg"
+                className="group relative z-0 ml-2 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px hover:scale-105 shadow-lg"
+                style={{ '--speed': '3s', '--spread': '90deg', '--shimmer-color': '#ffffff' } as React.CSSProperties}
               >
+                {/* Shimmer spark container */}
+                <div className="-z-30 blur-[2px] absolute inset-0 overflow-visible [container-type:size]">
+                  <div className="absolute inset-0 h-[100cqh] animate-shimmer-slide [aspect-ratio:1] [border-radius:0] [mask:none]">
+                    <div className="animate-spin-around absolute -inset-full w-auto rotate-0 [background:conic-gradient(from_calc(270deg-(var(--spread)*0.5)),transparent_0,var(--shimmer-color)_var(--spread),transparent_var(--spread))] [translate:0_0]" />
+                  </div>
+                </div>
                 Vote YES
+                {/* Highlight */}
+                <div className="insert-0 absolute size-full rounded-full shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
+                {/* Backdrop */}
+                <div className="absolute -z-20 bg-coral rounded-full inset-[0.05em]" />
               </Link>
             </div>
 
@@ -176,12 +188,24 @@ export default function Navigation() {
                     </Link>
                   ))}
                   <div className="pt-4 space-y-3">
+                    {/* Shimmer Vote YES Button - Mobile */}
                     <Link
                       href="/endorsements#endorse"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="block w-full px-6 py-3 bg-coral text-white font-semibold rounded-full text-center hover:bg-coral/90 transition-all"
+                      className="group relative z-0 flex w-full cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 px-6 py-3 text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px"
+                      style={{ '--speed': '3s', '--spread': '90deg', '--shimmer-color': '#ffffff' } as React.CSSProperties}
                     >
+                      {/* Shimmer spark container */}
+                      <div className="-z-30 blur-[2px] absolute inset-0 overflow-visible [container-type:size]">
+                        <div className="absolute inset-0 h-[100cqh] animate-shimmer-slide [aspect-ratio:1] [border-radius:0] [mask:none]">
+                          <div className="animate-spin-around absolute -inset-full w-auto rotate-0 [background:conic-gradient(from_calc(270deg-(var(--spread)*0.5)),transparent_0,var(--shimmer-color)_var(--spread),transparent_var(--spread))] [translate:0_0]" />
+                        </div>
+                      </div>
                       Vote YES
+                      {/* Highlight */}
+                      <div className="insert-0 absolute size-full rounded-full shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
+                      {/* Backdrop */}
+                      <div className="absolute -z-20 bg-coral rounded-full inset-[0.05em]" />
                     </Link>
                     <button
                       onClick={() => {
