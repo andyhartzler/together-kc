@@ -107,6 +107,7 @@ export const ENDORSERS = {
     { name: 'Holmes Garden Neighborhood Association', logo: '/images/endorsers/Holmes Garden Neighborhood Association.png' },
     { name: 'Urban League', logo: '/images/endorsers/Urban League.png' },
     { name: '12th Street Heritage', logo: '/images/endorsers/12th Street Heritage.png' },
+    { name: 'Northeast Chamber of Commerce', logo: '/images/endorsers/Northeast Chamber of Commerce.png' },
   ],
   cityOfficials: [
     { name: 'Quinton Lucas', title: 'Mayor', district: '', photo: '/images/council/mayor-q.png' },
