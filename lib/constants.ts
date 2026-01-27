@@ -101,6 +101,12 @@ export const ENDORSERS = {
     { name: 'SEIU Local 1 MO', logo: '/images/endorsers/SEIU Local 1 MO.png' },
     { name: 'Southland Progress', logo: '/images/endorsers/Southland Progress.png' },
     { name: 'Forward KC', logo: '/images/endorsers/Forward KC.png' },
+    { name: 'LaRaza', logo: '/images/endorsers/LaRaza.png' },
+    { name: 'Bridlespur Neighborhood Assoc', logo: '/images/endorsers/Bridlespur Neighborhood Assoc.png' },
+    { name: 'Historic West Bottom', logo: '/images/endorsers/Historic West Bottom.png' },
+    { name: 'Holmes Garden Neighborhood Association', logo: '/images/endorsers/Holmes Garden Neighborhood Association.png' },
+    { name: 'Urban League', logo: '/images/endorsers/Urban League.png' },
+    { name: '12th Street Heritage', logo: '/images/endorsers/12th Street Heritage.png' },
   ],
   cityOfficials: [
     { name: 'Quinton Lucas', title: 'Mayor', district: '', photo: '/images/council/mayor-q.png' },
