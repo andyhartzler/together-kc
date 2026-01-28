@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import { EndorserCard } from '@/components/ui/EndorserCard';
 import { LinkCard } from '@/components/ui/LinkCard';
+import { ShareCard } from '@/components/ui/ShareCard';
 import EndorsementForm from '@/components/forms/EndorsementForm';
 import { ENDORSERS, VOTE_DATE } from '@/lib/constants';
 
@@ -364,11 +365,10 @@ export default function EndorsementsPage() {
           </motion.div>
 
           <div className="grid sm:grid-cols-3 gap-6">
-            <LinkCard
+            <ShareCard
               title="Spread the Word"
               description="Share with friends, family, and coworkers. Every conversation matters."
               icon="📢"
-              href="mailto:?subject=Vote YES to Renew the KC Earnings Tax&body=Learn more at https://renewkc.com"
               buttonText="Share Now"
             />
             <LinkCard
