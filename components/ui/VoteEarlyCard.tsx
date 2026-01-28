@@ -21,12 +21,6 @@ const COUNTY_URLS: Record<County, string> = {
   Cass: 'https://casscounty.com/2355/Absentee-Information',
 };
 
-const COUNTY_COLORS: Record<County, string> = {
-  Jackson: 'from-blue-500 to-blue-600',
-  Clay: 'from-emerald-500 to-emerald-600',
-  Platte: 'from-purple-500 to-purple-600',
-  Cass: 'from-amber-500 to-amber-600',
-};
 
 const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
   className,
@@ -80,13 +74,14 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
     setLookupResult(null);
 
     try {
-      // Build the address query - assume Kansas City, MO
-      const query = addressInput.match(/^\d{5}$/)
-        ? `${addressInput}` // Just zip code
-        : `${addressInput}, Kansas City, MO`; // Street address
+      // Build the address query - assume Missouri for context
+      const isZipOnly = /^\d{5}(-\d{4})?$/.test(addressInput.trim());
+      const query = isZipOnly
+        ? `${addressInput.trim()}, MO` // Zip code with state
+        : `${addressInput.trim()}, Kansas City, MO`; // Street address
 
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=AIzaSyALQac5xo57h8dtae7J55iG3UuO_UpiUfI`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I`
       );
 
       const data = await response.json();
@@ -126,11 +121,7 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => setSelectedCounty(county)}
-      className={cn(
-        'relative p-4 rounded-xl text-white font-semibold text-lg',
-        'bg-gradient-to-br shadow-lg transition-shadow hover:shadow-xl',
-        COUNTY_COLORS[county]
-      )}
+      className="relative p-4 rounded-xl text-white font-semibold text-lg bg-navy shadow-lg transition-all hover:shadow-xl hover:bg-navy/90"
     >
       {county} County
     </motion.button>
@@ -329,11 +320,7 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: 'spring', delay: 0.1 }}
-                        className={cn(
-                          'w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl',
-                          'bg-gradient-to-br shadow-lg',
-                          COUNTY_COLORS[selectedCounty || lookupResult!.county]
-                        )}
+                        className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl text-white bg-coral shadow-lg"
                       >
                         ✓
                       </motion.div>
@@ -356,11 +343,7 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
                         href={COUNTY_URLS[selectedCounty || lookupResult!.county]}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={cn(
-                          'inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold',
-                          'bg-gradient-to-r shadow-lg hover:shadow-xl transition-shadow',
-                          COUNTY_COLORS[selectedCounty || lookupResult!.county]
-                        )}
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold bg-coral shadow-lg hover:shadow-xl hover:bg-coral/90 transition-all"
                       >
                         Visit Election Board
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
