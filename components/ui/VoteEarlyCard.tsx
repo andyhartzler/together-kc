@@ -21,6 +21,13 @@ const COUNTY_URLS: Record<County, string> = {
   Cass: 'https://casscounty.com/2355/Absentee-Information',
 };
 
+const COUNTY_GRADIENTS: Record<County, string> = {
+  Jackson: 'bg-gradient-to-br from-navy to-sky',
+  Clay: 'bg-gradient-to-br from-sky to-navy',
+  Platte: 'bg-gradient-to-br from-navy via-sky/60 to-navy',
+  Cass: 'bg-gradient-to-br from-sky/80 to-navy',
+};
+
 
 const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
   className,
@@ -80,20 +87,28 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
         ? `${addressInput.trim()}, MO` // Zip code with state
         : `${addressInput.trim()}, Kansas City, MO`; // Street address
 
+      console.log('Looking up address:', query);
+
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I`
       );
 
       const data = await response.json();
+      console.log('Geocoding response:', data);
 
       if (data.status === 'OK' && data.results.length > 0) {
         const result = data.results[0];
+        console.log('Address components:', result.address_components);
+
         const countyComponent = result.address_components.find(
           (c: { types: string[]; long_name: string }) => c.types.includes('administrative_area_level_2')
         );
 
+        console.log('County component:', countyComponent);
+
         if (countyComponent) {
           const countyName = countyComponent.long_name.replace(' County', '');
+          console.log('County name:', countyName);
 
           if (['Jackson', 'Clay', 'Platte', 'Cass'].includes(countyName)) {
             setLookupResult({
@@ -107,9 +122,11 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
           setLookupError("Couldn't determine the county for that address. Try entering your zip code.");
         }
       } else {
-        setLookupError("Couldn't find that address. Please check and try again.");
+        console.log('Geocoding failed with status:', data.status, data.error_message);
+        setLookupError(`Couldn't find that address. ${data.error_message || 'Please check and try again.'}`);
       }
-    } catch {
+    } catch (err) {
+      console.error('Geocoding error:', err);
       setLookupError("Something went wrong. Please try again or select your county above.");
     } finally {
       setIsLooking(false);
@@ -121,7 +138,10 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => setSelectedCounty(county)}
-      className="relative p-4 rounded-xl text-white font-semibold text-lg bg-navy shadow-lg transition-all hover:shadow-xl hover:bg-navy/90"
+      className={cn(
+        'relative p-4 rounded-xl text-white font-semibold text-lg shadow-lg transition-all hover:shadow-xl hover:brightness-110',
+        COUNTY_GRADIENTS[county]
+      )}
     >
       {county} County
     </motion.button>
