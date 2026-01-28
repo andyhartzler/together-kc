@@ -20,6 +20,7 @@ export const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/faqs', label: 'FAQs' },
   { href: '/endorsements', label: 'Endorsements' },
+  { href: '/donate', label: 'Donate' },
 ] as const;
 
 export const SERVICES = [
