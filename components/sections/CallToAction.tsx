@@ -26,11 +26,11 @@ export default function CallToAction() {
       variant: 'secondary' as const,
     },
     {
-      icon: '📧',
-      title: 'Stay Informed',
-      description: 'Get campaign updates and ways to help.',
-      buttonText: 'Sign Up',
-      href: '#signup',
+      icon: '📋',
+      title: 'Check Your Registration',
+      description: 'Make sure you\'re registered to vote.',
+      buttonText: 'Check Now',
+      href: 'https://voteroutreach.sos.mo.gov/portal/',
       variant: 'outline' as const,
     },
   ];
