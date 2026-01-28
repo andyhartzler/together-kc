@@ -1,8 +1,35 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+
+const GOOGLE_API_KEY = 'AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I';
+
+// Extend window for Google Maps
+declare global {
+  interface Window {
+    google?: {
+      maps: {
+        Geocoder: new () => {
+          geocode: (
+            request: { address: string },
+            callback: (
+              results: Array<{
+                formatted_address: string;
+                address_components: Array<{
+                  long_name: string;
+                  types: string[];
+                }>;
+              }> | null,
+              status: string
+            ) => void
+          ) => void;
+        };
+      };
+    };
+  }
+}
 
 interface VoteEarlyCardProps {
   title: string;
@@ -73,6 +100,30 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
     setTimeout(resetModal, 300);
   };
 
+  // Load Google Maps script
+  const loadGoogleMaps = useCallback(() => {
+    return new Promise<void>((resolve, reject) => {
+      if (window.google?.maps?.Geocoder) {
+        resolve();
+        return;
+      }
+
+      // Check if script is already loading
+      const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve());
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=geocoding`;
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load Google Maps'));
+      document.head.appendChild(script);
+    });
+  }, []);
+
   const lookupCounty = async () => {
     if (!addressInput.trim()) return;
 
@@ -81,56 +132,57 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
     setLookupResult(null);
 
     try {
-      // Build the address query - assume Missouri for context
+      // Load Google Maps API
+      await loadGoogleMaps();
+
+      // Build the address query
       const isZipOnly = /^\d{5}(-\d{4})?$/.test(addressInput.trim());
       const query = isZipOnly
-        ? `${addressInput.trim()}, MO` // Zip code with state
-        : `${addressInput.trim()}, Kansas City, MO`; // Street address
+        ? `${addressInput.trim()}, MO`
+        : `${addressInput.trim()}, Kansas City, MO`;
 
       console.log('Looking up address:', query);
 
-      const response = await fetch('/api/geocode', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: query }),
-      });
+      const geocoder = new window.google.maps.Geocoder();
 
-      const data = await response.json();
-      console.log('Geocoding response:', data);
+      geocoder.geocode({ address: query }, (results, status) => {
+        console.log('Geocoding response:', status, results);
 
-      if (data.status === 'OK' && data.results.length > 0) {
-        const result = data.results[0];
-        console.log('Address components:', result.address_components);
+        if (status === 'OK' && results && results.length > 0) {
+          const result = results[0];
+          console.log('Address components:', result.address_components);
 
-        const countyComponent = result.address_components.find(
-          (c: { types: string[]; long_name: string }) => c.types.includes('administrative_area_level_2')
-        );
+          const countyComponent = result.address_components.find(
+            (c) => c.types.includes('administrative_area_level_2')
+          );
 
-        console.log('County component:', countyComponent);
+          console.log('County component:', countyComponent);
 
-        if (countyComponent) {
-          const countyName = countyComponent.long_name.replace(' County', '');
-          console.log('County name:', countyName);
+          if (countyComponent) {
+            const countyName = countyComponent.long_name.replace(' County', '');
+            console.log('County name:', countyName);
 
-          if (['Jackson', 'Clay', 'Platte', 'Cass'].includes(countyName)) {
-            setLookupResult({
-              county: countyName as County,
-              address: result.formatted_address,
-            });
+            if (['Jackson', 'Clay', 'Platte', 'Cass'].includes(countyName)) {
+              setLookupResult({
+                county: countyName as County,
+                address: result.formatted_address,
+              });
+            } else {
+              setLookupError(`That address is in ${countyName} County, which is outside Kansas City's boundaries.`);
+            }
           } else {
-            setLookupError(`That address is in ${countyName} County, which is outside Kansas City's boundaries.`);
+            setLookupError("Couldn't determine the county for that address. Try entering your zip code.");
           }
         } else {
-          setLookupError("Couldn't determine the county for that address. Try entering your zip code.");
+          console.log('Geocoding failed with status:', status);
+          setLookupError("Couldn't find that address. Please check and try again.");
         }
-      } else {
-        console.log('Geocoding failed with status:', data.status, data.error_message);
-        setLookupError(`Couldn't find that address. ${data.error_message || 'Please check and try again.'}`);
-      }
+
+        setIsLooking(false);
+      });
     } catch (err) {
       console.error('Geocoding error:', err);
       setLookupError("Something went wrong. Please try again or select your county above.");
-    } finally {
       setIsLooking(false);
     }
   };
