@@ -206,10 +206,8 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => setSelectedCounty(county)}
-      className="group relative p-4 rounded-xl overflow-hidden bg-navy transition-all duration-200"
+      className="group relative p-4 rounded-xl overflow-hidden bg-navy hover:bg-coral transition-all duration-200"
     >
-      {/* Gradient glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-sky via-coral to-sky opacity-0 group-hover:opacity-60 blur-sm transition-opacity duration-500" />
 
       {/* Content */}
       <div className="relative flex items-center justify-center gap-2">
