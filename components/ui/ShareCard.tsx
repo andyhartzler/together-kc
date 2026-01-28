@@ -19,7 +19,7 @@ const ShareCard: React.FC<ShareCardProps> = ({ className, title, description, ic
   const shareData = {
     title: 'Vote YES to Renew the KC Earnings Tax',
     text: 'The earnings tax funds nearly half of KC\'s essential services. Vote YES on April 7, 2026 to keep Kansas City strong.',
-    url: 'https://renewkc.com',
+    url: 'https://together-kc.com',
   };
 
   const handleShare = async () => {

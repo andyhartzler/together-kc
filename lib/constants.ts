@@ -12,7 +12,7 @@ export const VOTE_DATE = 'April 7, 2026';
 export const SITE_CONFIG = {
   title: 'Renew the KC Earnings Tax | Vote YES on April 7, 2026',
   description: 'The earnings tax funds nearly half the cost of city services: first responders, street repair, trash pickup, and more. Vote YES to renew the e-tax on or before April 7, 2026.',
-  url: 'https://renewkc.com',
+  url: 'https://together-kc.com',
   organization: 'Together KC',
 } as const;
 
