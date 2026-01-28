@@ -239,15 +239,20 @@ export default function DonatePage() {
                   {/* Header accent */}
                   <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  {/* Iframe container */}
-                  <div className="p-2 sm:p-4">
+                  {/* Iframe container - clips to show only the donation form */}
+                  <div
+                    className="relative overflow-hidden"
+                    style={{ height: '520px' }}
+                  >
                     <iframe
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
-                      className="w-full rounded-lg"
+                      className="w-full absolute left-0"
+                      scrolling="no"
                       style={{
-                        height: '600px',
+                        height: '900px',
                         border: 'none',
+                        top: '-160px',
                       }}
                       allow="payment"
                     />
