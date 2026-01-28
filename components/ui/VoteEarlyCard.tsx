@@ -89,9 +89,11 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
 
       console.log('Looking up address:', query);
 
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I`
-      );
+      const response = await fetch('/api/geocode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: query }),
+      });
 
       const data = await response.json();
       console.log('Geocoding response:', data);
