@@ -77,6 +77,7 @@ export const ENDORSERS = {
     { name: 'Civic Council of Greater Kansas City', logo: '/images/endorsers/Civic Council of Greater Kansas City.png' },
     { name: 'Missouri AFL-CIO', logo: '/images/endorsers/ALF-CIO.png' },
     { name: 'Firefighters Local 42', logo: '/images/endorsers/Firefighters Local 42.png' },
+    { name: 'LiUNA Local 264', logo: '/images/endorsers/Laborers 264.PNG' },
     // Confirmed endorsers
     { name: 'Heartland Black Chamber of Commerce', logo: '/images/endorsers/Heartland Black Chamber.PNG' },
     { name: 'Freedom, Inc.', logo: '/images/endorsers/Freedom Inc.PNG' },
