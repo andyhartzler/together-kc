@@ -145,7 +145,7 @@ export default function DonatePage() {
       <section className="section-padding pt-4 sm:pt-8 pb-16 sm:pb-24 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-start">
-            {/* Left Column - Why Donate */}
+            {/* Left Column - Why the E-Tax Matters */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -155,12 +155,12 @@ export default function DonatePage() {
             >
               <div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-navy mb-4">
-                  Why Your Support Matters
+                  Why Renewal Matters
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Together KC is working to educate Kansas Citians about the importance
-                  of renewing the earnings tax. Your donation directly supports outreach,
-                  community events, and voter education.
+                  The earnings tax funds <strong>47% of Kansas City&apos;s general fund</strong> —
+                  approximately $373 million that pays for the services our city depends on every day.
+                  Voting YES doesn&apos;t raise taxes; it simply renews what&apos;s been in place since 1963.
                 </p>
               </div>
 
@@ -174,12 +174,12 @@ export default function DonatePage() {
                   className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-light-gray to-white border border-gray-100"
                 >
                   <div className="w-10 h-10 rounded-lg bg-coral/10 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-5 h-5 text-coral" />
+                    <Shield className="w-5 h-5 text-coral" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-navy mb-1">Community Outreach</h3>
+                    <h3 className="font-semibold text-navy mb-1">Protects First Responders</h3>
                     <p className="text-sm text-gray-600">
-                      Fund town halls, neighborhood meetings, and grassroots organizing.
+                      The e-tax funds firefighters, police, and EMTs. Without it, the city would face first responder layoffs and increased emergency response times.
                     </p>
                   </div>
                 </motion.div>
@@ -192,12 +192,12 @@ export default function DonatePage() {
                   className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-light-gray to-white border border-gray-100"
                 >
                   <div className="w-10 h-10 rounded-lg bg-sky/10 flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-5 h-5 text-sky" />
+                    <Users className="w-5 h-5 text-sky" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-navy mb-1">Voter Education</h3>
+                    <h3 className="font-semibold text-navy mb-1">Keeps Services Running</h3>
                     <p className="text-sm text-gray-600">
-                      Create materials that help voters understand what&apos;s at stake.
+                      Trash pickup, pothole repair, snow removal, and street lighting all depend on e-tax funding. Failed renewal means cuts or elimination of these services.
                     </p>
                   </div>
                 </motion.div>
@@ -213,28 +213,13 @@ export default function DonatePage() {
                     <Sparkles className="w-5 h-5 text-golden" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-navy mb-1">Digital Campaigns</h3>
+                    <h3 className="font-semibold text-navy mb-1">No Replacement Exists</h3>
                     <p className="text-sm text-gray-600">
-                      Reach more Kansas Citians through targeted online outreach.
+                      There is no realistic path to replacing this revenue. Kansas City doesn&apos;t have the legal authority to pass tax increases large enough to make up for a failed renewal.
                     </p>
                   </div>
                 </motion.div>
               </div>
-
-              {/* Trust badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="p-4 rounded-xl bg-navy/5 border border-navy/10"
-              >
-                <p className="text-sm text-navy/80">
-                  <strong>100% Transparent</strong> — Every dollar goes directly to
-                  supporting voter education and community outreach for the earnings
-                  tax renewal campaign.
-                </p>
-              </motion.div>
             </motion.div>
 
             {/* Right Column - Donation Form Embed */}
