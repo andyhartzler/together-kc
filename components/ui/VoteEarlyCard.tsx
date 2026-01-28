@@ -105,12 +105,21 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
       // Check if script is already loading
       const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
       if (existingScript) {
-        existingScript.addEventListener('load', () => resolve());
+        // Script tag exists - check if it's already loaded
+        if (window.google?.maps?.Geocoder) {
+          console.log('[VoteEarlyCard] Google Maps already loaded');
+          resolve();
+        } else {
+          // Script still loading, wait for it
+          console.log('[VoteEarlyCard] Waiting for existing Google Maps script to load');
+          existingScript.addEventListener('load', () => resolve());
+        }
         return;
       }
 
+      console.log('[VoteEarlyCard] Loading Google Maps script');
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=geocoding`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}`;
       script.async = true;
       script.onload = () => resolve();
       script.onerror = () => reject(new Error('Failed to load Google Maps'));
@@ -125,9 +134,18 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
     setLookupError(null);
     setLookupResult(null);
 
+    // Add timeout protection - 10 seconds
+    const timeoutId = setTimeout(() => {
+      console.log('[VoteEarlyCard] Lookup timed out');
+      setLookupError("Address lookup is taking too long. Please try again or select your county above.");
+      setIsLooking(false);
+    }, 10000);
+
     try {
       // Load Google Maps API
+      console.log('[VoteEarlyCard] Starting Google Maps load');
       await loadGoogleMaps();
+      console.log('[VoteEarlyCard] Google Maps loaded, creating geocoder');
 
       // Build the address query
       const isZipOnly = /^\d{5}(-\d{4})?$/.test(addressInput.trim());
@@ -135,26 +153,27 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
         ? `${addressInput.trim()}, MO`
         : `${addressInput.trim()}, Kansas City, MO`;
 
-      console.log('Looking up address:', query);
+      console.log('[VoteEarlyCard] Looking up address:', query);
 
-      const geocoder = new window.google.maps.Geocoder();
+      const geocoder = new window.google!.maps.Geocoder();
 
       geocoder.geocode({ address: query }, (results, status) => {
-        console.log('Geocoding response:', status, results);
+        clearTimeout(timeoutId);
+        console.log('[VoteEarlyCard] Geocoding response:', status, results);
 
         if (status === 'OK' && results && results.length > 0) {
           const result = results[0];
-          console.log('Address components:', result.address_components);
+          console.log('[VoteEarlyCard] Address components:', result.address_components);
 
           const countyComponent = result.address_components.find(
             (c) => c.types.includes('administrative_area_level_2')
           );
 
-          console.log('County component:', countyComponent);
+          console.log('[VoteEarlyCard] County component:', countyComponent);
 
           if (countyComponent) {
             const countyName = countyComponent.long_name.replace(' County', '');
-            console.log('County name:', countyName);
+            console.log('[VoteEarlyCard] County name:', countyName);
 
             if (['Jackson', 'Clay', 'Platte', 'Cass'].includes(countyName)) {
               setLookupResult({
@@ -168,14 +187,15 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
             setLookupError("Couldn't determine the county for that address. Try entering your zip code.");
           }
         } else {
-          console.log('Geocoding failed with status:', status);
+          console.log('[VoteEarlyCard] Geocoding failed with status:', status);
           setLookupError("Couldn't find that address. Please check and try again.");
         }
 
         setIsLooking(false);
       });
     } catch (err) {
-      console.error('Geocoding error:', err);
+      clearTimeout(timeoutId);
+      console.error('[VoteEarlyCard] Geocoding error:', err);
       setLookupError("Something went wrong. Please try again or select your county above.");
       setIsLooking(false);
     }
