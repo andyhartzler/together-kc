@@ -8,10 +8,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { downloadCalendarEvent } from '@/lib/calendar';
+import { VoteYesModal } from '@/components/ui/VoteYesModal';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
   const pathname = usePathname();
 
   // Pages with dark hero backgrounds where we need white text
@@ -99,8 +101,8 @@ export default function Navigation() {
                 );
               })}
               {/* Shimmer Vote YES Button */}
-              <Link
-                href="/endorsements#endorse"
+              <button
+                onClick={() => setIsVoteModalOpen(true)}
                 className="group relative z-0 ml-2 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px hover:scale-105 shadow-lg"
                 style={{ '--speed': '3s', '--spread': '90deg', '--shimmer-color': '#ffffff' } as React.CSSProperties}
               >
@@ -115,7 +117,7 @@ export default function Navigation() {
                 <div className="insert-0 absolute size-full rounded-full shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
                 {/* Backdrop */}
                 <div className="absolute -z-20 bg-coral rounded-full inset-[0.05em]" />
-              </Link>
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -189,9 +191,11 @@ export default function Navigation() {
                   ))}
                   <div className="pt-4 space-y-3">
                     {/* Shimmer Vote YES Button - Mobile */}
-                    <Link
-                      href="/endorsements#endorse"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        setIsVoteModalOpen(true);
+                      }}
                       className="group relative z-0 flex w-full cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 px-6 py-3 text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px"
                       style={{ '--speed': '3s', '--spread': '90deg', '--shimmer-color': '#ffffff' } as React.CSSProperties}
                     >
@@ -206,7 +210,7 @@ export default function Navigation() {
                       <div className="insert-0 absolute size-full rounded-full shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
                       {/* Backdrop */}
                       <div className="absolute -z-20 bg-coral rounded-full inset-[0.05em]" />
-                    </Link>
+                    </button>
                     <button
                       onClick={() => {
                         downloadCalendarEvent();
@@ -223,6 +227,9 @@ export default function Navigation() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Vote YES Modal */}
+      <VoteYesModal isOpen={isVoteModalOpen} onClose={() => setIsVoteModalOpen(false)} />
     </>
   );
 }

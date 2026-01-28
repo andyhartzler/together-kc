@@ -7,7 +7,11 @@ Check your registration: https://voteroutreach.sos.mo.gov/portal/
 
 Register to vote: https://s1.sos.mo.gov/elections/voterregistration/
 
-Find your polling location: https://www.kceb.org/elections/poll-locations/`;
+Find your polling location by county:
+- Jackson County: https://www.kceb.org/elections/poll-locations/
+- Clay County: https://www.voteclaycountymo.gov
+- Platte County: https://www.plattecountymovotes.gov
+- Cass County: https://casscounty.com/2355/Absentee-Information`;
 
   // April 7, 2026 - CDT (UTC-5)
   // 6:00 AM CDT = 11:00 UTC
