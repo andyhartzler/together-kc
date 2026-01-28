@@ -9,6 +9,7 @@ interface InteractiveHoverButtonProps {
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'default' | 'lg';
   className?: string;
+  external?: boolean;
 }
 
 const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
@@ -17,6 +18,7 @@ const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
   variant = 'primary',
   size = 'default',
   className,
+  external = false,
 }) => {
   const variantStyles = {
     primary: 'bg-coral text-white hover:bg-coral/85',
@@ -57,7 +59,11 @@ const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
 
   if (href) {
     return (
-      <a href={href} className={baseClasses}>
+      <a
+        href={href}
+        className={baseClasses}
+        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      >
         {content}
       </a>
     );

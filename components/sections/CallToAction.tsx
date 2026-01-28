@@ -31,7 +31,8 @@ export default function CallToAction() {
       description: 'Make sure you\'re registered to vote.',
       buttonText: 'Check Now',
       href: 'https://voteroutreach.sos.mo.gov/portal/',
-      variant: 'outline' as const,
+      variant: 'primary' as const,
+      external: true,
     },
   ];
 
@@ -80,6 +81,7 @@ export default function CallToAction() {
                 </div>
                 <a
                   href={action.href}
+                  {...('external' in action && action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className="flex-shrink-0 px-4 py-2 bg-coral text-white text-sm font-semibold rounded-full"
                 >
                   {action.buttonText}
@@ -96,6 +98,7 @@ export default function CallToAction() {
                     href={action.href}
                     variant={action.variant}
                     size="default"
+                    external={'external' in action && action.external}
                   />
                 </div>
               </div>
