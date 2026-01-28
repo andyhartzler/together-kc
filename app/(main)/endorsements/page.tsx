@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import { EndorserCard } from '@/components/ui/EndorserCard';
 import { LinkCard } from '@/components/ui/LinkCard';
 import { ShareCard } from '@/components/ui/ShareCard';
+import { VoteEarlyCard } from '@/components/ui/VoteEarlyCard';
 import EndorsementForm from '@/components/forms/EndorsementForm';
 import { ENDORSERS, VOTE_DATE } from '@/lib/constants';
 
@@ -378,11 +379,10 @@ export default function EndorsementsPage() {
               href="mailto:action@together-kc.com?subject=Request a Yard Sign"
               buttonText="Get a Sign"
             />
-            <LinkCard
+            <VoteEarlyCard
               title="Vote Early"
               description="Don't wait until Election Day. Vote early to make sure your voice counts."
               icon="🗳️"
-              href="https://www.kceb.org/voters/how-do-i-vote"
               buttonText="Learn How"
             />
           </div>
