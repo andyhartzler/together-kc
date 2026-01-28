@@ -48,12 +48,6 @@ const COUNTY_URLS: Record<County, string> = {
   Cass: 'https://casscounty.com/2355/Absentee-Information',
 };
 
-const COUNTY_GRADIENTS: Record<County, string> = {
-  Jackson: 'bg-gradient-to-br from-navy to-sky',
-  Clay: 'bg-gradient-to-br from-sky to-navy',
-  Platte: 'bg-gradient-to-br from-navy via-sky/60 to-navy',
-  Cass: 'bg-gradient-to-br from-sky/80 to-navy',
-};
 
 
 const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
@@ -192,12 +186,23 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => setSelectedCounty(county)}
-      className={cn(
-        'relative p-4 rounded-xl text-white font-semibold text-lg shadow-lg transition-all hover:shadow-xl hover:brightness-110',
-        COUNTY_GRADIENTS[county]
-      )}
+      className="group relative p-4 rounded-xl overflow-hidden bg-navy transition-all duration-200"
     >
-      {county} County
+      {/* Gradient glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-sky via-coral to-sky opacity-0 group-hover:opacity-60 blur-sm transition-opacity duration-500" />
+
+      {/* Content */}
+      <div className="relative flex items-center justify-center gap-2">
+        <span className="text-white font-semibold text-lg">{county} County</span>
+        <svg
+          className="w-4 h-4 text-white/80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7v10" />
+        </svg>
+      </div>
     </motion.button>
   );
 
