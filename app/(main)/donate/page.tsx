@@ -1,74 +1,113 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
-// Step configurations - conservative values that work at various widths
-// The form renders differently at different widths due to responsive design
-// Step 1: Hide only the logo, show title through Continue button
-// Steps 2-3: Hide logo, show title + progress bar through Continue
-const STEP_CONFIG = {
-  1: { height: 500, offset: -115 }, // Hide logo, show title through Continue + buffer
-  2: { height: 700, offset: -115 }, // Progress bar + details form + Continue
-  3: { height: 520, offset: -115 }, // Progress bar + payment form + Submit
+// Step heights determined from screenshots
+const STEP_HEIGHTS = {
+  1: 420,  // Amount selection step
+  2: 720,  // Details/info step
+  3: 460,  // Payment step
 };
 
-// Continue button is roughly in this zone (as percentage of visible container)
-// Step 1: Continue at ~65-80% down, Step 2: ~75-90% down
-const CONTINUE_ZONE = {
-  yMin: 0.60, // 60% down from top
-  yMax: 0.95, // to near bottom
-  xMin: 0.25, // 25% from left (button is centered)
-  xMax: 0.75, // 75% from left
+// Offsets to hide Numero branding
+const STEP_OFFSETS = {
+  1: -250,  // Hide header, no progress bar visible
+  2: -148,  // Hide logo, show progress bar
+  3: -148,  // Hide logo, show progress bar
 };
 
 export default function DonatePage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [overlayEnabled, setOverlayEnabled] = useState(true);
+  const [loadCount, setLoadCount] = useState(0);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastClickTime = useRef(0);
 
-  // Handle clicks on the transparent overlay
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-
-    const rect = containerRef.current.getBoundingClientRect();
-    const relativeX = (e.clientX - rect.left) / rect.width;
-    const relativeY = (e.clientY - rect.top) / rect.height;
-
-    console.log(`[Donate] Click at ${Math.round(relativeX * 100)}% x, ${Math.round(relativeY * 100)}% y`);
-
-    // Check if click was in the Continue button zone
-    const inContinueZone =
-      relativeY >= CONTINUE_ZONE.yMin &&
-      relativeY <= CONTINUE_ZONE.yMax &&
-      relativeX >= CONTINUE_ZONE.xMin &&
-      relativeX <= CONTINUE_ZONE.xMax;
-
-    if (inContinueZone) {
-      const now = Date.now();
-      if (now - lastClickTime.current > 1000) {
-        lastClickTime.current = now;
-        console.log(`[Donate] Continue zone clicked! Will advance to step ${currentStep + 1}`);
-
-        // Advance step after delay for form transition
-        setTimeout(() => {
-          setCurrentStep((prev) => {
-            if (prev >= 3) return prev;
-            return prev + 1;
-          });
-        }, 600);
+  // Attack 1: Load event counting
+  // Many donation forms do full page navigations between steps for security
+  // Each navigation fires onLoad - count them to detect step changes
+  const handleIframeLoad = useCallback(() => {
+    setLoadCount(prev => {
+      const newCount = prev + 1;
+      console.log(`[Donate] Iframe load #${newCount}`);
+      // Only update step if we haven't exceeded step 3
+      if (newCount <= 3) {
+        console.log(`[Donate] Setting step to ${newCount} based on load count`);
+        setCurrentStep(newCount);
       }
-    }
+      return newCount;
+    });
+  }, []);
 
-    // Briefly disable overlay to let click through to iframe
-    setOverlayEnabled(false);
-    setTimeout(() => setOverlayEnabled(true), 100);
-  };
+  // Attack 2: Window blur detection for step changes
+  // When user interacts with iframe, parent window loses focus
+  useEffect(() => {
+    let lastBlurTime = 0;
+    let interactionCount = 0;
 
-  const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG];
+    const handleBlur = () => {
+      const now = Date.now();
+      // If blur happens >3 seconds after last, might indicate form submission/step change
+      if (now - lastBlurTime > 3000 && loadCount > 0) {
+        interactionCount++;
+        console.log(`[Donate] Window blur detected, interaction #${interactionCount}`);
+      }
+      lastBlurTime = now;
+    };
+
+    window.addEventListener('blur', handleBlur);
+    return () => window.removeEventListener('blur', handleBlur);
+  }, [loadCount]);
+
+  // Attack 3: ResizeObserver on iframe element
+  // The iframe element might resize when content changes
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        console.log(`[Donate] Iframe resize detected: ${entry.contentRect.width}x${entry.contentRect.height}`);
+      }
+    });
+
+    resizeObserver.observe(iframe);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  // Attack 4: postMessage listener
+  // Some platforms send height/step messages without documentation
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Only accept messages from Numero
+      if (!event.origin.includes('numero.ai')) return;
+
+      console.log('[Donate] postMessage received:', event.data);
+
+      // Check for height data
+      if (event.data?.height && typeof event.data.height === 'number') {
+        console.log(`[Donate] Numero sent height: ${event.data.height}`);
+      }
+
+      // Check for step data
+      if (event.data?.step && typeof event.data.step === 'number') {
+        console.log(`[Donate] Numero sent step: ${event.data.step}`);
+        setCurrentStep(event.data.step);
+      }
+
+      // Check for any resize-related data
+      if (event.data?.type === 'resize' || event.data?.action === 'resize') {
+        console.log('[Donate] Numero resize event:', event.data);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  const currentHeight = STEP_HEIGHTS[currentStep as keyof typeof STEP_HEIGHTS];
+  const currentOffset = STEP_OFFSETS[currentStep as keyof typeof STEP_OFFSETS];
 
   return (
     <>
@@ -291,40 +330,22 @@ export default function DonatePage() {
                   <motion.div
                     ref={containerRef}
                     className="relative overflow-hidden"
-                    animate={{ height: config.height }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 200,
-                      damping: 25,
-                    }}
+                    animate={{ height: currentHeight }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
                   >
-                    <motion.iframe
+                    <iframe
+                      ref={iframeRef}
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
-                      onLoad={() => setIsLoaded(true)}
+                      onLoad={handleIframeLoad}
                       className="w-full absolute left-0"
-                      animate={{ top: config.offset }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 200,
-                        damping: 25,
-                      }}
                       style={{
                         height: '1600px',
                         border: 'none',
-                        pointerEvents: overlayEnabled ? 'none' : 'auto',
+                        top: currentOffset,
                       }}
                       allow="payment"
                     />
-
-                    {/* Invisible overlay to capture click positions */}
-                    {overlayEnabled && (
-                      <div
-                        className="absolute inset-0 z-10 cursor-pointer"
-                        onClick={handleOverlayClick}
-                        style={{ background: 'transparent' }}
-                      />
-                    )}
                   </motion.div>
                 </div>
               </div>
