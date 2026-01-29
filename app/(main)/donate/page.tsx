@@ -4,6 +4,9 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 
+// Bar positions every 25px, extended to 1175px to cover full container
+const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
+
 export default function DonatePage() {
   // Prevent iframe from stealing scroll position when it auto-focuses
   useEffect(() => {
@@ -54,9 +57,21 @@ export default function DonatePage() {
               }}
               allow="payment"
             />
-            {/* White bars to cover iframe card edges on left and right */}
-            <div className="absolute top-0 bottom-0 left-0 w-6 bg-white z-10" />
-            <div className="absolute top-0 bottom-0 right-0 w-6 bg-white z-10" />
+            {/* White bars to cover iframe card edges - individual bars every 25px */}
+            {BAR_POSITIONS.map(pos => (
+              <div
+                key={`left-${pos}`}
+                className="absolute left-0 bg-white z-10"
+                style={{ top: pos, height: 25, width: 24 }}
+              />
+            ))}
+            {BAR_POSITIONS.map(pos => (
+              <div
+                key={`right-${pos}`}
+                className="absolute right-0 bg-white z-10"
+                style={{ top: pos, height: 25, width: 24 }}
+              />
+            ))}
           </div>
         </div>
       </section>
