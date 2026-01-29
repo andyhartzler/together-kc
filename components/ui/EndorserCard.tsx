@@ -170,8 +170,8 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-sm sm:max-w-md"
+            onClick={handleClose}
+            className="relative w-full max-w-sm sm:max-w-md cursor-pointer"
             style={{ perspective: '1000px' }}
           >
             {/* Flippable card */}
@@ -259,16 +259,6 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
 
               </div>
             </motion.div>
-
-            {/* Close button */}
-            <button
-              onClick={handleClose}
-              className="absolute -top-3 -right-3 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors z-10"
-            >
-              <svg className="w-5 h-5 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
           </motion.div>
         </motion.div>
       )}
