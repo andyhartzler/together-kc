@@ -7,55 +7,41 @@ import Button from '@/components/ui/Button';
 // Bar positions every 25px, extended to 1175px to cover full container
 const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
 
-// Animated checkmark with blue circular arrow
-const AnimatedCheckmark = () => (
-  <div className="relative w-36 h-36 sm:w-44 sm:h-44">
-    <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
-      <defs>
-        <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#60a5fa" />
-          <stop offset="100%" stopColor="#2563eb" />
-        </linearGradient>
-      </defs>
-
-      {/* Blue circular arrow - behind checkmark */}
-      <motion.circle
-        cx="50"
-        cy="50"
-        r="38"
-        fill="none"
-        stroke="url(#blueGrad)"
-        strokeWidth="8"
-        strokeLinecap="round"
-        strokeDasharray="200"
-        strokeDashoffset="40"
-        initial={{ strokeDashoffset: 240, opacity: 0 }}
-        animate={{ strokeDashoffset: 40, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-        style={{ filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))' }}
-      />
-
-      {/* Arrowhead */}
-      <motion.polygon
-        points="18,68 28,80 32,66"
-        fill="#2563eb"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 1.1 }}
-        style={{ filter: 'drop-shadow(0 0 4px rgba(59, 130, 246, 0.5))' }}
-      />
-
-      {/* Red checkmark - bold geometric shape */}
-      <motion.path
-        d="M 22 52 L 40 70 L 82 22 L 72 14 L 40 52 L 30 42 Z"
-        fill="#dc2626"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-        style={{ transformOrigin: '50% 50%' }}
-      />
-    </svg>
-  </div>
+// Animated heart in glowing red circle
+const AnimatedHeart = () => (
+  <motion.div
+    className="relative"
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+  >
+    {/* Red circle with glow */}
+    <motion.div
+      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-coral flex items-center justify-center"
+      animate={{
+        boxShadow: [
+          '0 0 10px 2px rgba(229, 57, 53, 0.3)',
+          '0 0 20px 6px rgba(229, 57, 53, 0.5)',
+          '0 0 10px 2px rgba(229, 57, 53, 0.3)',
+        ],
+      }}
+      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      {/* Heart icon */}
+      <motion.svg
+        viewBox="0 0 24 24"
+        className="w-10 h-10 sm:w-12 sm:h-12"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+      >
+        <path
+          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+          fill="#E53935"
+        />
+      </motion.svg>
+    </motion.div>
+  </motion.div>
 );
 
 export default function DonatePage() {
@@ -79,9 +65,9 @@ export default function DonatePage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            {/* Animated Checkmark with Glowy Circle */}
+            {/* Animated Heart with Glowy Circle */}
             <div className="flex justify-center mb-6">
-              <AnimatedCheckmark />
+              <AnimatedHeart />
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
