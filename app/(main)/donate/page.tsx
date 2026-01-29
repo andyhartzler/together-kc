@@ -1,38 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Shield, Users, Sparkles, ArrowRight, Building2 } from 'lucide-react';
-
-const PRESET_AMOUNTS = [1000, 2500, 5000, 10000];
+import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
 export default function DonatePage() {
-  const [selectedAmount, setSelectedAmount] = useState<number | null>(2500);
-  const [customAmount, setCustomAmount] = useState('');
-  const [isMonthly, setIsMonthly] = useState(false);
-  const [isCustom, setIsCustom] = useState(false);
-
-  const handleAmountSelect = (amount: number) => {
-    setSelectedAmount(amount);
-    setIsCustom(false);
-    setCustomAmount('');
-  };
-
-  const handleCustomSelect = () => {
-    setIsCustom(true);
-    setSelectedAmount(null);
-  };
-
-  const handleContinue = () => {
-    const amount = isCustom ? parseInt(customAmount) || 0 : selectedAmount;
-    if (amount && amount > 0) {
-      // Redirect to Numero with the selected amount
-      window.open(`https://secure.numero.ai/contribute/Together-KC`, '_blank');
-    }
-  };
-
-  const displayAmount = isCustom ? (parseInt(customAmount) || 0) : (selectedAmount || 0);
-
   return (
     <>
       {/* Hero Section */}
@@ -233,13 +204,13 @@ export default function DonatePage() {
               </div>
             </motion.div>
 
-            {/* Right Column - Custom Donation Form */}
+            {/* Right Column - Donation Form Embed */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="lg:col-span-3"
+              className="lg:col-span-3 space-y-4"
             >
               <div className="relative">
                 {/* Decorative glow behind the form */}
@@ -250,130 +221,44 @@ export default function DonatePage() {
                   {/* Header accent */}
                   <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  <div className="p-6 sm:p-8">
-                    {/* Organization link */}
-                    <a
-                      href="https://secure.numero.ai/contribute/Together-KC"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm text-sky hover:text-navy transition-colors mb-6"
-                    >
-                      <Building2 className="w-4 h-4" />
-                      Contributing as an organization? Click here.
-                    </a>
-
-                    {/* Amount Selection */}
-                    <h3 className="text-xl font-bold text-navy mb-6">Choose an amount</h3>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-                      {PRESET_AMOUNTS.map((amount) => (
-                        <motion.button
-                          key={amount}
-                          onClick={() => handleAmountSelect(amount)}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={`relative py-4 px-3 rounded-xl font-bold text-lg transition-all duration-200 ${
-                            selectedAmount === amount && !isCustom
-                              ? 'bg-navy text-white shadow-lg shadow-navy/25'
-                              : 'bg-light-gray text-navy hover:bg-gray-200'
-                          }`}
-                        >
-                          ${amount.toLocaleString()}
-                          {selectedAmount === amount && !isCustom && (
-                            <motion.div
-                              layoutId="amount-indicator"
-                              className="absolute inset-0 rounded-xl border-2 border-coral"
-                              initial={false}
-                              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                            />
-                          )}
-                        </motion.button>
-                      ))}
-                    </div>
-
-                    {/* Custom Amount */}
-                    <motion.button
-                      onClick={handleCustomSelect}
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
-                      className={`w-full py-4 px-4 rounded-xl font-semibold text-lg transition-all duration-200 mb-6 ${
-                        isCustom
-                          ? 'bg-navy text-white shadow-lg shadow-navy/25 border-2 border-coral'
-                          : 'bg-light-gray text-navy hover:bg-gray-200'
-                      }`}
-                    >
-                      {isCustom ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <span className="text-white/70">$</span>
-                          <input
-                            type="number"
-                            value={customAmount}
-                            onChange={(e) => setCustomAmount(e.target.value)}
-                            placeholder="Enter amount"
-                            className="bg-transparent text-center text-white placeholder-white/50 outline-none w-32 font-bold"
-                            autoFocus
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                        </div>
-                      ) : (
-                        'OTHER'
-                      )}
-                    </motion.button>
-
-                    {/* Frequency Toggle */}
-                    <div className="flex items-center justify-center gap-2 mb-8">
-                      <button
-                        onClick={() => setIsMonthly(false)}
-                        className={`px-6 py-2.5 rounded-full font-semibold transition-all duration-200 ${
-                          !isMonthly
-                            ? 'bg-coral text-white shadow-md'
-                            : 'bg-light-gray text-gray-600 hover:bg-gray-200'
-                        }`}
-                      >
-                        Give once
-                      </button>
-                      <button
-                        onClick={() => setIsMonthly(true)}
-                        className={`px-6 py-2.5 rounded-full font-semibold transition-all duration-200 ${
-                          isMonthly
-                            ? 'bg-coral text-white shadow-md'
-                            : 'bg-light-gray text-gray-600 hover:bg-gray-200'
-                        }`}
-                      >
-                        Donate monthly
-                      </button>
-                    </div>
-
-                    {/* Continue Button */}
-                    <motion.button
-                      onClick={handleContinue}
-                      disabled={displayAmount <= 0}
-                      whileHover={{ scale: displayAmount > 0 ? 1.02 : 1 }}
-                      whileTap={{ scale: displayAmount > 0 ? 0.98 : 1 }}
-                      className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-200 ${
-                        displayAmount > 0
-                          ? 'bg-gradient-to-r from-coral to-coral/90 text-white shadow-lg shadow-coral/25 hover:shadow-xl hover:shadow-coral/30'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      {displayAmount > 0 ? (
-                        <>
-                          Continue with ${displayAmount.toLocaleString()}
-                          {isMonthly && '/mo'}
-                          <ArrowRight className="w-5 h-5" />
-                        </>
-                      ) : (
-                        'Select an amount'
-                      )}
-                    </motion.button>
-
-                    {/* Secure badge */}
-                    <p className="text-center text-xs text-gray-400 mt-4">
-                      Secure payment processing powered by Numero
-                    </p>
+                  {/* Iframe container - clips to hide header but show progress bar on step 2/3 */}
+                  <div
+                    className="relative overflow-hidden"
+                    style={{ height: '580px' }}
+                  >
+                    <iframe
+                      src="https://secure.numero.ai/contribute/Together-KC"
+                      title="Donate to Together KC"
+                      className="w-full absolute left-0"
+                      style={{
+                        height: '1200px',
+                        border: 'none',
+                        top: '-95px',
+                      }}
+                      allow="payment"
+                    />
                   </div>
                 </div>
               </div>
+
+              {/* Legal Disclaimer Tile */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="bg-gradient-to-br from-light-gray to-white rounded-xl p-5 border border-gray-100"
+              >
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  Under Missouri Law, political action committees, corporations, and other business
+                  entities may contribute to Together KC in any amount. Together KC is a political
+                  action committee registered with the Missouri Ethics Commission. Foreign nationals
+                  may not contribute to Together KC.
+                </p>
+                <p className="text-xs text-gray-400 mt-3">
+                  EIN: 85-1464950 &bull; Paid for by Together KC, Dan Kopp, Treasurer.
+                </p>
+              </motion.div>
             </motion.div>
           </div>
         </div>
