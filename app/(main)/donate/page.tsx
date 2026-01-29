@@ -119,15 +119,6 @@ export default function DonatePage() {
               </motion.span>
             </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.0 }}
-              className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto mb-8"
-            >
-              Your contribution helps ensure Kansas City voters have the information
-              they need to make informed decisions about our city&apos;s future.
-            </motion.p>
           </div>
         </div>
 
