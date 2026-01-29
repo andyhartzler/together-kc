@@ -7,7 +7,7 @@ import Button from '@/components/ui/Button';
 // Bar positions every 25px, extended to 1175px to cover full container
 const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
 
-// Animated heart outline with inner glow in tight red circle
+// Animated heart outline with pulsing inner glow
 const AnimatedHeart = () => (
   <motion.div
     className="relative"
@@ -16,18 +16,8 @@ const AnimatedHeart = () => (
     transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
   >
     {/* Tight red circle around heart */}
-    <motion.div
-      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-3 border-coral flex items-center justify-center"
-      animate={{
-        boxShadow: [
-          '0 0 8px 2px rgba(229, 57, 53, 0.3)',
-          '0 0 16px 4px rgba(229, 57, 53, 0.5)',
-          '0 0 8px 2px rgba(229, 57, 53, 0.3)',
-        ],
-      }}
-      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-    >
-      {/* Heart outline with inner glow */}
+    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-coral flex items-center justify-center">
+      {/* Heart outline with pulsing inner glow */}
       <motion.svg
         viewBox="0 0 24 24"
         className="w-8 h-8 sm:w-10 sm:h-10"
@@ -36,27 +26,41 @@ const AnimatedHeart = () => (
         transition={{ duration: 0.4, delay: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
       >
         <defs>
+          {/* Pulsing inner glow filter */}
           <filter id="innerGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
-            <feOffset in="blur" dx="0" dy="0" result="offsetBlur" />
-            <feFlood floodColor="#e53935" floodOpacity="0.6" result="color" />
-            <feComposite in="color" in2="offsetBlur" operator="in" result="shadow" />
-            <feComposite in="shadow" in2="SourceAlpha" operator="in" result="innerShadow" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
+            <feFlood floodColor="#e53935" result="color" />
+            <feComposite in="color" in2="blur" operator="in" result="glow" />
             <feMerge>
-              <feMergeNode in="innerShadow" />
+              <feMergeNode in="glow" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
+        {/* Pulsing glow fill inside heart */}
+        <motion.path
+          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+          fill="none"
+          stroke="none"
+          animate={{
+            fill: [
+              'rgba(229, 57, 53, 0.1)',
+              'rgba(229, 57, 53, 0.4)',
+              'rgba(229, 57, 53, 0.1)',
+            ],
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          filter="url(#innerGlow)"
+        />
+        {/* Heart outline */}
         <path
           d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
           fill="none"
           stroke="#e53935"
           strokeWidth="1.5"
-          filter="url(#innerGlow)"
         />
       </motion.svg>
-    </motion.div>
+    </div>
   </motion.div>
 );
 
