@@ -58,10 +58,9 @@ export default function DonatePage() {
               }}
               allow="payment"
             />
-            {/* White bars to cover iframe card edges and rounded corners */}
-            <div className="absolute top-0 bottom-0 left-0 w-10 bg-white z-10" />
-            <div className="absolute top-0 bottom-0 right-0 w-10 bg-white z-10" />
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-white z-10" />
+            {/* White bars to cover iframe box shadow on left and right */}
+            <div className="absolute top-0 bottom-0 left-0 w-6 bg-white z-10" />
+            <div className="absolute top-0 bottom-0 right-0 w-6 bg-white z-10" />
           </div>
         </div>
       </section>
