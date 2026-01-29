@@ -1,68 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
-// Step 1: Amount selection - compact
-// Steps 2-3: Details/Payment - taller (similar heights)
-const STEP_CONFIG = {
-  1: { height: 500, offset: -115 },   // Amount selection - hide logo, show title + amounts + Continue
-  2: { height: 850, offset: -115 },   // Details form - hide logo, show progress bar + all fields
-};
-
 export default function DonatePage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-
-  // Handle clicks on the overlay - detect Continue button clicks and pass through to iframe
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const x = e.clientX;
-    const y = e.clientY;
-
-    // 1. Check if click is in Continue button zone (bottom 40% of container)
-    if (containerRef.current && currentStep === 1) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const relY = (y - rect.top) / rect.height;
-
-      if (relY > 0.60) {
-        // Click is in Continue button area - resize after delay
-        setTimeout(() => setCurrentStep(2), 500);
-      }
-    }
-
-    // 2. Pass click through to iframe by temporarily disabling overlay
-    if (overlayRef.current && iframeRef.current) {
-      // Hide overlay to allow click-through
-      overlayRef.current.style.pointerEvents = 'none';
-
-      // Dispatch full click sequence at same coordinates
-      ['mousedown', 'mouseup', 'click'].forEach(eventType => {
-        const event = new MouseEvent(eventType, {
-          bubbles: true,
-          cancelable: true,
-          clientX: x,
-          clientY: y,
-          view: window,
-        });
-        iframeRef.current!.dispatchEvent(event);
-      });
-
-      // Re-enable overlay after brief delay
-      setTimeout(() => {
-        if (overlayRef.current) {
-          overlayRef.current.style.pointerEvents = 'auto';
-        }
-      }, 100);
-    }
-  };
-
-  const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG] || STEP_CONFIG[2];
 
   return (
     <>
@@ -281,37 +222,23 @@ export default function DonatePage() {
                   {/* Header accent */}
                   <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  {/* Iframe container - dynamically sized based on detected step */}
-                  <motion.div
-                    ref={containerRef}
+                  {/* Iframe container - fixed size */}
+                  <div
                     className="relative overflow-hidden"
-                    animate={{ height: config.height }}
-                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                    style={{ height: 850 }}
                   >
-                    <motion.iframe
-                      ref={iframeRef}
+                    <iframe
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
                       className="w-full absolute left-0"
-                      animate={{ top: config.offset }}
-                      transition={{ duration: 0.4, ease: 'easeInOut' }}
                       style={{
                         height: '2100px',
+                        top: -115,
                         border: 'none',
                       }}
                       allow="payment"
                     />
-
-                    {/* Click-through overlay - captures clicks to detect Continue button, then passes through */}
-                    {currentStep === 1 && (
-                      <div
-                        ref={overlayRef}
-                        onClick={handleOverlayClick}
-                        className="absolute inset-0 z-10 cursor-pointer"
-                        style={{ background: 'transparent' }}
-                      />
-                    )}
-                  </motion.div>
+                  </div>
                 </div>
               </div>
 
