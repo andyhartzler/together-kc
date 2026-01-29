@@ -1,9 +1,71 @@
 'use client';
 
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
+const STEP_HEIGHTS = {
+  1: 420,
+  2: 720,
+  3: 460,
+};
+
+const STEP_OFFSETS = {
+  1: -250, // Hide header, no progress bar
+  2: -148, // Hide logo, show progress bar
+  3: -148, // Hide logo, show progress bar
+};
+
 export default function DonatePage() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [loadCount, setLoadCount] = useState(0);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Attack 1: Load event counting
+  const handleIframeLoad = useCallback(() => {
+    setLoadCount((prev) => {
+      const newCount = prev + 1;
+      if (newCount <= 3) {
+        setCurrentStep(newCount);
+      }
+      return newCount;
+    });
+  }, []);
+
+  // Attack 2: Window blur detection (for additional signals)
+  useEffect(() => {
+    let lastBlurTime = 0;
+
+    const handleBlur = () => {
+      const now = Date.now();
+      // Track blur timing - could be useful for future enhancements
+      lastBlurTime = now;
+    };
+
+    window.addEventListener('blur', handleBlur);
+    return () => window.removeEventListener('blur', handleBlur);
+  }, [loadCount]);
+
+  // Attack 4: Listen for postMessage (in case Numero supports it)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Only accept messages from Numero
+      if (!event.origin.includes('numero.ai')) return;
+
+      // Check for any height/step data
+      if (event.data?.height) {
+        // Numero is sending height - could use it directly
+        console.log('Numero height:', event.data.height);
+      }
+      if (event.data?.step) {
+        setCurrentStep(event.data.step);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   return (
     <>
       {/* Hero Section */}
@@ -221,23 +283,28 @@ export default function DonatePage() {
                   {/* Header accent */}
                   <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  {/* Iframe container - sized for tallest form step, hides logo */}
-                  <div
+                  {/* Iframe container - dynamically sized based on form step */}
+                  <motion.div
                     className="relative overflow-hidden rounded-b-xl"
-                    style={{ height: '700px' }}
+                    animate={{
+                      height: STEP_HEIGHTS[currentStep as keyof typeof STEP_HEIGHTS],
+                    }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
                   >
                     <iframe
+                      ref={iframeRef}
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
+                      onLoad={handleIframeLoad}
                       className="w-full absolute left-0"
                       style={{
                         height: '1600px',
                         border: 'none',
-                        top: '-148px',
+                        top: STEP_OFFSETS[currentStep as keyof typeof STEP_OFFSETS],
                       }}
                       allow="payment"
                     />
-                  </div>
+                  </motion.div>
                 </div>
               </div>
 
