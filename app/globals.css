@@ -86,8 +86,12 @@ html {
 }
 
 @keyframes spin-slow {
-  from { transform: rotateY(0deg); }
-  to { transform: rotateY(360deg); }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 4s linear infinite;
 }
 
 .animate-float {

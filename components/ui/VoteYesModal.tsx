@@ -225,7 +225,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
             className="absolute inset-0 bg-navy/80 backdrop-blur-sm"
           />
 
-          {/* Modal Content */}
+          {/* Modal Content with animated gradient border */}
           <motion.div
             ref={modalRef}
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -233,8 +233,24 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-md rounded-2xl"
+            style={{
+              boxShadow: '0 0 40px rgba(74, 144, 217, 0.3), 0 0 80px rgba(30, 58, 95, 0.2)',
+            }}
           >
+            {/* Animated gradient border */}
+            <div className="absolute -inset-[2px] rounded-2xl overflow-hidden">
+              <div
+                className="absolute inset-0 animate-spin-slow"
+                style={{
+                  background: 'conic-gradient(from 0deg, #1E3A5F, #4A90D9, #87CEEB, #4A90D9, #1E3A5F)',
+                  animationDuration: '4s',
+                }}
+              />
+            </div>
+
+            {/* Inner card */}
+            <div className="relative bg-white rounded-2xl overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-br from-navy to-navy/90 p-6 text-center">
               <motion.div
@@ -262,10 +278,10 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
               </svg>
             </button>
 
-            {/* Content */}
-            <div className="p-6">
-              <AnimatePresence mode="wait">
-                {view === 'main' && (
+              {/* Content */}
+              <div className="p-6">
+                <AnimatePresence mode="wait">
+                  {view === 'main' && (
                   <motion.div
                     key="main"
                     initial={{ opacity: 0 }}
@@ -518,7 +534,8 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                     <EndorsementForm compact onSuccess={handleClose} />
                   </motion.div>
                 )}
-              </AnimatePresence>
+                </AnimatePresence>
+              </div>
             </div>
           </motion.div>
         </motion.div>
