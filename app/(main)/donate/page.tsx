@@ -7,6 +7,42 @@ import Button from '@/components/ui/Button';
 // Bar positions every 25px, extended to 1175px to cover full container
 const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
 
+// Animated checkmark with glowy red circle
+const AnimatedCheckmark = () => (
+  <motion.div
+    className="relative"
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+  >
+    {/* Glowy red circle outline */}
+    <motion.div
+      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-coral flex items-center justify-center"
+      initial={{ boxShadow: '0 0 0 0 rgba(229, 57, 53, 0)' }}
+      animate={{ boxShadow: '0 0 20px 5px rgba(229, 57, 53, 0.4)' }}
+      transition={{ duration: 0.8, delay: 0.3 }}
+    >
+      {/* Checkmark SVG */}
+      <motion.svg
+        viewBox="0 0 100 100"
+        className="w-10 h-10 sm:w-12 sm:h-12"
+      >
+        <motion.path
+          d="M25 55 L42 72 L75 28"
+          fill="none"
+          stroke="#E53935"
+          strokeWidth="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.6, delay: 0.5, ease: 'easeOut' }}
+        />
+      </motion.svg>
+    </motion.div>
+  </motion.div>
+);
+
 export default function DonatePage() {
   // Prevent iframe from stealing scroll position when it auto-focuses
   useEffect(() => {
@@ -28,10 +64,15 @@ export default function DonatePage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
+            {/* Animated Checkmark with Glowy Circle */}
+            <div className="flex justify-center mb-6">
+              <AnimatedCheckmark />
+            </div>
+
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-navy">
               Support
               <br />
-              <span className="gradient-text">Together KC</span>
+              <span className="gradient-text">the Renewal</span>
             </h1>
           </motion.div>
         </div>
