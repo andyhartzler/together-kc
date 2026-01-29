@@ -7,40 +7,38 @@ import Button from '@/components/ui/Button';
 // Bar positions every 25px, extended to 1175px to cover full container
 const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
 
-// Animated heart in glowing red circle
+// Animated heart in glowing circle - matches site brand colors
 const AnimatedHeart = () => (
   <motion.div
     className="relative"
     initial={{ opacity: 0, scale: 0 }}
     animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+    transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
   >
-    {/* Red circle with glow */}
-    <motion.div
-      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-coral flex items-center justify-center"
-      animate={{
-        boxShadow: [
-          '0 0 10px 2px rgba(229, 57, 53, 0.3)',
-          '0 0 20px 6px rgba(229, 57, 53, 0.5)',
-          '0 0 10px 2px rgba(229, 57, 53, 0.3)',
-        ],
-      }}
-      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-    >
-      {/* Heart icon */}
-      <motion.svg
-        viewBox="0 0 24 24"
-        className="w-10 h-10 sm:w-12 sm:h-12"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.4, delay: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
-      >
-        <path
-          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-          fill="#E53935"
-        />
-      </motion.svg>
-    </motion.div>
+    {/* Circle with gradient border and glow */}
+    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-1 bg-gradient-to-br from-coral to-golden animate-pulse-glow">
+      <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+        {/* Heart icon with gradient fill */}
+        <motion.svg
+          viewBox="0 0 24 24"
+          className="w-9 h-9 sm:w-11 sm:h-11"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+        >
+          <defs>
+            <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#e53935" />
+              <stop offset="100%" stopColor="#f5a623" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+            fill="url(#heartGradient)"
+          />
+        </motion.svg>
+      </div>
+    </div>
   </motion.div>
 );
 
