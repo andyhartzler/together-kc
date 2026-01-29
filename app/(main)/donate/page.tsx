@@ -61,6 +61,9 @@ export default function DonatePage() {
             {/* White bars to cover iframe box shadow on left and right */}
             <div className="absolute top-0 bottom-0 left-0 w-6 bg-white z-10" />
             <div className="absolute top-0 bottom-0 right-0 w-6 bg-white z-10" />
+            {/* Extra coverage at bottom for the inner card edge visible near "Foreign nationals" text */}
+            <div className="absolute bottom-0 left-0 w-12 bg-white z-10" style={{ height: 150 }} />
+            <div className="absolute bottom-0 right-0 w-12 bg-white z-10" style={{ height: 150 }} />
           </div>
         </div>
       </section>
