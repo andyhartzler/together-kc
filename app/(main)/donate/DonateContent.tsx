@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import { EndorsementPopup } from '@/components/ui/EndorsementPopup';
 
-// Bar positions every 25px, extended to 1175px to cover full container
-const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
+// Bar positions every 25px, extended to 1375px to cover full container on mobile
+const BAR_POSITIONS = Array.from({ length: Math.ceil(1375 / 25) }, (_, i) => i * 25);
 
 // Animated heart outline with inner glow in tight red circle
 const AnimatedHeart = () => (
@@ -121,10 +121,9 @@ export default function DonateContent() {
       {/* Donation Form Section - white background to match iframe */}
       <section className="py-12 bg-white">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Iframe container */}
+          {/* Iframe container - taller on mobile */}
           <div
-            className="relative overflow-hidden"
-            style={{ height: 1100 }}
+            className="relative overflow-hidden h-[1300px] sm:h-[1100px]"
           >
             {/* White cover to permanently hide iframe header during load */}
             <div
