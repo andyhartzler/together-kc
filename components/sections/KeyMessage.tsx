@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 // Interactive stat card
 function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value: string; label: string; delay: number }) {
@@ -9,7 +9,6 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
   const [isActive, setIsActive] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(cardRef, { once: true, amount: 0.8 });
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -19,22 +18,10 @@ function StatCard({ icon, value, label, delay }: { icon: React.ReactNode; value:
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Trigger animation when card comes into view on mobile
-  useEffect(() => {
-    if (isMobile && isInView) {
-      const timer = setTimeout(() => {
-        setIsActive(true);
-      }, delay * 1000 + 300);
-      return () => clearTimeout(timer);
-    }
-  }, [isMobile, isInView, delay]);
-
-  // Handle tap to replay animation on mobile
+  // Handle tap to toggle animation on mobile
   const handleTap = () => {
     if (isMobile) {
-      // Reset to inactive first, then activate after brief delay to replay animation
-      setIsActive(false);
-      setTimeout(() => setIsActive(true), 50);
+      setIsActive(prev => !prev);
     }
   };
 
