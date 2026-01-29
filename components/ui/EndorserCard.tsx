@@ -117,15 +117,6 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
           className="absolute -top-8 -right-8 w-24 h-24 bg-coral rounded-full blur-2xl"
         />
 
-        {/* Click hint icon */}
-        <motion.div
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          className="absolute top-3 right-3 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm"
-        >
-          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </motion.div>
       </motion.div>
     </motion.div>
   );
