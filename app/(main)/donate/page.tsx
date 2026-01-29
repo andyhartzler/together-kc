@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 
-// Generate bar positions every 25px for 1100px container height
-const BAR_POSITIONS = Array.from({ length: Math.ceil(1100 / 25) }, (_, i) => i * 25);
+// Generate bar positions every 25px - extended to 1175px to cover full container + extra
+const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
 
 export default function DonatePage() {
   // State for left and right bar widths at each position
