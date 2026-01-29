@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Sitemap: https://together-kc.com/sitemap.xml
+
+# Allow AI crawlers
+User-agent: GPTBot
+User-agent: anthropic-ai
+User-agent: Claude-Web
+User-agent: PerplexityBot
+User-agent: CCBot
+Allow: /
