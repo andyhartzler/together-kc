@@ -233,24 +233,10 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md rounded-2xl"
-            style={{
-              boxShadow: '0 0 40px rgba(74, 144, 217, 0.3), 0 0 80px rgba(30, 58, 95, 0.2)',
-            }}
+            className="relative w-full max-w-md glow-container"
           >
-            {/* Animated gradient border */}
-            <div className="absolute -inset-[2px] rounded-2xl overflow-hidden">
-              <div
-                className="absolute inset-0 animate-spin-slow"
-                style={{
-                  background: 'conic-gradient(from 0deg, #1E3A5F, #4A90D9, #87CEEB, #4A90D9, #1E3A5F)',
-                  animationDuration: '4s',
-                }}
-              />
-            </div>
-
             {/* Inner card */}
-            <div className="relative bg-white rounded-2xl overflow-hidden">
+            <div className="relative bg-white rounded-2xl overflow-hidden z-10">
             {/* Header */}
             <div className="bg-gradient-to-br from-navy to-navy/90 p-6 text-center">
               <motion.div
@@ -261,7 +247,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
               >
                 🗳️
               </motion.div>
-              <h2 className="text-2xl font-bold text-white">Early Voting Begins March 24th</h2>
+              <h2 className="text-2xl font-bold text-white">Early Voting Begins<br className="sm:hidden" /> March 24th</h2>
               <div className="mt-3 inline-block bg-coral/20 rounded-lg px-4 py-2">
                 <p className="text-white/90 text-sm">Last Day to Register to Vote</p>
                 <p className="text-coral font-bold text-xl">March 11</p>

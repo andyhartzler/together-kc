@@ -94,6 +94,92 @@ html {
   animation: spin-slow 4s linear infinite;
 }
 
+/* Glowing shadow animation for Vote Yes modal */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --glow-intensity {
+  syntax: "<number>";
+  initial-value: 0.3;
+  inherits: false;
+}
+
+@keyframes gradient-rotate {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    --glow-intensity: 0.3;
+  }
+  50% {
+    --glow-intensity: 0.6;
+  }
+}
+
+.glow-container {
+  position: relative;
+}
+
+.glow-container::before,
+.glow-container::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 1rem;
+  /* Fallback for browsers without @property support */
+  background: conic-gradient(
+    from 0deg,
+    #1E3A5F 0%,
+    #4A90D9 25%,
+    #87CEEB 50%,
+    #4A90D9 75%,
+    #1E3A5F 100%
+  );
+  animation: spin-slow 3s linear infinite;
+}
+
+/* Enhanced animation for browsers that support @property */
+@supports (background: conic-gradient(from var(--gradient-angle), red, blue)) {
+  .glow-container::before,
+  .glow-container::after {
+    background: conic-gradient(
+      from var(--gradient-angle),
+      #1E3A5F 0%,
+      #4A90D9 25%,
+      #87CEEB 50%,
+      #4A90D9 75%,
+      #1E3A5F 100%
+    );
+    animation: gradient-rotate 3s linear infinite;
+  }
+}
+
+.glow-container::after {
+  filter: blur(20px);
+  opacity: 0.4;
+  animation:
+    spin-slow 3s linear infinite,
+    glow-pulse 2s ease-in-out infinite;
+}
+
+@supports (background: conic-gradient(from var(--gradient-angle), red, blue)) {
+  .glow-container::after {
+    opacity: var(--glow-intensity);
+    animation:
+      gradient-rotate 3s linear infinite,
+      glow-pulse 2s ease-in-out infinite;
+  }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }

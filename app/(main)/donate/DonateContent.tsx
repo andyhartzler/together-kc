@@ -123,7 +123,7 @@ export default function DonateContent() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Iframe container - taller on mobile */}
           <div
-            className="relative overflow-hidden h-[1300px] sm:h-[1100px]"
+            className="relative overflow-hidden h-[1250px] sm:h-[1100px]"
           >
             {/* White cover to permanently hide iframe header during load */}
             <div
@@ -137,7 +137,7 @@ export default function DonateContent() {
             <iframe
               src="https://secure.numero.ai/contribute/Together-KC"
               title="Donate to Together KC"
-              className="w-full absolute left-0 transition-opacity duration-500 -top-[180px] sm:-top-[115px]"
+              className="w-full absolute left-0 transition-opacity duration-500 -top-[195px] sm:-top-[115px]"
               tabIndex={-1}
               style={{
                 height: '2100px',

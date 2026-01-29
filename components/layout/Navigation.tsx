@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { downloadCalendarEvent } from '@/lib/calendar';
 import { VoteYesModal } from '@/components/ui/VoteYesModal';
 
 export default function Navigation() {
@@ -174,36 +173,51 @@ export default function Navigation() {
               className="absolute top-0 right-0 bottom-0 w-[80vw] max-w-72 bg-white shadow-xl"
             >
               <div className="p-6 pt-20">
-                <div className="flex flex-col space-y-2">
-                  {NAV_LINKS.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="px-4 py-3 text-navy font-medium rounded-lg hover:bg-light-gray transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                  <div className="pt-4 space-y-3">
-                    {/* Vote YES Button - Mobile */}
+                <div className="flex flex-col space-y-1">
+                  {NAV_LINKS.map((link) => {
+                    const isActive = getIsActive(link.href);
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={cn(
+                          "relative px-4 py-3 text-lg font-semibold rounded-xl transition-all duration-200",
+                          isActive
+                            ? "text-coral bg-coral/10"
+                            : "text-navy hover:bg-light-gray"
+                        )}
+                      >
+                        {link.label}
+                        {/* Active indicator bar */}
+                        {isActive && (
+                          <motion.div
+                            layoutId="mobile-nav-indicator"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-coral rounded-full"
+                            initial={false}
+                            transition={{
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 30,
+                            }}
+                          />
+                        )}
+                      </Link>
+                    );
+                  })}
+                  <div className="pt-6">
+                    {/* Vote YES Button - Mobile - Glass style */}
                     <button
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                         setIsVoteModalOpen(true);
                       }}
-                      className="w-full px-6 py-3 text-white font-semibold bg-coral rounded-full transition-all duration-200 hover:bg-coral/90"
+                      className="w-full px-6 py-4 text-lg text-white font-semibold bg-gradient-to-r from-coral to-coral/90 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-coral/30 border border-white/20"
+                      style={{
+                        boxShadow: '0 4px 20px rgba(229, 57, 53, 0.3)',
+                      }}
                     >
                       Vote YES
-                    </button>
-                    <button
-                      onClick={() => {
-                        downloadCalendarEvent();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="block w-full px-6 py-3 bg-navy text-white font-semibold rounded-full text-center hover:bg-navy/90 transition-all"
-                    >
-                      Remind Me to Vote
                     </button>
                   </div>
                 </div>
