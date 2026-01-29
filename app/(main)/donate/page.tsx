@@ -7,40 +7,66 @@ import Button from '@/components/ui/Button';
 // Bar positions every 25px, extended to 1175px to cover full container
 const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
 
-// Animated checkmark with glowy red circle
+// Animated checkmark with blue circular arrow - matching the reference image
 const AnimatedCheckmark = () => (
-  <motion.div
-    className="relative"
-    initial={{ opacity: 0, scale: 0 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
-  >
-    {/* Glowy red circle outline */}
-    <motion.div
-      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-coral flex items-center justify-center"
-      initial={{ boxShadow: '0 0 0 0 rgba(229, 57, 53, 0)' }}
-      animate={{ boxShadow: '0 0 20px 5px rgba(229, 57, 53, 0.4)' }}
-      transition={{ duration: 0.8, delay: 0.3 }}
+  <div className="relative w-28 h-28 sm:w-36 sm:h-36">
+    {/* Blue circular arrow with glow */}
+    <motion.svg
+      viewBox="0 0 120 120"
+      className="absolute inset-0 w-full h-full"
+      style={{ filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))' }}
     >
-      {/* Checkmark SVG */}
-      <motion.svg
-        viewBox="0 0 100 100"
-        className="w-10 h-10 sm:w-12 sm:h-12"
-      >
-        <motion.path
-          d="M25 55 L42 72 L75 28"
-          fill="none"
-          stroke="#E53935"
-          strokeWidth="10"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 0.6, delay: 0.5, ease: 'easeOut' }}
-        />
-      </motion.svg>
-    </motion.div>
-  </motion.div>
+      {/* Circular arrow path - draws around the checkmark */}
+      <motion.path
+        d="M 95 60 A 35 35 0 1 1 60 25"
+        fill="none"
+        stroke="#2563eb"
+        strokeWidth="8"
+        strokeLinecap="round"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.6, ease: 'easeOut' }}
+      />
+      {/* Arrowhead */}
+      <motion.polygon
+        points="52,18 68,25 58,38"
+        fill="#2563eb"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3, delay: 1.2 }}
+      />
+    </motion.svg>
+
+    {/* Bold geometric red checkmark - straight edges */}
+    <motion.svg
+      viewBox="0 0 120 120"
+      className="absolute inset-0 w-full h-full"
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+    >
+      {/* Checkmark as bold geometric shape with straight edges */}
+      <motion.polygon
+        points="30,65 45,80 50,75 35,60"
+        fill="#E53935"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2, delay: 0.1 }}
+      />
+      <motion.polygon
+        points="45,80 95,30 85,20 35,70"
+        fill="#E53935"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+      />
+      {/* Combined checkmark shape for cleaner look */}
+      <path
+        d="M 25 62 L 48 85 L 98 28 L 85 18 L 45 65 L 32 52 Z"
+        fill="#E53935"
+      />
+    </motion.svg>
+  </div>
 );
 
 export default function DonatePage() {
@@ -69,9 +95,8 @@ export default function DonatePage() {
               <AnimatedCheckmark />
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-navy">
-              Support
-              <br />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+              <span className="text-navy">Support </span>
               <span className="gradient-text">the Renewal</span>
             </h1>
           </motion.div>
