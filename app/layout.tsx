@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
 import './globals.css';
 import { SITE_CONFIG } from '@/lib/constants';
 import JsonLd, {
@@ -123,6 +124,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <GoogleAnalytics />
         {children}
         <Analytics />
       </body>

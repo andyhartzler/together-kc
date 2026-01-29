@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import { FloatingInput } from '@/components/ui/FloatingInput';
 import { cn } from '@/lib/utils';
+import { FORM_HANDLER_URL } from '@/lib/constants';
 
 interface EndorsementFormProps {
   onSuccess?: () => void;
@@ -21,6 +22,8 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
     consent: false,
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [showWhyField, setShowWhyField] = useState(false);
 
   // Show "why" field when email contains @ sign
@@ -31,12 +34,34 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
     }
   }, [formData.email, showWhyField]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.consent) return;
-    // Form submission is visual only for MVP
-    setSubmitted(true);
-    onSuccess?.();
+    if (!formData.consent || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch(FORM_HANDLER_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          formType: 'endorsement',
+          ...formData,
+        }),
+      });
+
+      // With no-cors mode, we can't read the response, but if we get here it likely succeeded
+      setSubmitted(true);
+      onSuccess?.();
+    } catch {
+      setError('Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -209,17 +234,24 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
           )}
         </AnimatePresence>
 
+        {/* Error Message */}
+        {error && (
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
+
         {/* Submit Button */}
         <div className="pt-4">
           <Button
             type="submit"
             className={cn(
               "w-full",
-              !formData.consent && "opacity-50 cursor-not-allowed"
+              (!formData.consent || isSubmitting) && "opacity-50 cursor-not-allowed"
             )}
-            disabled={!formData.consent}
+            disabled={!formData.consent || isSubmitting}
           >
-            Submit Endorsement
+            {isSubmitting ? 'Submitting...' : 'Submit Endorsement'}
           </Button>
         </div>
 

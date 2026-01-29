@@ -1,3 +1,9 @@
+// Form handler URL (Google Apps Script Web App)
+export const FORM_HANDLER_URL = 'https://script.google.com/macros/s/AKfycbxQU8d668ZI8xnMKf1RiwzNeV4QPzz4Ssck79tr-wfEg2dQbhWarKWs4E9CkNSikTJb/exec';
+
+// Google Analytics Measurement ID
+export const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // TODO: Replace with actual GA4 ID
+
 export const COLORS = {
   navy: '#1e3a5f',
   coral: '#e53935',
