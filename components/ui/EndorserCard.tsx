@@ -188,7 +188,14 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
 
                 {/* Content */}
                 <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 leading-tight">
+                  <h3
+                    className="text-xl sm:text-2xl font-bold text-white mb-4 leading-tight transition-all duration-500 ease-out"
+                    style={{
+                      transform: isFlipped ? 'translateY(0)' : 'translateY(-20px)',
+                      opacity: isFlipped ? 1 : 0,
+                      transitionDelay: '200ms',
+                    }}
+                  >
                     {displayFullName}
                   </h3>
 
@@ -198,7 +205,12 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-2 bg-coral hover:bg-coral/90 text-white font-semibold px-6 py-3 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+                      className="inline-flex items-center gap-2 bg-coral hover:bg-coral/90 text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-500 ease-out"
+                      style={{
+                        transform: isFlipped ? 'translateY(0)' : 'translateY(-15px)',
+                        opacity: isFlipped ? 1 : 0,
+                        transitionDelay: '350ms',
+                      }}
                     >
                       <span>Learn More</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -208,14 +220,28 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
                   )}
 
                   {!website && (
-                    <p className="text-white/60 text-sm">
+                    <p
+                      className="text-white/60 text-sm transition-all duration-500 ease-out"
+                      style={{
+                        transform: isFlipped ? 'translateY(0)' : 'translateY(-15px)',
+                        opacity: isFlipped ? 1 : 0,
+                        transitionDelay: '350ms',
+                      }}
+                    >
                       Proudly supporting the KC Earnings Tax renewal
                     </p>
                   )}
                 </div>
 
                 {/* Close hint */}
-                <p className="absolute bottom-4 text-white/40 text-xs">
+                <p
+                  className="absolute bottom-4 text-white/40 text-xs transition-all duration-500 ease-out"
+                  style={{
+                    transform: isFlipped ? 'translateY(0)' : 'translateY(10px)',
+                    opacity: isFlipped ? 1 : 0,
+                    transitionDelay: '500ms',
+                  }}
+                >
                   Click anywhere to close
                 </p>
               </div>
