@@ -34,14 +34,11 @@ export default function DonatePage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-navy mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-navy">
               Support
               <br />
               <span className="gradient-text">Together KC</span>
             </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Your contribution helps ensure Kansas City voters have the facts about the earnings tax renewal.
-            </p>
           </motion.div>
         </div>
       </section>
@@ -49,7 +46,7 @@ export default function DonatePage() {
       {/* Donation Form Section - white background to match iframe */}
       <section className="py-12 bg-white">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Iframe container - fixed height for tallest scenario, no visible borders */}
+          {/* Iframe container - fixed height for tallest scenario */}
           <div
             className="relative overflow-hidden"
             style={{ height: 1150 }}
@@ -66,6 +63,9 @@ export default function DonatePage() {
               }}
               allow="payment"
             />
+            {/* White bars to cover iframe box shadow on left and right */}
+            <div className="absolute top-0 bottom-0 left-0 w-6 bg-white z-10" />
+            <div className="absolute top-0 bottom-0 right-0 w-6 bg-white z-10" />
           </div>
         </div>
       </section>

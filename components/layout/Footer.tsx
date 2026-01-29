@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export default function Footer() {
   return (
-    <footer className="bg-navy relative">
+    <footer className="bg-navy relative -mt-px">
       {/* Centered Footer Image - sits on the border line */}
       <div className="flex justify-center px-4">
         <div className="-mt-12 relative z-10">
