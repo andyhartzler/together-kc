@@ -1,9 +1,85 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
+// Step configurations - measured from actual Numero form
+const STEP_CONFIG = {
+  1: { height: 455, offset: -250 }, // Amount selection
+  2: { height: 750, offset: -148 }, // Personal details (tallest)
+  3: { height: 540, offset: -148 }, // Payment
+};
+
+// Continue button is roughly in this zone (as percentage of visible container)
+const CONTINUE_ZONE = {
+  yMin: 0.70, // 70% down from top
+  yMax: 1.0,  // to bottom
+  xMin: 0.15, // 15% from left
+  xMax: 0.85, // 85% from left
+};
+
 export default function DonatePage() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastMousePos = useRef({ x: 0, y: 0 });
+  const lastClickTime = useRef(0);
+
+  // Track mouse position on our page
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      lastMousePos.current = { x: e.clientX, y: e.clientY };
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Detect clicks into iframe via window blur
+  useEffect(() => {
+    const handleBlur = () => {
+      if (!containerRef.current || !isLoaded) return;
+
+      // Debounce - ignore if clicked recently
+      const now = Date.now();
+      if (now - lastClickTime.current < 1000) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const { x, y } = lastMousePos.current;
+
+      // Check if mouse was inside our container when blur happened
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        const relativeX = (x - rect.left) / rect.width;
+        const relativeY = (y - rect.top) / rect.height;
+
+        // Check if click was in the Continue button zone
+        if (
+          relativeY >= CONTINUE_ZONE.yMin &&
+          relativeY <= CONTINUE_ZONE.yMax &&
+          relativeX >= CONTINUE_ZONE.xMin &&
+          relativeX <= CONTINUE_ZONE.xMax
+        ) {
+          lastClickTime.current = now;
+
+          // Advance to next step after brief delay (form animation)
+          setTimeout(() => {
+            setCurrentStep((prev) => {
+              if (prev >= 3) return prev;
+              console.log(`[Donate] Advancing to step ${prev + 1}`);
+              return prev + 1;
+            });
+          }, 400);
+        }
+      }
+    };
+
+    window.addEventListener('blur', handleBlur);
+    return () => window.removeEventListener('blur', handleBlur);
+  }, [isLoaded]);
+
+  const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG];
+
   return (
     <>
       {/* Hero Section */}
@@ -221,20 +297,35 @@ export default function DonatePage() {
                   {/* Header accent */}
                   <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  {/* Iframe container - fixed height */}
-                  <div className="relative overflow-hidden" style={{ height: '700px' }}>
-                    <iframe
+                  {/* Iframe container - dynamically sized based on detected step */}
+                  <motion.div
+                    ref={containerRef}
+                    className="relative overflow-hidden"
+                    animate={{ height: config.height }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 200,
+                      damping: 25,
+                    }}
+                  >
+                    <motion.iframe
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
+                      onLoad={() => setIsLoaded(true)}
                       className="w-full absolute left-0"
+                      animate={{ top: config.offset }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 200,
+                        damping: 25,
+                      }}
                       style={{
                         height: '1600px',
                         border: 'none',
-                        top: '-148px',
                       }}
                       allow="payment"
                     />
-                  </div>
+                  </motion.div>
                 </div>
               </div>
 
