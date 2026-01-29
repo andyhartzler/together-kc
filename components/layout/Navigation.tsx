@@ -17,7 +17,7 @@ export default function Navigation() {
   const pathname = usePathname();
 
   // Pages with dark hero backgrounds where we need white text
-  const hasDarkHero = pathname === '/' || pathname === '/endorsements' || pathname === '/donate';
+  const hasDarkHero = pathname === '/' || pathname === '/endorsements';
 
   useEffect(() => {
     const handleScroll = () => {
