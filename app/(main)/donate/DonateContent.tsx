@@ -137,7 +137,7 @@ export default function DonateContent() {
             <iframe
               src="https://secure.numero.ai/contribute/Together-KC"
               title="Donate to Together KC"
-              className="w-full absolute left-0 transition-opacity duration-500 -top-[210px] sm:-top-[115px]"
+              className="w-full absolute left-0 transition-opacity duration-500 -top-[210px] sm:-top-[125px]"
               tabIndex={-1}
               style={{
                 height: '2100px',
