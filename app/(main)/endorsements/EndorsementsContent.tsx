@@ -375,11 +375,11 @@ export default function EndorsementsContent() {
               buttonText="Share Now"
             />
             <LinkCard
-              title="Display a Sign"
-              description="Show your neighborhood that you support renewal with a yard sign."
-              icon="🏠"
-              href="mailto:action@together-kc.com?subject=Request a Yard Sign"
-              buttonText="Get a Sign"
+              title="Donate"
+              description="Your contribution helps fund outreach to ensure voters know the facts."
+              icon="❤️"
+              href="/donate"
+              buttonText="Donate Now"
             />
             <VoteEarlyCard
               title="Vote Early"
