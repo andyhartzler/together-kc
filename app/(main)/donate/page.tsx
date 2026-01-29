@@ -1,102 +1,52 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
-// Step configurations
-// Heights: how tall the visible window is
-// Offsets: how far up to push the iframe (negative = hide top content)
+// Step configurations - heights and offsets for each donation step
 const STEP_CONFIG = {
-  1: { height: 420, offset: -250 },  // Amount selection - hide logo/header
-  2: { height: 720, offset: -148 },  // Details form - show progress bar
-  3: { height: 460, offset: -148 },  // Payment - show progress bar
-};
-
-// Button zones for each step (as percentage of visible container)
-// These define where "Continue" or "Submit" buttons appear
-const BUTTON_ZONES = {
-  1: { yMin: 0.75, yMax: 0.95 },  // Continue button near bottom of step 1
-  2: { yMin: 0.85, yMax: 0.98 },  // Continue button at very bottom of step 2
-  3: { yMin: 0.80, yMax: 0.98 },  // Submit button near bottom of step 3
+  1: { height: 420, offset: -250 },  // Amount selection
+  2: { height: 720, offset: -148 },  // Details form
+  3: { height: 460, offset: -148 },  // Payment
 };
 
 export default function DonatePage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [clickMarkers, setClickMarkers] = useState<Array<{x: number, y: number, id: number}>>([]);
-  const [debugMode, setDebugMode] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const lastAdvanceTime = useRef(0);
-  const markerIdRef = useRef(0);
+  const loadCount = useRef(0);
 
-  // Enable debug mode from URL param
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('debug') === 'true') {
-      setDebugMode(true);
+  // Method 1: Count iframe loads (works if Numero does page navigations between steps)
+  const handleIframeLoad = useCallback(() => {
+    loadCount.current += 1;
+    console.log(`[Donate] Iframe loaded (count: ${loadCount.current})`);
+
+    // Each load after the first = new step
+    if (loadCount.current > 1 && loadCount.current <= 3) {
+      setCurrentStep(loadCount.current);
     }
   }, []);
 
-  // Handle mousedown on overlay - detect position and pass click through to iframe
-  // We use mousedown because:
-  // 1. We detect the position and check if it's in button zone
-  // 2. We immediately disable pointer-events on overlay
-  // 3. The mouseup (completing the click) naturally reaches the iframe
-  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+  // Method 2: Window blur detection - fires when user clicks in iframe
+  useEffect(() => {
+    let blurCount = 0;
+    let lastBlurTime = 0;
 
-    const rect = containerRef.current.getBoundingClientRect();
-    const relX = (e.clientX - rect.left) / rect.width;
-    const relY = (e.clientY - rect.top) / rect.height;
-    const now = Date.now();
-
-    // Log for debugging
-    console.log(`[Donate] MouseDown at ${Math.round(relX * 100)}% x, ${Math.round(relY * 100)}% y (step ${currentStep})`);
-
-    // Add visual click marker in debug mode
-    if (debugMode) {
-      const markerId = ++markerIdRef.current;
-      setClickMarkers(prev => [...prev.slice(-10), { x: relX, y: relY, id: markerId }]);
-      // Remove marker after 2 seconds
-      setTimeout(() => {
-        setClickMarkers(prev => prev.filter(m => m.id !== markerId));
-      }, 2000);
-    }
-
-    // Get button zone for current step
-    const zone = BUTTON_ZONES[currentStep as keyof typeof BUTTON_ZONES];
-
-    // Check if click is in button zone
-    const inButtonZone =
-      relX >= 0.15 && relX <= 0.85 &&
-      relY >= zone.yMin && relY <= zone.yMax;
-
-    if (inButtonZone && currentStep < 3) {
-      if (now - lastAdvanceTime.current > 1500) {
-        lastAdvanceTime.current = now;
-        console.log(`[Donate] Button zone! Will advance from step ${currentStep} to ${currentStep + 1}`);
-
-        // Delay step change to let form transition
-        setTimeout(() => {
-          setCurrentStep(prev => Math.min(prev + 1, 3));
-        }, 500);
+    const handleBlur = () => {
+      const now = Date.now();
+      // Only count if it's been a while since last blur (debounce rapid focus changes)
+      if (now - lastBlurTime > 2000) {
+        blurCount++;
+        console.log(`[Donate] Window blur #${blurCount} - user clicked in iframe`);
       }
-    }
-
-    // IMMEDIATELY disable pointer-events so mouseup reaches iframe
-    const overlay = e.currentTarget;
-    overlay.style.pointerEvents = 'none';
-
-    // Re-enable after click completes
-    const reEnable = () => {
-      overlay.style.pointerEvents = 'auto';
-      document.removeEventListener('mouseup', reEnable);
+      lastBlurTime = now;
     };
-    document.addEventListener('mouseup', reEnable);
-  }, [currentStep]);
 
-  // Also listen for any postMessages from Numero (bonus if they send them)
+    window.addEventListener('blur', handleBlur);
+    return () => window.removeEventListener('blur', handleBlur);
+  }, []);
+
+  // Method 3: Listen for postMessage from Numero (in case they send step/height info)
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (!event.origin.includes('numero.ai')) return;
@@ -339,9 +289,9 @@ export default function DonatePage() {
                   >
                     {/* The iframe - positioned absolutely and offset to hide branding */}
                     <iframe
-                      ref={iframeRef}
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
+                      onLoad={handleIframeLoad}
                       className="w-full absolute left-0"
                       style={{
                         height: '1600px',
@@ -351,52 +301,6 @@ export default function DonatePage() {
                       allow="payment"
                     />
 
-                    {/* Invisible overlay - captures mousedown, detects position, passes through */}
-                    <div
-                      className="absolute inset-0 z-10"
-                      onMouseDown={handleMouseDown}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {/* Debug mode visualizations */}
-                      {debugMode && (
-                        <>
-                          {/* Button zone indicator */}
-                          <div
-                            className="absolute left-[15%] right-[15%] border-2 border-dashed border-green-500 bg-green-500/10 pointer-events-none"
-                            style={{
-                              top: `${BUTTON_ZONES[currentStep as keyof typeof BUTTON_ZONES].yMin * 100}%`,
-                              bottom: `${(1 - BUTTON_ZONES[currentStep as keyof typeof BUTTON_ZONES].yMax) * 100}%`,
-                            }}
-                          >
-                            <span className="absolute -top-6 left-0 text-xs text-green-600 font-mono bg-white px-1">
-                              Button Zone (Step {currentStep})
-                            </span>
-                          </div>
-
-                          {/* Click markers */}
-                          {clickMarkers.map(marker => (
-                            <div
-                              key={marker.id}
-                              className="absolute w-8 h-8 -ml-4 -mt-4 pointer-events-none"
-                              style={{ left: `${marker.x * 100}%`, top: `${marker.y * 100}%` }}
-                            >
-                              <div className="w-full h-full rounded-full border-4 border-red-500 animate-ping" />
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-2 h-2 rounded-full bg-red-500" />
-                              </div>
-                              <span className="absolute top-8 left-1/2 -translate-x-1/2 text-xs font-mono bg-black text-white px-1 rounded whitespace-nowrap">
-                                {Math.round(marker.x * 100)}%, {Math.round(marker.y * 100)}%
-                              </span>
-                            </div>
-                          ))}
-
-                          {/* Step indicator */}
-                          <div className="absolute top-2 right-2 bg-black/80 text-white px-3 py-1 rounded-full text-sm font-mono pointer-events-none">
-                            Step {currentStep}/3 | H:{config.height}px
-                          </div>
-                        </>
-                      )}
-                    </div>
                   </motion.div>
                 </div>
               </div>
