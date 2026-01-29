@@ -1,70 +1,95 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
-const STEP_HEIGHTS = {
-  1: 420,
-  2: 720,
-  3: 460,
-};
-
-const STEP_OFFSETS = {
-  1: -250, // Hide header, no progress bar
-  2: -148, // Hide logo, show progress bar
-  3: -148, // Hide logo, show progress bar
-};
+// Step configurations - heights and offsets for each form step
+const STEPS = {
+  1: { height: 420, offset: -250, label: 'Select Amount' },
+  2: { height: 720, offset: -148, label: 'Your Details' },
+  3: { height: 520, offset: -148, label: 'Payment' },
+} as const;
 
 export default function DonatePage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [loadCount, setLoadCount] = useState(0);
+  const [isIframeFocused, setIsIframeFocused] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const interactionStartRef = useRef<number | null>(null);
+  const lastStepChangeRef = useRef<number>(Date.now());
 
-  // Attack 1: Load event counting
-  const handleIframeLoad = useCallback(() => {
-    setLoadCount((prev) => {
-      const newCount = prev + 1;
-      if (newCount <= 3) {
-        setCurrentStep(newCount);
-      }
-      return newCount;
-    });
-  }, []);
-
-  // Attack 2: Window blur detection (for additional signals)
+  // Detect when user focuses/unfocuses the iframe
   useEffect(() => {
-    let lastBlurTime = 0;
+    let pollInterval: NodeJS.Timeout;
 
-    const handleBlur = () => {
-      const now = Date.now();
-      // Track blur timing - could be useful for future enhancements
-      lastBlurTime = now;
+    const checkFocus = () => {
+      const iframeEl = iframeRef.current;
+      if (!iframeEl) return;
+
+      const isFocused = document.activeElement === iframeEl;
+
+      if (isFocused && !isIframeFocused) {
+        // User just clicked into iframe
+        setIsIframeFocused(true);
+        interactionStartRef.current = Date.now();
+      } else if (!isFocused && isIframeFocused) {
+        // User clicked outside iframe - might indicate step change
+        setIsIframeFocused(false);
+
+        const interactionDuration = interactionStartRef.current
+          ? Date.now() - interactionStartRef.current
+          : 0;
+        const timeSinceLastChange = Date.now() - lastStepChangeRef.current;
+
+        // If they interacted for at least 2 seconds and it's been a bit since last change
+        // This suggests they filled something out and clicked Continue
+        if (interactionDuration > 2000 && timeSinceLastChange > 3000 && currentStep < 3) {
+          setCurrentStep(prev => {
+            const next = Math.min(prev + 1, 3);
+            lastStepChangeRef.current = Date.now();
+            return next;
+          });
+        }
+
+        interactionStartRef.current = null;
+      }
     };
 
-    window.addEventListener('blur', handleBlur);
-    return () => window.removeEventListener('blur', handleBlur);
-  }, [loadCount]);
+    // Poll focus state every 100ms
+    pollInterval = setInterval(checkFocus, 100);
 
-  // Attack 4: Listen for postMessage (in case Numero supports it)
+    return () => clearInterval(pollInterval);
+  }, [isIframeFocused, currentStep]);
+
+  // Listen for postMessage from Numero (in case they support it)
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      // Only accept messages from Numero
       if (!event.origin.includes('numero.ai')) return;
 
-      // Check for any height/step data
-      if (event.data?.height) {
-        // Numero is sending height - could use it directly
-        console.log('Numero height:', event.data.height);
-      }
+      // Log any messages for debugging
+      console.log('[Numero Message]', event.data);
+
       if (event.data?.step) {
         setCurrentStep(event.data.step);
+        lastStepChangeRef.current = Date.now();
+      }
+      if (event.data?.height && typeof event.data.height === 'number') {
+        // Could dynamically set height here if Numero sends it
       }
     };
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, []);
+
+  // Handle initial iframe load
+  const handleIframeLoad = useCallback(() => {
+    // Reset to step 1 on initial load
+    setCurrentStep(1);
+    lastStepChangeRef.current = Date.now();
+  }, []);
+
+  const stepConfig = STEPS[currentStep as keyof typeof STEPS];
 
   return (
     <>
@@ -280,27 +305,86 @@ export default function DonatePage() {
 
                 {/* Form container */}
                 <div className="relative bg-white rounded-2xl shadow-2xl shadow-navy/10 border border-gray-100 overflow-hidden">
-                  {/* Header accent */}
-                  <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
+                  {/* Header with step indicator */}
+                  <div className="relative">
+                    {/* Gradient accent bar */}
+                    <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
+
+                    {/* Step indicator */}
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 z-10">
+                      <motion.div
+                        layout
+                        className="flex items-center gap-2 bg-white rounded-full px-4 py-1.5 shadow-lg border border-gray-100"
+                      >
+                        {[1, 2, 3].map((step) => (
+                          <motion.div
+                            key={step}
+                            className="flex items-center gap-1.5"
+                          >
+                            <motion.div
+                              animate={{
+                                scale: currentStep === step ? 1 : 0.8,
+                                backgroundColor: currentStep >= step ? '#E53935' : '#e5e7eb',
+                              }}
+                              className="w-2.5 h-2.5 rounded-full"
+                              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                            />
+                            {currentStep === step && (
+                              <motion.span
+                                initial={{ opacity: 0, width: 0 }}
+                                animate={{ opacity: 1, width: 'auto' }}
+                                exit={{ opacity: 0, width: 0 }}
+                                className="text-xs font-medium text-navy overflow-hidden whitespace-nowrap"
+                              >
+                                {stepConfig.label}
+                              </motion.span>
+                            )}
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </div>
+                  </div>
 
                   {/* Iframe container - dynamically sized based on form step */}
                   <motion.div
                     className="relative overflow-hidden rounded-b-xl"
-                    animate={{
-                      height: STEP_HEIGHTS[currentStep as keyof typeof STEP_HEIGHTS],
+                    animate={{ height: stepConfig.height }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 300,
+                      damping: 30,
                     }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
                   >
-                    <iframe
+                    {/* Focus indicator glow */}
+                    <AnimatePresence>
+                      {isIframeFocused && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="absolute inset-0 pointer-events-none z-10 rounded-b-xl"
+                          style={{
+                            boxShadow: 'inset 0 0 0 2px rgba(229, 57, 53, 0.3)',
+                          }}
+                        />
+                      )}
+                    </AnimatePresence>
+
+                    <motion.iframe
                       ref={iframeRef}
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
                       onLoad={handleIframeLoad}
                       className="w-full absolute left-0"
+                      animate={{ top: stepConfig.offset }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 30,
+                      }}
                       style={{
                         height: '1600px',
                         border: 'none',
-                        top: STEP_OFFSETS[currentStep as keyof typeof STEP_OFFSETS],
                       }}
                       allow="payment"
                     />
