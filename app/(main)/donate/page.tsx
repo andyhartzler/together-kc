@@ -7,13 +7,21 @@ import Button from '@/components/ui/Button';
 export default function DonatePage() {
   // Prevent iframe from stealing scroll position when it auto-focuses
   useEffect(() => {
+    // Scroll to top immediately
     window.scrollTo(0, 0);
+
+    // Also scroll after delays to catch iframe focus steal
+    const timeouts = [100, 300, 500, 1000].map(delay =>
+      setTimeout(() => window.scrollTo(0, 0), delay)
+    );
+
+    return () => timeouts.forEach(clearTimeout);
   }, []);
 
   return (
     <>
-      {/* Hero Section - matching FAQ page exactly */}
-      <section className="relative pt-32 pb-8 bg-light-gray overflow-hidden">
+      {/* Hero Section - white background to match iframe */}
+      <section className="relative pt-32 pb-8 bg-white overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-coral/5 rounded-full blur-3xl" />
         <div className="absolute top-40 right-20 w-80 h-80 bg-sky/5 rounded-full blur-3xl" />
@@ -38,8 +46,8 @@ export default function DonatePage() {
         </div>
       </section>
 
-      {/* Donation Form Section - bg-light-gray to blend seamlessly */}
-      <section className="py-12 bg-light-gray">
+      {/* Donation Form Section - white background to match iframe */}
+      <section className="py-12 bg-white">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Iframe container - fixed height for tallest scenario, no visible borders */}
           <div
