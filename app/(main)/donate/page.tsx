@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
+import { EndorsementPopup } from '@/components/ui/EndorsementPopup';
 
 // Bar positions every 25px, extended to 1175px to cover full container
 const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
@@ -61,6 +62,8 @@ const AnimatedHeart = () => (
 );
 
 export default function DonatePage() {
+  const [isEndorsementOpen, setIsEndorsementOpen] = useState(false);
+
   // Prevent iframe from stealing scroll position when it auto-focuses
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -149,7 +152,7 @@ export default function DonatePage() {
               Can&apos;t donate right now? There are many other ways to support the campaign.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="primary" href="/endorsements#endorse">
+              <Button variant="primary" onClick={() => setIsEndorsementOpen(true)}>
                 Add Your Endorsement
               </Button>
               <Button
@@ -163,6 +166,9 @@ export default function DonatePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Endorsement Popup */}
+      <EndorsementPopup isOpen={isEndorsementOpen} onClose={() => setIsEndorsementOpen(false)} />
     </>
   );
 }

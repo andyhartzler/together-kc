@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { downloadCalendarEvent } from '@/lib/calendar';
+import EndorsementForm from '@/components/forms/EndorsementForm';
 
 type County = 'Jackson' | 'Clay' | 'Platte' | 'Cass';
 
@@ -45,7 +46,7 @@ interface VoteYesModalProps {
   onClose: () => void;
 }
 
-type ModalView = 'main' | 'findPolling' | 'countyResult';
+type ModalView = 'main' | 'findPolling' | 'countyResult' | 'endorse';
 
 const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
   const [view, setView] = useState<ModalView>('main');
@@ -326,6 +327,23 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
+
+                    {/* Add Endorsement */}
+                    <button
+                      onClick={() => setView('endorse')}
+                      className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors group w-full text-left"
+                    >
+                      <div className="w-12 h-12 bg-coral/10 rounded-full flex items-center justify-center text-2xl">
+                        ❤️
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className="font-semibold text-navy">Add Your Endorsement</h3>
+                        <p className="text-sm text-gray-600">Join supporters of the renewal</p>
+                      </div>
+                      <svg className="w-5 h-5 text-gray-400 group-hover:text-coral transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
                   </motion.div>
                 )}
 
@@ -477,6 +495,27 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                     >
                       ← Choose a different county
                     </button>
+                  </motion.div>
+                )}
+
+                {view === 'endorse' && (
+                  <motion.div
+                    key="endorse"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                  >
+                    <button
+                      onClick={() => setView('main')}
+                      className="flex items-center gap-1 text-sm text-gray-500 hover:text-navy mb-4 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      Back
+                    </button>
+
+                    <EndorsementForm compact onSuccess={handleClose} />
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -1,8 +1,11 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
+import { PopoverForm } from '@/components/ui/PopoverForm';
+import { VoteYesModal } from '@/components/ui/VoteYesModal';
+import { EndorsementPopup } from '@/components/ui/EndorsementPopup';
 import { VOTE_DATE } from '@/lib/constants';
 
 // Simplified "Grows Stronger" animation - graceful fade in with subtle glow
@@ -36,6 +39,8 @@ function GrowsStrongerAnimation({ delay = 0 }: { delay?: number }) {
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
+  const [isEndorsementOpen, setIsEndorsementOpen] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -125,11 +130,9 @@ export default function Hero() {
           }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          <InteractiveHoverButton
-            text="Vote YES"
-            href="/endorsements#endorse"
-            variant="primary"
-            size="lg"
+          <PopoverForm
+            onVoteYes={() => setIsVoteModalOpen(true)}
+            onEndorse={() => setIsEndorsementOpen(true)}
           />
           <InteractiveHoverButton
             text="Learn More"
@@ -151,6 +154,12 @@ export default function Hero() {
           <div className="w-1.5 h-3 bg-white/50 rounded-full mt-2" />
         </div>
       </motion.div>
+
+      {/* Vote YES Modal */}
+      <VoteYesModal isOpen={isVoteModalOpen} onClose={() => setIsVoteModalOpen(false)} />
+
+      {/* Endorsement Popup */}
+      <EndorsementPopup isOpen={isEndorsementOpen} onClose={() => setIsEndorsementOpen(false)} />
     </section>
   );
 }
