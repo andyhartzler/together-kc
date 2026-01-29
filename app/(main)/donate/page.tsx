@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
@@ -14,43 +14,53 @@ const STEP_CONFIG = {
 export default function DonatePage() {
   const [currentStep, setCurrentStep] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastClickTime = useRef(0);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
-  // Detect clicks via document-level mousedown (capture phase)
-  // This fires BEFORE the click reaches the iframe, so we can detect position
-  // without blocking the click
-  useEffect(() => {
-    const handleMouseDown = (e: MouseEvent) => {
-      if (!containerRef.current || currentStep !== 1) return;
+  // Handle clicks on the overlay - detect Continue button clicks and pass through to iframe
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
 
+    const x = e.clientX;
+    const y = e.clientY;
+
+    // 1. Check if click is in Continue button zone (bottom 40% of container)
+    if (containerRef.current && currentStep === 1) {
       const rect = containerRef.current.getBoundingClientRect();
+      const relY = (y - rect.top) / rect.height;
 
-      // Check if click is within our container
-      const inContainer =
-        e.clientX >= rect.left &&
-        e.clientX <= rect.right &&
-        e.clientY >= rect.top &&
-        e.clientY <= rect.bottom;
-
-      if (!inContainer) return;
-
-      const relY = (e.clientY - rect.top) / rect.height;
-      const now = Date.now();
-
-      // If click is in bottom 40% (Continue button area) and debounced
-      if (relY > 0.60 && now - lastClickTime.current > 1000) {
-        lastClickTime.current = now;
-        // Resize after delay to let form process the click
-        setTimeout(() => {
-          setCurrentStep(2);
-        }, 500);
+      if (relY > 0.60) {
+        // Click is in Continue button area - resize after delay
+        setTimeout(() => setCurrentStep(2), 500);
       }
-    };
+    }
 
-    // Use capture phase - fires before the event reaches the iframe
-    document.addEventListener('mousedown', handleMouseDown, true);
-    return () => document.removeEventListener('mousedown', handleMouseDown, true);
-  }, [currentStep]);
+    // 2. Pass click through to iframe by temporarily disabling overlay
+    if (overlayRef.current && iframeRef.current) {
+      // Hide overlay to allow click-through
+      overlayRef.current.style.pointerEvents = 'none';
+
+      // Dispatch full click sequence at same coordinates
+      ['mousedown', 'mouseup', 'click'].forEach(eventType => {
+        const event = new MouseEvent(eventType, {
+          bubbles: true,
+          cancelable: true,
+          clientX: x,
+          clientY: y,
+          view: window,
+        });
+        iframeRef.current!.dispatchEvent(event);
+      });
+
+      // Re-enable overlay after brief delay
+      setTimeout(() => {
+        if (overlayRef.current) {
+          overlayRef.current.style.pointerEvents = 'auto';
+        }
+      }, 100);
+    }
+  };
 
   const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG] || STEP_CONFIG[2];
 
@@ -279,6 +289,7 @@ export default function DonatePage() {
                     transition={{ duration: 0.4, ease: 'easeInOut' }}
                   >
                     <motion.iframe
+                      ref={iframeRef}
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
                       className="w-full absolute left-0"
@@ -290,6 +301,16 @@ export default function DonatePage() {
                       }}
                       allow="payment"
                     />
+
+                    {/* Click-through overlay - captures clicks to detect Continue button, then passes through */}
+                    {currentStep === 1 && (
+                      <div
+                        ref={overlayRef}
+                        onClick={handleOverlayClick}
+                        className="absolute inset-0 z-10 cursor-pointer"
+                        style={{ background: 'transparent' }}
+                      />
+                    )}
                   </motion.div>
                 </div>
               </div>
