@@ -7,8 +7,8 @@ import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 // Step 1: Amount selection - compact
 // Steps 2-3: Details/Payment - taller (similar heights)
 const STEP_CONFIG = {
-  1: { height: 450, offset: -250 },   // Amount selection, hide logo
-  2: { height: 850, offset: -60 },    // Details form - show progress bar, all fields
+  1: { height: 500, offset: -115 },   // Amount selection - hide logo, show title + amounts + Continue
+  2: { height: 850, offset: -115 },   // Details form - hide logo, show progress bar + all fields
 };
 
 export default function DonatePage() {
