@@ -4,13 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
-// Step configurations - measured from actual Numero form screenshots
-// Step 1: Hide logo + title, show from "CHOOSE AN AMOUNT"
-// Steps 2-3: Hide logo + title, show progress bar
+// Step configurations - conservative values that work at various widths
+// The form renders differently at different widths due to responsive design
+// Step 1: Hide only the logo, show title through Continue button
+// Steps 2-3: Hide logo, show title + progress bar through Continue
 const STEP_CONFIG = {
-  1: { height: 340, offset: -200 }, // Amount buttons + Continue (hide title, no disclaimer needed)
-  2: { height: 580, offset: -160 }, // Progress bar + details form + Continue
-  3: { height: 480, offset: -160 }, // Progress bar + payment form + Submit
+  1: { height: 500, offset: -115 }, // Hide logo, show title through Continue + buffer
+  2: { height: 700, offset: -115 }, // Progress bar + details form + Continue
+  3: { height: 520, offset: -115 }, // Progress bar + payment form + Submit
 };
 
 // Continue button is roughly in this zone (as percentage of visible container)
