@@ -7,65 +7,71 @@ import Button from '@/components/ui/Button';
 // Bar positions every 25px, extended to 1175px to cover full container
 const BAR_POSITIONS = Array.from({ length: Math.ceil(1175 / 25) }, (_, i) => i * 25);
 
-// Animated checkmark with blue circular arrow - matching the reference image
+// Animated checkmark with blue circular arrow - matching the reference image exactly
 const AnimatedCheckmark = () => (
-  <div className="relative w-28 h-28 sm:w-36 sm:h-36">
-    {/* Blue circular arrow with glow */}
-    <motion.svg
-      viewBox="0 0 120 120"
-      className="absolute inset-0 w-full h-full"
-      style={{ filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))' }}
+  <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48">
+    <svg
+      viewBox="0 0 200 200"
+      className="w-full h-full overflow-visible"
+      style={{ filter: 'drop-shadow(0 0 12px rgba(37, 99, 235, 0.4))' }}
     >
-      {/* Circular arrow path - draws around the checkmark */}
+      {/* Blue circular arrow - BEHIND the checkmark */}
+      {/* Main arc - goes clockwise from top, around to bottom-left */}
       <motion.path
-        d="M 95 60 A 35 35 0 1 1 60 25"
+        d="M 100 30 A 70 70 0 1 1 45 145"
         fill="none"
-        stroke="#2563eb"
-        strokeWidth="8"
+        stroke="url(#blueGradient)"
+        strokeWidth="14"
         strokeLinecap="round"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 0.7, delay: 0.6, ease: 'easeOut' }}
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.8, delay: 0.5, ease: 'easeInOut' }}
       />
-      {/* Arrowhead */}
+      {/* Arrowhead at bottom-left pointing in direction of travel */}
       <motion.polygon
-        points="52,18 68,25 58,38"
-        fill="#2563eb"
+        points="25,135 50,155 55,130"
+        fill="url(#blueGradient)"
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3, delay: 1.2 }}
+        transition={{ duration: 0.3, delay: 1.2, ease: 'backOut' }}
       />
-    </motion.svg>
 
-    {/* Bold geometric red checkmark - straight edges */}
-    <motion.svg
-      viewBox="0 0 120 120"
-      className="absolute inset-0 w-full h-full"
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-    >
-      {/* Checkmark as bold geometric shape with straight edges */}
-      <motion.polygon
-        points="30,65 45,80 50,75 35,60"
-        fill="#E53935"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.2, delay: 0.1 }}
-      />
-      <motion.polygon
-        points="45,80 95,30 85,20 35,70"
-        fill="#E53935"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
-      />
-      {/* Combined checkmark shape for cleaner look */}
-      <path
-        d="M 25 62 L 48 85 L 98 28 L 85 18 L 45 65 L 32 52 Z"
-        fill="#E53935"
-      />
-    </motion.svg>
+      {/* Gradient definitions */}
+      <defs>
+        <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3b82f6" />
+          <stop offset="100%" stopColor="#1d4ed8" />
+        </linearGradient>
+        <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ef4444" />
+          <stop offset="100%" stopColor="#dc2626" />
+        </linearGradient>
+      </defs>
+
+      {/* Bold geometric red checkmark - ON TOP, extends beyond circle */}
+      <motion.g
+        initial={{ opacity: 0, scale: 0.3 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+      >
+        {/* Short leg of checkmark (bottom-left part) */}
+        <motion.polygon
+          points="20,95 55,130 75,110 40,75"
+          fill="url(#redGradient)"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        />
+        {/* Long leg of checkmark (going up to top-right) */}
+        <motion.polygon
+          points="55,130 180,5 160,-15 35,110"
+          fill="url(#redGradient)"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        />
+      </motion.g>
+    </svg>
   </div>
 );
 
