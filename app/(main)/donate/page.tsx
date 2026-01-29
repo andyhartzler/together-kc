@@ -44,7 +44,7 @@ export default function DonatePage() {
           {/* Iframe container - fixed height for tallest scenario */}
           <div
             className="relative overflow-hidden"
-            style={{ height: 1350 }}
+            style={{ height: 1100 }}
           >
             <iframe
               src="https://secure.numero.ai/contribute/Together-KC"
