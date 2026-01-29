@@ -1,15 +1,68 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
-// Fixed height that accommodates all form steps (Step 2 "Details" is the tallest)
-// Numero uses React SPA - no page reloads between steps, no postMessage API
-// Cross-origin iframe = cannot detect step changes, so use fixed max height
-const IFRAME_HEIGHT = 720;
-const IFRAME_OFFSET = -148; // Hide Numero logo/header, show form content
+// Step 1: Amount selection - compact
+// Steps 2-3: Details/Payment - taller (similar heights)
+const STEP_CONFIG = {
+  1: { height: 450, offset: -250 },   // Amount selection, hide logo
+  2: { height: 850, offset: -60 },    // Details form - show progress bar, all fields
+};
 
 export default function DonatePage() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mousePositionRef = useRef({ relY: 0, inContainer: false });
+
+  // Track mouse position relative to container
+  // This works even with cross-origin iframe because we track on the document level
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const inContainer =
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom;
+
+      if (inContainer) {
+        mousePositionRef.current = {
+          relY: (e.clientY - rect.top) / rect.height,
+          inContainer: true,
+        };
+      } else {
+        mousePositionRef.current.inContainer = false;
+      }
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Detect clicks via window blur - fires when user clicks in iframe
+  // Combined with mouse position tracking, we can detect Continue button clicks
+  useEffect(() => {
+    const handleBlur = () => {
+      const { relY, inContainer } = mousePositionRef.current;
+
+      // If mouse was in container and in bottom 35% (Continue button area)
+      // and we're on step 1, advance to step 2
+      if (inContainer && relY > 0.65 && currentStep === 1) {
+        setTimeout(() => {
+          setCurrentStep(2);
+        }, 400); // Delay to let form transition
+      }
+    };
+
+    window.addEventListener('blur', handleBlur);
+    return () => window.removeEventListener('blur', handleBlur);
+  }, [currentStep]);
+
+  const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG] || STEP_CONFIG[2];
 
   return (
     <>
@@ -228,23 +281,26 @@ export default function DonatePage() {
                   {/* Header accent */}
                   <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  {/* Iframe container - fixed height to fit all form steps */}
-                  <div
+                  {/* Iframe container - dynamically sized based on detected step */}
+                  <motion.div
+                    ref={containerRef}
                     className="relative overflow-hidden"
-                    style={{ height: IFRAME_HEIGHT }}
+                    animate={{ height: config.height }}
+                    transition={{ duration: 0.4, ease: 'easeInOut' }}
                   >
-                    <iframe
+                    <motion.iframe
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
                       className="w-full absolute left-0"
+                      animate={{ top: config.offset }}
+                      transition={{ duration: 0.4, ease: 'easeInOut' }}
                       style={{
                         height: '2100px',
                         border: 'none',
-                        top: IFRAME_OFFSET,
                       }}
                       allow="payment"
                     />
-                  </div>
+                  </motion.div>
                 </div>
               </div>
 
