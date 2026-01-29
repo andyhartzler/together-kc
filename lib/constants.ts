@@ -94,7 +94,7 @@ export const ENDORSERS = {
     { name: 'Plumbers Local 8', logo: '/images/endorsers/Plumbers Local 8.png' },
     { name: 'IBEW Local 124', logo: '/images/endorsers/IBEW Local 124.png' },
     { name: 'OPCMIA Local 518', logo: '/images/endorsers/OPCMIA Local 518.png' },
-    { name: 'IUPAT DC #3', logo: '/images/endorsers/IUPAT DC #3.png' },
+    { name: 'IUPAT DC #3', logo: '/images/endorsers/IUPAT-DC-3.png' },
     { name: 'IUOE Local 101', logo: '/images/endorsers/IUOE Local 101 logo.png' },
     { name: 'CWA Local 6360', logo: '/images/endorsers/CWA Local 6360.png' },
     { name: 'IAMAW Local Lodge 778', logo: '/images/endorsers/IAMAW Local Lodge 778.png' },
