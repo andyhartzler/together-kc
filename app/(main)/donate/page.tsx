@@ -1,140 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Shield, Users, Sparkles, ChevronRight } from 'lucide-react';
-
-// Height configs for each step (measured from the actual Numero form)
-const STEP_CONFIG = {
-  1: { height: 480, offset: -250 },  // Amount selection - shorter, hide more header
-  2: { height: 750, offset: -148 },  // Details form - tallest
-  3: { height: 550, offset: -148 },  // Payment - medium
-} as const;
+import { motion } from 'framer-motion';
+import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
 export default function DonatePage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  // Refs for tracking state across renders
-  const loadCountRef = useRef(0);
-  const lastStepChangeRef = useRef(Date.now());
-  const focusStartRef = useRef<number | null>(null);
-  const wasRecentlyFocusedRef = useRef(false);
-
-  // Advance to next step with debouncing
-  const advanceStep = useCallback(() => {
-    const now = Date.now();
-    const timeSinceLastChange = now - lastStepChangeRef.current;
-
-    // Debounce: minimum 1.5s between step changes
-    if (timeSinceLastChange < 1500) return;
-
-    setCurrentStep(prev => {
-      if (prev >= 3) return prev;
-      lastStepChangeRef.current = now;
-      return prev + 1;
-    });
-  }, []);
-
-  // SIGNAL 1: onLoad events (fires if Numero does full page navigation)
-  const handleIframeLoad = useCallback(() => {
-    loadCountRef.current += 1;
-    setIsLoaded(true);
-
-    // First load is initial page, subsequent loads are step changes
-    if (loadCountRef.current > 1) {
-      advanceStep();
-    }
-  }, [advanceStep]);
-
-  // SIGNAL 2: Focus pattern detection
-  useEffect(() => {
-    let pollInterval: NodeJS.Timeout;
-    let blurTimeout: NodeJS.Timeout;
-
-    const checkFocus = () => {
-      const iframe = iframeRef.current;
-      if (!iframe) return;
-
-      const isFocused = document.activeElement === iframe;
-
-      if (isFocused) {
-        if (!focusStartRef.current) {
-          focusStartRef.current = Date.now();
-        }
-        wasRecentlyFocusedRef.current = true;
-
-        // Clear any pending blur timeout
-        if (blurTimeout) clearTimeout(blurTimeout);
-      } else {
-        // Just lost focus
-        if (wasRecentlyFocusedRef.current && focusStartRef.current) {
-          const focusDuration = Date.now() - focusStartRef.current;
-
-          // If user was focused for 3+ seconds then unfocused,
-          // wait 500ms to see if focus returns (indicating page transition)
-          if (focusDuration > 3000) {
-            blurTimeout = setTimeout(() => {
-              // Focus didn't return quickly - likely a step change happened
-              // Check if iframe is focused again (new step loaded)
-              if (document.activeElement === iframe) {
-                advanceStep();
-              }
-            }, 500);
-          }
-        }
-
-        focusStartRef.current = null;
-        wasRecentlyFocusedRef.current = false;
-      }
-    };
-
-    pollInterval = setInterval(checkFocus, 100);
-
-    return () => {
-      clearInterval(pollInterval);
-      if (blurTimeout) clearTimeout(blurTimeout);
-    };
-  }, [advanceStep]);
-
-  // SIGNAL 3: ResizeObserver on iframe (in case it resizes with content)
-  useEffect(() => {
-    const iframe = iframeRef.current;
-    if (!iframe) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        // If iframe's rendered size changes significantly, might indicate step change
-        const height = entry.contentRect.height;
-        // Log for debugging
-        console.log('[Iframe ResizeObserver]', height);
-      }
-    });
-
-    resizeObserver.observe(iframe);
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  // SIGNAL 4: postMessage from Numero
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (!event.origin.includes('numero.ai')) return;
-
-      console.log('[Numero postMessage]', event.data);
-
-      if (event.data?.step && typeof event.data.step === 'number') {
-        setCurrentStep(event.data.step);
-        lastStepChangeRef.current = Date.now();
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
-  const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG];
-
   return (
     <>
       {/* Hero Section */}
@@ -349,107 +218,23 @@ export default function DonatePage() {
 
                 {/* Form container */}
                 <div className="relative bg-white rounded-2xl shadow-2xl shadow-navy/10 border border-gray-100 overflow-hidden">
-                  {/* Header with step progress */}
-                  <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky relative overflow-hidden">
-                    <motion.div
-                      className="absolute inset-y-0 left-0 bg-white/30"
-                      initial={{ width: '0%' }}
-                      animate={{ width: `${((currentStep - 1) / 2) * 100}%` }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    />
-                  </div>
+                  {/* Header accent */}
+                  <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  {/* Step indicator badges */}
-                  <div className="flex items-center justify-center gap-3 py-3 bg-gray-50/80 border-b border-gray-100">
-                    {[
-                      { step: 1, label: 'Amount' },
-                      { step: 2, label: 'Details' },
-                      { step: 3, label: 'Payment' },
-                    ].map(({ step, label }, idx) => (
-                      <div key={step} className="flex items-center">
-                        <motion.div
-                          animate={{
-                            scale: currentStep === step ? 1.05 : 1,
-                            opacity: currentStep >= step ? 1 : 0.4,
-                          }}
-                          className="flex items-center gap-1.5"
-                        >
-                          <motion.div
-                            animate={{
-                              backgroundColor: currentStep >= step ? '#E53935' : '#d1d5db',
-                              scale: currentStep === step ? 1.1 : 1,
-                            }}
-                            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                          >
-                            {currentStep > step ? '✓' : step}
-                          </motion.div>
-                          <span
-                            className={`text-sm font-medium transition-colors ${
-                              currentStep === step ? 'text-coral' : currentStep > step ? 'text-gray-600' : 'text-gray-400'
-                            }`}
-                          >
-                            {label}
-                          </span>
-                        </motion.div>
-                        {idx < 2 && (
-                          <ChevronRight className="w-4 h-4 text-gray-300 mx-2" />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Iframe container - dynamically sized */}
-                  <motion.div
-                    className="relative overflow-hidden"
-                    animate={{ height: config.height }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 200,
-                      damping: 25,
-                    }}
-                  >
-                    {/* Loading state */}
-                    <AnimatePresence>
-                      {!isLoaded && (
-                        <motion.div
-                          initial={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.4 }}
-                          className="absolute inset-0 z-10 bg-white flex flex-col items-center justify-center gap-4"
-                        >
-                          <div className="relative">
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                              className="w-10 h-10 border-3 border-gray-200 border-t-coral rounded-full"
-                            />
-                            <Heart className="w-4 h-4 text-coral absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                          </div>
-                          <span className="text-sm text-gray-500">Loading secure donation form...</span>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    <motion.iframe
-                      ref={iframeRef}
+                  {/* Iframe container - fixed height */}
+                  <div className="relative overflow-hidden" style={{ height: '700px' }}>
+                    <iframe
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
-                      onLoad={handleIframeLoad}
                       className="w-full absolute left-0"
-                      animate={{ top: config.offset }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 200,
-                        damping: 25,
-                      }}
                       style={{
                         height: '1600px',
                         border: 'none',
+                        top: '-148px',
                       }}
                       allow="payment"
                     />
-                  </motion.div>
+                  </div>
                 </div>
               </div>
 
