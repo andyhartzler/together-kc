@@ -10,6 +10,7 @@ interface InteractiveHoverButtonProps {
   size?: 'default' | 'lg';
   className?: string;
   external?: boolean;
+  arrowDirection?: 'right' | 'down';
 }
 
 const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
@@ -19,6 +20,7 @@ const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
   size = 'default',
   className,
   external = false,
+  arrowDirection = 'right',
 }) => {
   const variantStyles = {
     primary: 'bg-coral text-white hover:bg-coral/85',
@@ -42,7 +44,10 @@ const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
     <>
       <span>{text}</span>
       <svg
-        className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+        className={cn(
+          "w-4 h-4 transition-transform duration-200",
+          arrowDirection === 'down' ? "group-hover:translate-y-1" : "group-hover:translate-x-1"
+        )}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -51,7 +56,7 @@ const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M9 5l7 7-7 7"
+          d={arrowDirection === 'down' ? "M19 9l-7 7-7-7" : "M9 5l7 7-7 7"}
         />
       </svg>
     </>

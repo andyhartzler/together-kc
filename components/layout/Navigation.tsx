@@ -100,24 +100,20 @@ export default function Navigation() {
                   </Link>
                 );
               })}
-              {/* Shimmer Vote YES Button */}
-              <button
+              {/* Vote YES Button - hidden on home page until scrolled */}
+              <motion.button
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{
+                  opacity: (pathname === '/' && !isScrolled) ? 0 : 1,
+                  scale: (pathname === '/' && !isScrolled) ? 0.9 : 1,
+                  pointerEvents: (pathname === '/' && !isScrolled) ? 'none' : 'auto'
+                }}
+                transition={{ duration: 0.2 }}
                 onClick={() => setIsVoteModalOpen(true)}
-                className="group relative z-0 ml-2 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px hover:scale-105 shadow-lg"
-                style={{ '--speed': '3s', '--spread': '90deg', '--shimmer-color': '#ffffff' } as React.CSSProperties}
+                className="ml-2 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transition-all duration-200 hover:scale-105 hover:bg-coral/90 shadow-lg"
               >
-                {/* Shimmer spark container */}
-                <div className="-z-30 blur-[2px] absolute inset-0 overflow-visible [container-type:size]">
-                  <div className="absolute inset-0 h-[100cqh] animate-shimmer-slide [aspect-ratio:1] [border-radius:0] [mask:none]">
-                    <div className="animate-spin-around absolute -inset-full w-auto rotate-0 [background:conic-gradient(from_calc(270deg-(var(--spread)*0.5)),transparent_0,var(--shimmer-color)_var(--spread),transparent_var(--spread))] [translate:0_0]" />
-                  </div>
-                </div>
                 Vote YES
-                {/* Highlight */}
-                <div className="insert-0 absolute size-full rounded-full shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
-                {/* Backdrop */}
-                <div className="absolute -z-20 bg-coral rounded-full inset-[0.05em]" />
-              </button>
+              </motion.button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -190,26 +186,15 @@ export default function Navigation() {
                     </Link>
                   ))}
                   <div className="pt-4 space-y-3">
-                    {/* Shimmer Vote YES Button - Mobile */}
+                    {/* Vote YES Button - Mobile */}
                     <button
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                         setIsVoteModalOpen(true);
                       }}
-                      className="group relative z-0 flex w-full cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 px-6 py-3 text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px"
-                      style={{ '--speed': '3s', '--spread': '90deg', '--shimmer-color': '#ffffff' } as React.CSSProperties}
+                      className="w-full px-6 py-3 text-white font-semibold bg-coral rounded-full transition-all duration-200 hover:bg-coral/90"
                     >
-                      {/* Shimmer spark container */}
-                      <div className="-z-30 blur-[2px] absolute inset-0 overflow-visible [container-type:size]">
-                        <div className="absolute inset-0 h-[100cqh] animate-shimmer-slide [aspect-ratio:1] [border-radius:0] [mask:none]">
-                          <div className="animate-spin-around absolute -inset-full w-auto rotate-0 [background:conic-gradient(from_calc(270deg-(var(--spread)*0.5)),transparent_0,var(--shimmer-color)_var(--spread),transparent_var(--spread))] [translate:0_0]" />
-                        </div>
-                      </div>
                       Vote YES
-                      {/* Highlight */}
-                      <div className="insert-0 absolute size-full rounded-full shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
-                      {/* Backdrop */}
-                      <div className="absolute -z-20 bg-coral rounded-full inset-[0.05em]" />
                     </button>
                     <button
                       onClick={() => {

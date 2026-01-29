@@ -65,6 +65,26 @@ export default function DonateContent() {
   const [isEndorsementOpen, setIsEndorsementOpen] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
 
+  const shareData = {
+    title: 'Vote YES to Renew the KC Earnings Tax',
+    text: 'The earnings tax funds nearly half of KC\'s essential services. Vote YES on April 7, 2026 to keep Kansas City strong.',
+    url: 'https://together-kc.com',
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch {
+        // User cancelled - fall through to copy
+      }
+    }
+    // Fallback: copy link
+    await navigator.clipboard.writeText(shareData.url);
+    alert('Link copied to clipboard!');
+  };
+
   // Prevent iframe from stealing scroll position when it auto-focuses
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -160,10 +180,10 @@ export default function DonateContent() {
               </Button>
               <Button
                 variant="outline"
-                href="mailto:action@together-kc.com?subject=Volunteer for Together KC"
+                onClick={handleShare}
                 className="border-white text-white hover:bg-white hover:text-navy"
               >
-                Volunteer With Us
+                Share
               </Button>
             </div>
           </motion.div>
