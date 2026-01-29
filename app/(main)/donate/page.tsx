@@ -20,14 +20,9 @@ export default function DonatePage() {
 
   return (
     <>
-      {/* Hero Section - white background to match iframe */}
-      <section className="relative pt-32 pb-8 bg-white overflow-hidden">
-        {/* Background Decorations */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-coral/5 rounded-full blur-3xl" />
-        <div className="absolute top-40 right-20 w-80 h-80 bg-sky/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-golden/5 rounded-full blur-3xl" />
-
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      {/* Hero Section - pure white to match iframe */}
+      <section className="pt-32 pb-8 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
