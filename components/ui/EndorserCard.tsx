@@ -257,17 +257,6 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
                   )}
                 </div>
 
-                {/* Close hint */}
-                <p
-                  className="absolute bottom-4 text-white/40 text-xs transition-all duration-500 ease-out"
-                  style={{
-                    transform: isFlipped ? 'translateY(0)' : 'translateY(10px)',
-                    opacity: isFlipped ? 1 : 0,
-                    transitionDelay: '500ms',
-                  }}
-                >
-                  Click anywhere to close
-                </p>
               </div>
             </motion.div>
 
