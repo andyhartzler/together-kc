@@ -63,6 +63,7 @@ const AnimatedHeart = () => (
 
 export default function DonateContent() {
   const [isEndorsementOpen, setIsEndorsementOpen] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   // Prevent iframe from stealing scroll position when it auto-focuses
   useEffect(() => {
@@ -108,14 +109,16 @@ export default function DonateContent() {
             <iframe
               src="https://secure.numero.ai/contribute/Together-KC"
               title="Donate to Together KC"
-              className="w-full absolute left-0"
+              className="w-full absolute left-0 transition-opacity duration-300"
               tabIndex={-1}
               style={{
                 height: '2100px',
                 top: -115,
                 border: 'none',
+                opacity: iframeLoaded ? 1 : 0,
               }}
               allow="payment"
+              onLoad={() => setIframeLoaded(true)}
             />
             {/* White bars to cover iframe card edges - individual bars every 25px */}
             {BAR_POSITIONS.map(pos => (
