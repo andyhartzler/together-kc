@@ -399,9 +399,9 @@ export default function EndorsementsContent() {
             <Button
               variant="primary"
               size="lg"
-              href="mailto:action@together-kc.com?subject=Volunteer for Together KC"
+              href="mailto:action@together-kc.com?subject=Together KC Inquiry"
             >
-              Contact Us to Volunteer
+              Contact Us
             </Button>
           </motion.div>
         </div>
