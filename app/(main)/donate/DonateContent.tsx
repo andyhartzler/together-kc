@@ -126,19 +126,32 @@ export default function DonateContent() {
             className="relative overflow-hidden"
             style={{ height: 1100 }}
           >
+            {/* White cover to permanently hide iframe header during load */}
+            <div
+              className="absolute top-0 left-0 right-0 bg-white z-20 transition-opacity duration-500"
+              style={{
+                height: 20,
+                opacity: iframeLoaded ? 0 : 1,
+                pointerEvents: 'none'
+              }}
+            />
             <iframe
               src="https://secure.numero.ai/contribute/Together-KC"
               title="Donate to Together KC"
-              className="w-full absolute left-0 transition-opacity duration-300"
+              className="w-full absolute left-0 transition-opacity duration-500"
               tabIndex={-1}
               style={{
                 height: '2100px',
                 top: -115,
                 border: 'none',
                 opacity: iframeLoaded ? 1 : 0,
+                visibility: iframeLoaded ? 'visible' : 'hidden',
               }}
               allow="payment"
-              onLoad={() => setIframeLoaded(true)}
+              onLoad={() => {
+                // Small delay to ensure content is rendered
+                setTimeout(() => setIframeLoaded(true), 150);
+              }}
             />
             {/* White bars to cover iframe card edges - individual bars every 25px */}
             {BAR_POSITIONS.map(pos => (
