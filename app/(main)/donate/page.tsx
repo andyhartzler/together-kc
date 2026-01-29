@@ -4,19 +4,22 @@ import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
-// Step configurations - measured from actual Numero form
+// Step configurations - measured from actual Numero form screenshots
+// Step 1: Hide logo + title, show from "CHOOSE AN AMOUNT"
+// Steps 2-3: Hide logo + title, show progress bar
 const STEP_CONFIG = {
-  1: { height: 455, offset: -250 }, // Amount selection
-  2: { height: 750, offset: -148 }, // Personal details (tallest)
-  3: { height: 540, offset: -148 }, // Payment
+  1: { height: 340, offset: -200 }, // Amount buttons + Continue (hide title, no disclaimer needed)
+  2: { height: 580, offset: -160 }, // Progress bar + details form + Continue
+  3: { height: 480, offset: -160 }, // Progress bar + payment form + Submit
 };
 
 // Continue button is roughly in this zone (as percentage of visible container)
+// Step 1: Continue at ~65-80% down, Step 2: ~75-90% down
 const CONTINUE_ZONE = {
-  yMin: 0.70, // 70% down from top
-  yMax: 1.0,  // to bottom
-  xMin: 0.15, // 15% from left
-  xMax: 0.85, // 85% from left
+  yMin: 0.60, // 60% down from top
+  yMax: 0.95, // to near bottom
+  xMin: 0.25, // 25% from left (button is centered)
+  xMax: 0.75, // 75% from left
 };
 
 export default function DonatePage() {
