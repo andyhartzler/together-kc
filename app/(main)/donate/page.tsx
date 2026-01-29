@@ -1,67 +1,15 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Shield, Users, Sparkles } from 'lucide-react';
 
-// Step configurations - heights and offsets for each donation step
-const STEP_CONFIG = {
-  1: { height: 420, offset: -250 },  // Amount selection
-  2: { height: 720, offset: -148 },  // Details form
-  3: { height: 460, offset: -148 },  // Payment
-};
+// Fixed height that accommodates all form steps (Step 2 "Details" is the tallest)
+// Numero uses React SPA - no page reloads between steps, no postMessage API
+// Cross-origin iframe = cannot detect step changes, so use fixed max height
+const IFRAME_HEIGHT = 720;
+const IFRAME_OFFSET = -148; // Hide Numero logo/header, show form content
 
 export default function DonatePage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const loadCount = useRef(0);
-
-  // Method 1: Count iframe loads (works if Numero does page navigations between steps)
-  const handleIframeLoad = useCallback(() => {
-    loadCount.current += 1;
-    console.log(`[Donate] Iframe loaded (count: ${loadCount.current})`);
-
-    // Each load after the first = new step
-    if (loadCount.current > 1 && loadCount.current <= 3) {
-      setCurrentStep(loadCount.current);
-    }
-  }, []);
-
-  // Method 2: Window blur detection - fires when user clicks in iframe
-  useEffect(() => {
-    let blurCount = 0;
-    let lastBlurTime = 0;
-
-    const handleBlur = () => {
-      const now = Date.now();
-      // Only count if it's been a while since last blur (debounce rapid focus changes)
-      if (now - lastBlurTime > 2000) {
-        blurCount++;
-        console.log(`[Donate] Window blur #${blurCount} - user clicked in iframe`);
-      }
-      lastBlurTime = now;
-    };
-
-    window.addEventListener('blur', handleBlur);
-    return () => window.removeEventListener('blur', handleBlur);
-  }, []);
-
-  // Method 3: Listen for postMessage from Numero (in case they send step/height info)
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (!event.origin.includes('numero.ai')) return;
-      console.log('[Donate] postMessage from Numero:', event.data);
-
-      if (event.data?.step) {
-        setCurrentStep(event.data.step);
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
-  const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG];
 
   return (
     <>
@@ -280,28 +228,23 @@ export default function DonatePage() {
                   {/* Header accent */}
                   <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  {/* Iframe container - dynamically sized based on detected step */}
-                  <motion.div
-                    ref={containerRef}
+                  {/* Iframe container - fixed height to fit all form steps */}
+                  <div
                     className="relative overflow-hidden"
-                    animate={{ height: config.height }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    style={{ height: IFRAME_HEIGHT }}
                   >
-                    {/* The iframe - positioned absolutely and offset to hide branding */}
                     <iframe
                       src="https://secure.numero.ai/contribute/Together-KC"
                       title="Donate to Together KC"
-                      onLoad={handleIframeLoad}
                       className="w-full absolute left-0"
                       style={{
-                        height: '1600px',
+                        height: '2100px',
                         border: 'none',
-                        top: config.offset,
+                        top: IFRAME_OFFSET,
                       }}
                       allow="payment"
                     />
-
-                  </motion.div>
+                  </div>
                 </div>
               </div>
 
