@@ -23,13 +23,13 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
   const [submitted, setSubmitted] = useState(false);
   const [showWhyField, setShowWhyField] = useState(false);
 
-  // Show "why" field when name and email are filled
+  // Show "why" field when email contains @ sign
   useEffect(() => {
-    if (formData.name.trim() && formData.email.trim() && !showWhyField) {
+    if (formData.email.includes('@') && !showWhyField) {
       const timer = setTimeout(() => setShowWhyField(true), 300);
       return () => clearTimeout(timer);
     }
-  }, [formData.name, formData.email, showWhyField]);
+  }, [formData.email, showWhyField]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,7 +170,7 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
                 <textarea
                   value={formData.why}
                   onChange={(e) => setFormData({ ...formData, why: e.target.value })}
-                  placeholder="Why do you support Together KC? (optional)"
+                  placeholder="What City Services are most important to you? (optional)"
                   rows={3}
                   className={cn(
                     'w-full px-4 py-3 rounded-lg border border-gray-200 bg-white',
@@ -194,7 +194,7 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
               className="w-5 h-5 mt-0.5 text-coral border-gray-300 rounded focus:ring-coral focus:ring-2 cursor-pointer"
             />
             <span className="text-sm text-gray-600 leading-tight">
-              I consent to having my name displayed publicly as a supporter of Together KC
+              I consent to having my name displayed publicly as an endorser of the Kansas City Earnings Tax
             </span>
           </label>
         </div>
