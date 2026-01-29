@@ -1,9 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 
 export default function DonatePage() {
+  // Prevent iframe from stealing scroll position when it auto-focuses
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       {/* Hero Section - matching FAQ page exactly */}
@@ -44,6 +50,7 @@ export default function DonatePage() {
               src="https://secure.numero.ai/contribute/Together-KC"
               title="Donate to Together KC"
               className="w-full absolute left-0"
+              tabIndex={-1}
               style={{
                 height: '2100px',
                 top: -115,
