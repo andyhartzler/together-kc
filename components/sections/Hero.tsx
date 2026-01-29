@@ -2,7 +2,6 @@
 
 import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { VoteYesModal } from '@/components/ui/VoteYesModal';
 import { VOTE_DATE } from '@/lib/constants';
 
@@ -129,7 +128,7 @@ export default function Hero() {
         >
           <button
             onClick={() => setIsVoteModalOpen(true)}
-            className="group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 px-8 py-4 text-lg text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px hover:scale-105 shadow-lg"
+            className="group relative z-0 flex cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap border border-white/10 px-8 py-4 text-lg text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px hover:scale-105 shadow-lg"
           >
             Vote YES
             {/* Highlight */}
@@ -137,13 +136,22 @@ export default function Hero() {
             {/* Backdrop */}
             <div className="absolute -z-20 bg-coral rounded-full inset-[0.05em]" />
           </button>
-          <InteractiveHoverButton
-            text="Learn More"
+          <a
             href="#services"
-            variant="outline"
-            size="lg"
-            arrowDirection="down"
-          />
+            className="group relative z-0 flex cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap border border-white/30 px-8 py-4 text-lg text-white font-semibold bg-white/10 backdrop-blur-sm rounded-full transform-gpu transition-all duration-300 ease-in-out active:translate-y-px hover:scale-105 hover:bg-white/20 shadow-lg"
+          >
+            Learn More
+            <svg
+              className="w-4 h-4 transition-transform duration-200 group-hover:translate-y-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+            {/* Highlight */}
+            <div className="insert-0 absolute size-full rounded-full shadow-[inset_0_-8px_10px_#ffffff0f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff1f] group-active:shadow-[inset_0_-10px_10px_#ffffff1f]" />
+          </a>
         </motion.div>
       </motion.div>
 
