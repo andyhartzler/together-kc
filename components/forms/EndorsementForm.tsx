@@ -184,20 +184,30 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
           )}
         </AnimatePresence>
 
-        {/* Consent Checkbox */}
-        <div className="pt-2">
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={formData.consent}
-              onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-              className="w-5 h-5 mt-0.5 text-coral border-gray-300 rounded focus:ring-coral focus:ring-2 cursor-pointer"
-            />
-            <span className="text-sm text-gray-600 leading-tight">
-              I consent to having my name displayed publicly as an endorser of the Kansas City Earnings Tax
-            </span>
-          </label>
-        </div>
+        {/* Consent Checkbox - appears after email contains @ */}
+        <AnimatePresence>
+          {showWhyField && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="pt-2"
+            >
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.consent}
+                  onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
+                  className="w-5 h-5 mt-0.5 text-coral border-gray-300 rounded focus:ring-coral focus:ring-2 cursor-pointer"
+                />
+                <span className="text-sm text-gray-600 leading-tight">
+                  I consent to having my name displayed publicly as an endorser of the Kansas City Earnings Tax
+                </span>
+              </label>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Submit Button */}
         <div className="pt-4">
