@@ -153,7 +153,9 @@ export default function EndorsementsContent() {
               <EndorserCard
                 key={org.name}
                 name={org.name}
+                fullName={org.fullName}
                 logo={org.logo}
+                website={org.website}
                 index={index}
               />
             ))}
