@@ -90,6 +90,23 @@ export const ENDORSERS = {
     { name: 'Historic West Bottom', logo: '/images/endorsers/Historic West Bottom.png' },
     { name: 'Holmes Garden Neighborhood Association', logo: '/images/endorsers/Holmes Garden Neighborhood Association.png' },
     { name: 'Northeast Chamber of Commerce', logo: '/images/endorsers/Northeast Chamber of Commerce.png' },
+    // Union endorsers
+    { name: 'Plumbers Local 8', logo: '/images/endorsers/Plumbers Local 8.png' },
+    { name: 'IBEW Local 124', logo: '/images/endorsers/IBEW Local 124.png' },
+    { name: 'OPCMIA Local 518', logo: '/images/endorsers/OPCMIA Local 518.png' },
+    { name: 'IUPAT DC #3', logo: '/images/endorsers/IUPAT DC #3.png' },
+    { name: 'IUOE Local 101', logo: '/images/endorsers/IUOE Local 101 logo.png' },
+    { name: 'CWA Local 6360', logo: '/images/endorsers/CWA Local 6360.png' },
+    { name: 'IAMAW Local Lodge 778', logo: '/images/endorsers/IAMAW Local Lodge 778.png' },
+    { name: 'AFT Local 691', logo: '/images/endorsers/AFT Local 691.png' },
+    { name: 'Roofers Local 20', logo: '/images/endorsers/Roofers Local 20.png' },
+    { name: 'SEATU', logo: '/images/endorsers/SEATU.png' },
+    { name: 'APWU Local 67', logo: '/images/endorsers/APWU Local 67.png' },
+    { name: 'Greater KC Building Construction Trades Council', logo: '/images/endorsers/Greater KC Building Construction Trades Council .png' },
+    { name: 'AFGE 1336', logo: '/images/endorsers/AFGE 1336.png' },
+    { name: 'IBEW Local 53', logo: '/images/endorsers/IBEW Local 53.png' },
+    { name: 'IAFF Local 3808', logo: '/images/endorsers/IAFF Local 3808.png' },
+    { name: 'Pipefitters Local 533', logo: '/images/endorsers/Pipefitters Local 533.png' },
   ],
   cityOfficials: [
     { name: 'Quinton Lucas', title: 'Mayor', district: '', photo: '/images/council/mayor-q.png' },
@@ -143,3 +160,83 @@ export const FAQS = [
     answer: 'You can help by: voting YES on or before April 7, 2026; spreading the word to friends, family, and coworkers; displaying yard signs and sharing on social media; endorsing the renewal if you represent an organization; and contributing to Together KC\'s outreach efforts.',
   },
 ] as const;
+
+// SEO Keywords organized by category
+export const SEO_KEYWORDS = {
+  primary: [
+    'Kansas City earnings tax',
+    'KC e-tax',
+    'KC etax',
+    'e-tax renewal',
+    'earnings tax renewal 2026',
+    'Kansas City e-tax renewal',
+  ],
+  secondary: [
+    'Vote YES Kansas City',
+    'April 7 2026 election',
+    'KC first responders funding',
+    'Kansas City city services',
+    'KC municipal tax',
+    'Together KC',
+  ],
+  longtail: [
+    'when is KC earnings tax vote',
+    'what does KC earnings tax fund',
+    'should I vote yes on earnings tax',
+    'Kansas City earnings tax election 2026',
+    'how much is Kansas City earnings tax',
+    'who pays KC earnings tax',
+    'KC earnings tax renewal vote',
+  ],
+  local: [
+    'Kansas City Missouri tax',
+    'KCMO earnings tax',
+    'Jackson County election',
+    'Kansas City MO e-tax',
+    'Missouri earnings tax',
+  ],
+  intent: [
+    'renew KC earnings tax',
+    'support Kansas City services',
+    'vote for KC first responders',
+    'fund Kansas City police fire EMS',
+  ],
+} as const;
+
+// Extended site configuration for SEO
+export const SITE_SEO_CONFIG = {
+  // Tax information
+  tax: {
+    rate: '1%',
+    yearEstablished: 1963,
+    annualRevenue: '$373 million',
+    budgetPercentage: '47%',
+    renewalCycle: 5,
+  },
+  // Election information
+  election: {
+    date: '2026-04-07',
+    dateFormatted: 'April 7, 2026',
+    absenteeStart: '2026-03-24',
+    absenteeStartFormatted: 'March 24, 2026',
+  },
+  // Geographic information
+  geo: {
+    city: 'Kansas City',
+    state: 'Missouri',
+    stateAbbr: 'MO',
+    country: 'US',
+    latitude: 39.0997,
+    longitude: -94.5786,
+  },
+  // Services funded by the tax
+  servicesFunded: [
+    'Fire Department',
+    'Police Department',
+    'Emergency Medical Services',
+    'Road Maintenance',
+    'Trash Collection',
+    'Snow Removal',
+    'Parks Maintenance',
+  ],
+} as const;
