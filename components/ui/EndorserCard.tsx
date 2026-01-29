@@ -107,23 +107,6 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
           </div>
         </div>
 
-        {/* Organization name that slides up on hover */}
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-navy via-navy/95 to-transparent pt-12 pb-4 px-4"
-            >
-              <p className="text-white text-sm font-semibold text-center leading-tight">
-                {name}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Corner accent */}
         <motion.div
           animate={{
