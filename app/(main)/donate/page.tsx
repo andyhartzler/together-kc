@@ -1,16 +1,44 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Shield, Users, Sparkles } from 'lucide-react';
+import { Heart, Shield, Users, Sparkles, ArrowRight, Building2 } from 'lucide-react';
+
+const PRESET_AMOUNTS = [1000, 2500, 5000, 10000];
 
 export default function DonatePage() {
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(2500);
+  const [customAmount, setCustomAmount] = useState('');
+  const [isMonthly, setIsMonthly] = useState(false);
+  const [isCustom, setIsCustom] = useState(false);
+
+  const handleAmountSelect = (amount: number) => {
+    setSelectedAmount(amount);
+    setIsCustom(false);
+    setCustomAmount('');
+  };
+
+  const handleCustomSelect = () => {
+    setIsCustom(true);
+    setSelectedAmount(null);
+  };
+
+  const handleContinue = () => {
+    const amount = isCustom ? parseInt(customAmount) || 0 : selectedAmount;
+    if (amount && amount > 0) {
+      // Redirect to Numero with the selected amount
+      window.open(`https://secure.numero.ai/contribute/Together-KC`, '_blank');
+    }
+  };
+
+  const displayAmount = isCustom ? (parseInt(customAmount) || 0) : (selectedAmount || 0);
+
   return (
     <>
       {/* Hero Section */}
       <section className="relative pt-32 sm:pt-40 pb-8 sm:pb-12 bg-gradient-to-br from-navy via-navy/95 to-sky/80 overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
-          {/* Gradient orbs */}
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
@@ -35,7 +63,6 @@ export default function DonatePage() {
             }}
             className="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-sky/30 rounded-full blur-3xl"
           />
-          {/* Subtle grid pattern */}
           <div
             className="absolute inset-0 opacity-[0.03]"
             style={{
@@ -48,7 +75,6 @@ export default function DonatePage() {
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            {/* Sparkle icon */}
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -59,7 +85,6 @@ export default function DonatePage() {
             </motion.div>
 
             <h1 className="font-bold text-white mb-6 sm:mb-8">
-              {/* Support Kansas City - word by word reveal */}
               <span className="block text-3xl sm:text-5xl md:text-6xl mb-2 sm:mb-3">
                 {['Support', 'Kansas', 'City'].map((word, i) => (
                   <motion.span
@@ -78,7 +103,6 @@ export default function DonatePage() {
                 ))}
               </span>
 
-              {/* Together - dramatic entrance with glow */}
               <motion.span
                 initial={{
                   opacity: 0,
@@ -109,7 +133,6 @@ export default function DonatePage() {
                 className="block text-3xl sm:text-5xl md:text-6xl text-coral relative"
               >
                 Together
-                {/* Animated underline sweep */}
                 <motion.span
                   initial={{ scaleX: 0, opacity: 0 }}
                   animate={{ scaleX: 1, opacity: 1 }}
@@ -118,11 +141,9 @@ export default function DonatePage() {
                 />
               </motion.span>
             </h1>
-
           </div>
         </div>
 
-        {/* Bottom fade to white */}
         <div
           className="absolute bottom-0 left-0 right-0 h-24 sm:h-32"
           style={{
@@ -155,7 +176,6 @@ export default function DonatePage() {
                 </p>
               </div>
 
-              {/* Impact cards */}
               <div className="space-y-4">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -213,7 +233,7 @@ export default function DonatePage() {
               </div>
             </motion.div>
 
-            {/* Right Column - Donation Form Embed */}
+            {/* Right Column - Custom Donation Form */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -230,23 +250,127 @@ export default function DonatePage() {
                   {/* Header accent */}
                   <div className="h-2 bg-gradient-to-r from-coral via-golden to-sky" />
 
-                  {/* Iframe container - clips to show only the donation form */}
-                  <div
-                    className="relative overflow-hidden"
-                    style={{ height: '520px' }}
-                  >
-                    <iframe
-                      src="https://secure.numero.ai/contribute/Together-KC"
-                      title="Donate to Together KC"
-                      className="w-full absolute left-0"
-                      scrolling="no"
-                      style={{
-                        height: '900px',
-                        border: 'none',
-                        top: '-160px',
-                      }}
-                      allow="payment"
-                    />
+                  <div className="p-6 sm:p-8">
+                    {/* Organization link */}
+                    <a
+                      href="https://secure.numero.ai/contribute/Together-KC"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-sky hover:text-navy transition-colors mb-6"
+                    >
+                      <Building2 className="w-4 h-4" />
+                      Contributing as an organization? Click here.
+                    </a>
+
+                    {/* Amount Selection */}
+                    <h3 className="text-xl font-bold text-navy mb-6">Choose an amount</h3>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                      {PRESET_AMOUNTS.map((amount) => (
+                        <motion.button
+                          key={amount}
+                          onClick={() => handleAmountSelect(amount)}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`relative py-4 px-3 rounded-xl font-bold text-lg transition-all duration-200 ${
+                            selectedAmount === amount && !isCustom
+                              ? 'bg-navy text-white shadow-lg shadow-navy/25'
+                              : 'bg-light-gray text-navy hover:bg-gray-200'
+                          }`}
+                        >
+                          ${amount.toLocaleString()}
+                          {selectedAmount === amount && !isCustom && (
+                            <motion.div
+                              layoutId="amount-indicator"
+                              className="absolute inset-0 rounded-xl border-2 border-coral"
+                              initial={false}
+                              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            />
+                          )}
+                        </motion.button>
+                      ))}
+                    </div>
+
+                    {/* Custom Amount */}
+                    <motion.button
+                      onClick={handleCustomSelect}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      className={`w-full py-4 px-4 rounded-xl font-semibold text-lg transition-all duration-200 mb-6 ${
+                        isCustom
+                          ? 'bg-navy text-white shadow-lg shadow-navy/25 border-2 border-coral'
+                          : 'bg-light-gray text-navy hover:bg-gray-200'
+                      }`}
+                    >
+                      {isCustom ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <span className="text-white/70">$</span>
+                          <input
+                            type="number"
+                            value={customAmount}
+                            onChange={(e) => setCustomAmount(e.target.value)}
+                            placeholder="Enter amount"
+                            className="bg-transparent text-center text-white placeholder-white/50 outline-none w-32 font-bold"
+                            autoFocus
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </div>
+                      ) : (
+                        'OTHER'
+                      )}
+                    </motion.button>
+
+                    {/* Frequency Toggle */}
+                    <div className="flex items-center justify-center gap-2 mb-8">
+                      <button
+                        onClick={() => setIsMonthly(false)}
+                        className={`px-6 py-2.5 rounded-full font-semibold transition-all duration-200 ${
+                          !isMonthly
+                            ? 'bg-coral text-white shadow-md'
+                            : 'bg-light-gray text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        Give once
+                      </button>
+                      <button
+                        onClick={() => setIsMonthly(true)}
+                        className={`px-6 py-2.5 rounded-full font-semibold transition-all duration-200 ${
+                          isMonthly
+                            ? 'bg-coral text-white shadow-md'
+                            : 'bg-light-gray text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        Donate monthly
+                      </button>
+                    </div>
+
+                    {/* Continue Button */}
+                    <motion.button
+                      onClick={handleContinue}
+                      disabled={displayAmount <= 0}
+                      whileHover={{ scale: displayAmount > 0 ? 1.02 : 1 }}
+                      whileTap={{ scale: displayAmount > 0 ? 0.98 : 1 }}
+                      className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-200 ${
+                        displayAmount > 0
+                          ? 'bg-gradient-to-r from-coral to-coral/90 text-white shadow-lg shadow-coral/25 hover:shadow-xl hover:shadow-coral/30'
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      {displayAmount > 0 ? (
+                        <>
+                          Continue with ${displayAmount.toLocaleString()}
+                          {isMonthly && '/mo'}
+                          <ArrowRight className="w-5 h-5" />
+                        </>
+                      ) : (
+                        'Select an amount'
+                      )}
+                    </motion.button>
+
+                    {/* Secure badge */}
+                    <p className="text-center text-xs text-gray-400 mt-4">
+                      Secure payment processing powered by Numero
+                    </p>
                   </div>
                 </div>
               </div>
