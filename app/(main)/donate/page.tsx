@@ -1,94 +1,12 @@
 'use client';
 
-import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 
-// Step configuration for iframe container sizing
-const STEP_CONFIG = {
-  1: { height: 500, offset: -115 },   // Amount selection
-  2: { height: 850, offset: -115 },   // Details + Payment (same size)
-};
-
-// Animated checkmark SVG component matching the logo style
-const AnimatedCheckmark = () => (
-  <motion.svg
-    viewBox="0 0 100 100"
-    className="w-12 h-12 sm:w-16 sm:h-16"
-    initial={{ opacity: 0, scale: 0 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
-  >
-    {/* Red checkmark */}
-    <motion.path
-      d="M25 55 L42 72 L75 28"
-      fill="none"
-      stroke="#E53935"
-      strokeWidth="12"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      initial={{ pathLength: 0 }}
-      animate={{ pathLength: 1 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
-    />
-  </motion.svg>
-);
-
 export default function DonatePage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-
-  const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG] || STEP_CONFIG[2];
-
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const x = e.clientX;
-    const y = e.clientY;
-
-    // 1. Check if click is in Continue button zone (bottom 40% of container)
-    if (containerRef.current && currentStep === 1) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const relY = (y - rect.top) / rect.height;
-
-      if (relY > 0.60) {
-        // Click is in Continue button area - resize after delay
-        setTimeout(() => setCurrentStep(2), 500);
-      }
-    }
-
-    // 2. Pass click through to iframe
-    if (overlayRef.current && iframeRef.current) {
-      // Hide overlay temporarily
-      overlayRef.current.style.pointerEvents = 'none';
-
-      // Dispatch full click sequence to iframe at same coordinates
-      ['mousedown', 'mouseup', 'click'].forEach(eventType => {
-        const event = new MouseEvent(eventType, {
-          bubbles: true,
-          cancelable: true,
-          clientX: x,
-          clientY: y,
-          view: window,
-        });
-        iframeRef.current!.dispatchEvent(event);
-      });
-
-      // Re-enable overlay after brief delay
-      setTimeout(() => {
-        if (overlayRef.current) {
-          overlayRef.current.style.pointerEvents = 'auto';
-        }
-      }, 100);
-    }
-  };
-
   return (
     <>
-      {/* Hero Section - styled like FAQ page */}
+      {/* Hero Section - matching FAQ page exactly */}
       <section className="relative pt-32 pb-8 bg-light-gray overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-coral/5 rounded-full blur-3xl" />
@@ -102,11 +20,6 @@ export default function DonatePage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            {/* Animated Checkmark */}
-            <div className="flex justify-center mb-6">
-              <AnimatedCheckmark />
-            </div>
-
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-navy mb-6">
               Support
               <br />
@@ -119,43 +32,30 @@ export default function DonatePage() {
         </div>
       </section>
 
-      {/* Donation Form Section - white background to blend with iframe */}
-      <section className="py-12 bg-white">
+      {/* Donation Form Section - bg-light-gray to blend seamlessly */}
+      <section className="py-12 bg-light-gray">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Iframe container with animated height */}
-          <motion.div
-            ref={containerRef}
+          {/* Iframe container - fixed height for tallest scenario, no visible borders */}
+          <div
             className="relative overflow-hidden"
-            animate={{ height: config.height }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            style={{ height: 1150 }}
           >
             <iframe
-              ref={iframeRef}
               src="https://secure.numero.ai/contribute/Together-KC"
               title="Donate to Together KC"
               className="w-full absolute left-0"
               style={{
                 height: '2100px',
-                top: config.offset,
+                top: -115,
                 border: 'none',
               }}
               allow="payment"
             />
-
-            {/* Click-through overlay - only needed on step 1 */}
-            {currentStep === 1 && (
-              <div
-                ref={overlayRef}
-                onClick={handleOverlayClick}
-                className="absolute inset-0 z-10 cursor-pointer"
-                style={{ background: 'transparent' }}
-              />
-            )}
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* CTA Section - styled like FAQ page */}
+      {/* CTA Section - matching FAQ page */}
       <section className="section-padding bg-navy">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
