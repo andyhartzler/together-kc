@@ -14,52 +14,42 @@ const STEP_CONFIG = {
 export default function DonatePage() {
   const [currentStep, setCurrentStep] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
-  const mousePositionRef = useRef({ relY: 0, inContainer: false });
+  const lastClickTime = useRef(0);
 
-  // Track mouse position relative to container
-  // This works even with cross-origin iframe because we track on the document level
+  // Detect clicks via document-level mousedown (capture phase)
+  // This fires BEFORE the click reaches the iframe, so we can detect position
+  // without blocking the click
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
+    const handleMouseDown = (e: MouseEvent) => {
+      if (!containerRef.current || currentStep !== 1) return;
 
       const rect = containerRef.current.getBoundingClientRect();
+
+      // Check if click is within our container
       const inContainer =
         e.clientX >= rect.left &&
         e.clientX <= rect.right &&
         e.clientY >= rect.top &&
         e.clientY <= rect.bottom;
 
-      if (inContainer) {
-        mousePositionRef.current = {
-          relY: (e.clientY - rect.top) / rect.height,
-          inContainer: true,
-        };
-      } else {
-        mousePositionRef.current.inContainer = false;
-      }
-    };
+      if (!inContainer) return;
 
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+      const relY = (e.clientY - rect.top) / rect.height;
+      const now = Date.now();
 
-  // Detect clicks via window blur - fires when user clicks in iframe
-  // Combined with mouse position tracking, we can detect Continue button clicks
-  useEffect(() => {
-    const handleBlur = () => {
-      const { relY, inContainer } = mousePositionRef.current;
-
-      // If mouse was in container and in bottom 35% (Continue button area)
-      // and we're on step 1, advance to step 2
-      if (inContainer && relY > 0.65 && currentStep === 1) {
+      // If click is in bottom 40% (Continue button area) and debounced
+      if (relY > 0.60 && now - lastClickTime.current > 1000) {
+        lastClickTime.current = now;
+        // Resize after delay to let form process the click
         setTimeout(() => {
           setCurrentStep(2);
-        }, 400); // Delay to let form transition
+        }, 500);
       }
     };
 
-    window.addEventListener('blur', handleBlur);
-    return () => window.removeEventListener('blur', handleBlur);
+    // Use capture phase - fires before the event reaches the iframe
+    document.addEventListener('mousedown', handleMouseDown, true);
+    return () => document.removeEventListener('mousedown', handleMouseDown, true);
   }, [currentStep]);
 
   const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG] || STEP_CONFIG[2];
