@@ -26,61 +26,47 @@ const CONTINUE_ZONE = {
 export default function DonatePage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [overlayEnabled, setOverlayEnabled] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastMousePos = useRef({ x: 0, y: 0 });
   const lastClickTime = useRef(0);
 
-  // Track mouse position on our page
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      lastMousePos.current = { x: e.clientX, y: e.clientY };
-    };
+  // Handle clicks on the transparent overlay
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+    const rect = containerRef.current.getBoundingClientRect();
+    const relativeX = (e.clientX - rect.left) / rect.width;
+    const relativeY = (e.clientY - rect.top) / rect.height;
 
-  // Detect clicks into iframe via window blur
-  useEffect(() => {
-    const handleBlur = () => {
-      if (!containerRef.current || !isLoaded) return;
+    console.log(`[Donate] Click at ${Math.round(relativeX * 100)}% x, ${Math.round(relativeY * 100)}% y`);
 
-      // Debounce - ignore if clicked recently
+    // Check if click was in the Continue button zone
+    const inContinueZone =
+      relativeY >= CONTINUE_ZONE.yMin &&
+      relativeY <= CONTINUE_ZONE.yMax &&
+      relativeX >= CONTINUE_ZONE.xMin &&
+      relativeX <= CONTINUE_ZONE.xMax;
+
+    if (inContinueZone) {
       const now = Date.now();
-      if (now - lastClickTime.current < 1000) return;
+      if (now - lastClickTime.current > 1000) {
+        lastClickTime.current = now;
+        console.log(`[Donate] Continue zone clicked! Will advance to step ${currentStep + 1}`);
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const { x, y } = lastMousePos.current;
-
-      // Check if mouse was inside our container when blur happened
-      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-        const relativeX = (x - rect.left) / rect.width;
-        const relativeY = (y - rect.top) / rect.height;
-
-        // Check if click was in the Continue button zone
-        if (
-          relativeY >= CONTINUE_ZONE.yMin &&
-          relativeY <= CONTINUE_ZONE.yMax &&
-          relativeX >= CONTINUE_ZONE.xMin &&
-          relativeX <= CONTINUE_ZONE.xMax
-        ) {
-          lastClickTime.current = now;
-
-          // Advance to next step after brief delay (form animation)
-          setTimeout(() => {
-            setCurrentStep((prev) => {
-              if (prev >= 3) return prev;
-              console.log(`[Donate] Advancing to step ${prev + 1}`);
-              return prev + 1;
-            });
-          }, 400);
-        }
+        // Advance step after delay for form transition
+        setTimeout(() => {
+          setCurrentStep((prev) => {
+            if (prev >= 3) return prev;
+            return prev + 1;
+          });
+        }, 600);
       }
-    };
+    }
 
-    window.addEventListener('blur', handleBlur);
-    return () => window.removeEventListener('blur', handleBlur);
-  }, [isLoaded]);
+    // Briefly disable overlay to let click through to iframe
+    setOverlayEnabled(false);
+    setTimeout(() => setOverlayEnabled(true), 100);
+  };
 
   const config = STEP_CONFIG[currentStep as keyof typeof STEP_CONFIG];
 
@@ -326,9 +312,19 @@ export default function DonatePage() {
                       style={{
                         height: '1600px',
                         border: 'none',
+                        pointerEvents: overlayEnabled ? 'none' : 'auto',
                       }}
                       allow="payment"
                     />
+
+                    {/* Invisible overlay to capture click positions */}
+                    {overlayEnabled && (
+                      <div
+                        className="absolute inset-0 z-10 cursor-pointer"
+                        onClick={handleOverlayClick}
+                        style={{ background: 'transparent' }}
+                      />
+                    )}
                   </motion.div>
                 </div>
               </div>
