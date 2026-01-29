@@ -1,5 +1,5 @@
-// Form handler URL (Google Apps Script Web App)
-export const FORM_HANDLER_URL = 'https://script.google.com/macros/s/AKfycbxQU8d668ZI8xnMKf1RiwzNeV4QPzz4Ssck79tr-wfEg2dQbhWarKWs4E9CkNSikTJb/exec';
+// Form handler URL (Vercel API route)
+export const FORM_HANDLER_URL = '/api/submit';
 
 // Google Analytics Measurement ID
 export const GA_MEASUREMENT_ID = 'G-W2GQ3Z92QM';

@@ -5,7 +5,7 @@ import { GA_MEASUREMENT_ID } from '@/lib/constants';
 
 export default function GoogleAnalytics() {
   // Don't render if no measurement ID configured
-  if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === 'G-XXXXXXXXXX') {
+  if (!GA_MEASUREMENT_ID) {
     return null;
   }
 

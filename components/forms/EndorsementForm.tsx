@@ -44,7 +44,6 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
     try {
       const response = await fetch(FORM_HANDLER_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -54,9 +53,14 @@ export default function EndorsementForm({ onSuccess, compact = false }: Endorsem
         }),
       });
 
-      // With no-cors mode, we can't read the response, but if we get here it likely succeeded
-      setSubmitted(true);
-      onSuccess?.();
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitted(true);
+        onSuccess?.();
+      } else {
+        setError(result.error || 'Failed to submit. Please try again.');
+      }
     } catch {
       setError('Failed to submit. Please try again.');
     } finally {
