@@ -13,109 +13,27 @@ interface EndorserCardProps {
   index?: number;
 }
 
-// Global styles for the glow effect (injected once)
-const glowStyles = `
-  [data-glow]::before,
-  [data-glow]::after {
-    pointer-events: none;
-    content: "";
-    position: absolute;
-    inset: calc(var(--border-size) * -1);
-    border: var(--border-size) solid transparent;
-    border-radius: calc(var(--radius) * 1px);
-    background-attachment: fixed;
-    background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
-    mask-clip: padding-box, border-box;
-    mask-composite: intersect;
-  }
-
-  [data-glow]::before {
-    background-image: radial-gradient(
-      calc(var(--spotlight-size) * 0.75) calc(var(--spotlight-size) * 0.75) at
-      calc(var(--x, 0) * 1px)
-      calc(var(--y, 0) * 1px),
-      hsl(var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 50) * 1%) / var(--border-spot-opacity, 1)), transparent 100%
-    );
-    filter: brightness(2);
-  }
-
-  [data-glow]::after {
-    background-image: radial-gradient(
-      calc(var(--spotlight-size) * 0.5) calc(var(--spotlight-size) * 0.5) at
-      calc(var(--x, 0) * 1px)
-      calc(var(--y, 0) * 1px),
-      hsl(0 100% 100% / var(--border-light-opacity, 1)), transparent 100%
-    );
-  }
-
-  [data-glow] [data-glow] {
-    position: absolute;
-    inset: 0;
-    will-change: filter;
-    opacity: var(--outer, 1);
-    border-radius: calc(var(--radius) * 1px);
-    border-width: calc(var(--border-size) * 20);
-    filter: blur(calc(var(--border-size) * 10));
-    background: none;
-    pointer-events: none;
-    border: none;
-  }
-
-  [data-glow] > [data-glow]::before {
-    inset: -10px;
-    border-width: 10px;
-  }
-
-  @media (max-width: 768px) {
-    [data-glow]::before,
-    [data-glow]::after,
-    [data-glow] [data-glow] {
-      display: none;
-    }
-  }
-`;
-
-// Track if styles have been injected
-let stylesInjected = false;
-
 export function EndorserCard({ name, fullName, logo, website, index = 0 }: EndorserCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
-
-    // Inject glow styles once
-    if (!stylesInjected && typeof document !== 'undefined') {
-      const styleElement = document.createElement('style');
-      styleElement.textContent = glowStyles;
-      document.head.appendChild(styleElement);
-      stylesInjected = true;
-    }
   }, []);
 
-  // Track pointer position for glow effect
-  useEffect(() => {
-    const syncPointer = (e: PointerEvent) => {
-      const { clientX: x, clientY: y } = e;
-
-      if (cardRef.current) {
-        cardRef.current.style.setProperty('--x', x.toFixed(2));
-        cardRef.current.style.setProperty('--xp', (x / window.innerWidth).toFixed(2));
-        cardRef.current.style.setProperty('--y', y.toFixed(2));
-        cardRef.current.style.setProperty('--yp', (y / window.innerHeight).toFixed(2));
-      }
-    };
-
-    document.addEventListener('pointermove', syncPointer);
-    return () => document.removeEventListener('pointermove', syncPointer);
-  }, []);
+  // Track mouse position relative to card for glow effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
 
   // Handle escape key to close
   useEffect(() => {
@@ -154,53 +72,19 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
 
   const displayFullName = fullName || name;
 
-  // Glow effect CSS variables
-  const glowVars = {
-    '--base': '210', // Blue hue
-    '--spread': '60',
-    '--radius': '16',
-    '--border': '2',
-    '--backdrop': 'transparent',
-    '--backup-border': 'transparent',
-    '--size': '250',
-    '--outer': '1',
-    '--border-size': 'calc(var(--border, 2) * 1px)',
-    '--spotlight-size': 'calc(var(--size, 150) * 1px)',
-    '--hue': 'calc(var(--base) + (var(--xp, 0) * var(--spread, 0)))',
-    '--saturation': '100',
-    '--lightness': '60',
-    '--border-spot-opacity': '0.8',
-    '--border-light-opacity': '0.4',
-    '--bg-spot-opacity': '0.1',
-  } as React.CSSProperties;
-
   const cardContent = (
     <motion.div
       ref={cardRef}
-      data-glow
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: index * 0.03, ease: [0.25, 0.46, 0.45, 0.94] }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
       onClick={handleClick}
       className="relative cursor-pointer"
-      style={{
-        ...glowVars,
-        backgroundImage: `radial-gradient(
-          var(--spotlight-size) var(--spotlight-size) at
-          calc(var(--x, 0) * 1px)
-          calc(var(--y, 0) * 1px),
-          hsl(var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 70) * 1%) / var(--bg-spot-opacity, 0.1)), transparent
-        )`,
-        backgroundAttachment: 'fixed',
-        touchAction: 'none',
-      }}
     >
-      {/* Inner glow element */}
-      <div data-glow className="hidden md:block" />
-
       <motion.div
         animate={{
           y: isHovered ? -6 : 0,
@@ -216,6 +100,16 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
       >
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy/95 to-sky/40" />
+
+        {/* Dynamic glow that follows cursor - desktop only */}
+        <motion.div
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+          className="absolute inset-0 pointer-events-none hidden md:block"
+          style={{
+            background: `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(74, 144, 217, 0.25), transparent 60%)`,
+          }}
+        />
 
         {/* Subtle animated glow on hover */}
         <motion.div
