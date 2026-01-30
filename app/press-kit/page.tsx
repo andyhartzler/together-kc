@@ -284,8 +284,16 @@ export default function PressKitPage() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="space-y-3"
         >
-          {/* Desktop: 5 columns */}
+          {/* Desktop: 5 columns - Election Date first */}
           <div className="hidden md:grid md:grid-cols-5 gap-3">
+            <motion.div
+              className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+              whileHover={{ scale: 1.02, y: -2 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <div className="text-xl font-bold text-coral mb-1">April 7, 2026</div>
+              <div className="text-gray-500 text-sm">Election Date</div>
+            </motion.div>
             <motion.div
               className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
               whileHover={{ scale: 1.02, y: -2 }}
@@ -317,14 +325,6 @@ export default function PressKitPage() {
             >
               <div className="text-3xl font-bold text-coral mb-1">77%</div>
               <div className="text-gray-500 text-sm">2021 Approval</div>
-            </motion.div>
-            <motion.div
-              className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
-              whileHover={{ scale: 1.02, y: -2 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            >
-              <div className="text-xl font-bold text-coral mb-1">April 7, 2026</div>
-              <div className="text-gray-500 text-sm">Election Date</div>
             </motion.div>
           </div>
 
