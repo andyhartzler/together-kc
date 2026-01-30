@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
@@ -9,6 +10,66 @@ import { ShareCard } from '@/components/ui/ShareCard';
 import { VoteEarlyCard } from '@/components/ui/VoteEarlyCard';
 import EndorsementForm from '@/components/forms/EndorsementForm';
 import { ENDORSERS, VOTE_DATE } from '@/lib/constants';
+
+// Champion card with tap support for mobile
+function ChampionCard({ name, index }: { name: string; index: number }) {
+  const [isActive, setIsActive] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }}
+      className="relative"
+      onTouchStart={() => setIsActive(true)}
+      onTouchEnd={() => setTimeout(() => setIsActive(false), 600)}
+      onMouseEnter={() => setIsActive(true)}
+      onMouseLeave={() => setIsActive(false)}
+    >
+      <motion.div
+        animate={{ y: isActive ? -6 : 0, scale: isActive ? 1.03 : 1 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+        className="relative cursor-pointer"
+      >
+        {/* Glow effect */}
+        <div
+          className={`absolute -inset-1 bg-gradient-to-r from-navy via-sky to-coral rounded-2xl blur-lg transition-all duration-500 ${
+            isActive ? 'opacity-40' : 'opacity-0'
+          }`}
+        />
+
+        {/* Card */}
+        <div className="relative bg-white rounded-2xl px-6 sm:px-8 py-4 sm:py-5 shadow-lg shadow-navy/5 border border-gray-100 overflow-hidden">
+          {/* Shimmer effect */}
+          <div
+            className={`absolute inset-0 transition-transform duration-1000 ${
+              isActive ? 'translate-x-full' : '-translate-x-full'
+            }`}
+            style={{
+              background: 'linear-gradient(90deg, transparent, rgba(74, 144, 217, 0.08), transparent)',
+            }}
+          />
+
+          {/* Accent line */}
+          <div
+            className={`absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-navy via-sky to-coral transition-transform duration-500 origin-left ${
+              isActive ? 'scale-x-100' : 'scale-x-0'
+            }`}
+          />
+
+          <span className="relative text-navy font-semibold text-base sm:text-lg">
+            {name}
+          </span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export default function EndorsementsContent() {
   const featuredEndorser = ENDORSERS.featured[0];
@@ -297,45 +358,7 @@ export default function EndorsementsContent() {
               'Maurice Watson',
               'Pastor Ron Lindsey',
             ].map((name, index) => (
-              <motion.div
-                key={name}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.1,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                className="group relative"
-              >
-                <motion.div
-                  whileHover={{ y: -6, scale: 1.03 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                  className="relative"
-                >
-                  {/* Glow effect on hover */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-navy via-sky to-coral rounded-2xl opacity-0 group-hover:opacity-40 blur-lg transition-all duration-500" />
-
-                  {/* Card */}
-                  <div className="relative bg-white rounded-2xl px-6 sm:px-8 py-4 sm:py-5 shadow-lg shadow-navy/5 border border-gray-100 overflow-hidden">
-                    {/* Shimmer effect */}
-                    <div
-                      className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(74, 144, 217, 0.08), transparent)',
-                      }}
-                    />
-
-                    {/* Accent line that animates on hover */}
-                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-navy via-sky to-coral scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-
-                    <span className="relative text-navy font-semibold text-base sm:text-lg">
-                      {name}
-                    </span>
-                  </div>
-                </motion.div>
-              </motion.div>
+              <ChampionCard key={name} name={name} index={index} />
             ))}
           </div>
         </div>

@@ -82,7 +82,7 @@ export const ENDORSERS = {
     { name: 'Heavy Constructors Association', fullName: 'Heavy Constructors Association of the Greater Kansas City Area', logo: '/images/endorsers/Heavy Constructors.png', website: 'https://kcheavyconstruction.com/' },
     { name: 'Greater KC Chamber of Commerce', fullName: 'Greater Kansas City Chamber of Commerce', logo: '/images/endorsers/KC Chamber.PNG', website: 'https://www.kcchamber.com/' },
     { name: 'Civic Council of Greater Kansas City', fullName: 'Civic Council of Greater Kansas City', logo: '/images/endorsers/Civic Council of Greater Kansas City.png', website: 'https://www.kcciviccouncil.org/' },
-    { name: 'Greater KC AFL-CIO', fullName: 'Greater Kansas City AFL-CIO', logo: '/images/endorsers/Greater Kansas City AFL-CIO.png', website: 'https://gkcaflcio.org/' },
+    { name: 'Greater KC AFL-CIO', fullName: 'Greater Kansas City AFL-CIO', logo: '/images/endorsers/Greater Kansas City AFL-CIO.png', website: 'https://www.kcaflcio.org/' },
     { name: 'Urban League', fullName: 'Urban League of Greater Kansas City', logo: '/images/endorsers/Urban League.png', website: 'https://www.ulkc.org/' },
     // Confirmed endorsers
     { name: 'Heartland Black Chamber of Commerce', fullName: 'Heartland Black Chamber of Commerce', logo: '/images/endorsers/Heartland Black Chamber.PNG', website: 'https://heartlandblackchamber.com/' },
