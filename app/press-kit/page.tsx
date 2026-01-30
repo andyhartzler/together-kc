@@ -177,7 +177,7 @@ function DownloadCard({
       whileHover={{ y: -4 }}
     >
       {preview ? (
-        <div className={`relative w-full overflow-hidden bg-gray-100 ${tall ? 'flex-1 min-h-48' : 'h-48'}`}>
+        <div className={`relative w-full overflow-hidden bg-gray-100 ${tall ? 'h-48 lg:h-[calc(100%-140px)]' : 'h-48'}`}>
           <Image
             src={preview}
             alt={title}
