@@ -90,7 +90,7 @@ export const ENDORSERS = {
     { name: 'Southland Progress', fullName: 'Southland Progress', logo: '/images/endorsers/Southland Progress.png', website: null },
     { name: '12th Street Heritage', fullName: 'Twelfth Street Heritage Development Corporation', logo: '/images/endorsers/12th Street Heritage.png', website: 'https://www.twelfthstreetheritage.org/' },
     { name: 'LiUNA Local 264', fullName: "Laborers' International Union of North America Local 264", logo: '/images/endorsers/Laborers 264.PNG', website: 'https://www.local264.com/' },
-    { name: 'LaRaza', fullName: 'Guadalupe Centers', logo: '/images/endorsers/LaRaza.png', website: 'https://guadalupecenters.org/' },
+    { name: 'LaRaza', fullName: 'LaRaza Political Club', logo: '/images/endorsers/LaRaza.png', website: null },
     { name: 'Bridlespur Neighborhood Assoc', fullName: 'Bridlespur Homeowners Association', logo: '/images/endorsers/Bridlespur Neighborhood Assoc.png', website: 'https://bridlespurhomeowners.org/' },
     { name: 'Historic West Bottom', fullName: 'Historic West Bottoms Association', logo: '/images/endorsers/Historic West Bottom.png', website: 'https://www.hwb-kc.com/' },
     { name: 'Holmes Garden Neighborhood Association', fullName: 'Holmes Garden Neighborhood Association', logo: '/images/endorsers/Holmes Garden Neighborhood Association.png', website: null },
