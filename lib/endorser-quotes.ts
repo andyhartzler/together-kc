@@ -93,7 +93,7 @@ const LUCAS_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "When you call 911, you expect someone to answer. When there's a pothole on your street, you expect it to get fixed. The earnings tax makes that possible.",
+    quote: "We've invested in our neighborhoods, improved our parks, and strengthened public safety. The earnings tax makes it all possible—and renewal keeps Kansas City moving forward.",
     imageSrc: "/images/council/mayor-q.png",
   },
   {
