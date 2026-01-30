@@ -60,7 +60,10 @@ export function middleware(request: NextRequest) {
     pathname.endsWith('.ico') ||
     pathname.endsWith('.svg') ||
     pathname.endsWith('.xml') ||
-    pathname.endsWith('.txt')
+    pathname.endsWith('.txt') ||
+    pathname.endsWith('.pdf') ||
+    pathname.endsWith('.jpg') ||
+    pathname.endsWith('.jpeg')
   ) {
     return NextResponse.next();
   }
