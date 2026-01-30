@@ -349,7 +349,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
             {/* Photo with ring effect */}
             <div
               className={cn(
-                "relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 transition-all duration-300",
+                "relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0 transition-all duration-300",
                 active
                   ? "ring-[3px] ring-sky/60 ring-offset-2 ring-offset-white"
                   : "ring-2 ring-gray-200"
@@ -360,7 +360,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
                 alt={quote.name}
                 fill
                 className="object-cover object-top"
-                sizes="56px"
+                sizes="80px"
               />
             </div>
 
@@ -368,7 +368,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
             <div className="flex-1 min-w-0">
               <div
                 className={cn(
-                  "font-bold truncate transition-colors duration-300 text-sm",
+                  "font-bold truncate transition-colors duration-300 text-base",
                   active ? "text-navy" : "text-navy/80"
                 )}
               >
@@ -376,7 +376,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
               </div>
               <div
                 className={cn(
-                  "text-xs truncate transition-colors duration-300",
+                  "text-sm truncate transition-colors duration-300",
                   active ? "text-sky font-medium" : "text-gray-500"
                 )}
               >
@@ -385,7 +385,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
               {quote.organization && (
                 <div
                   className={cn(
-                    "text-xs truncate transition-colors duration-300",
+                    "text-sm truncate transition-colors duration-300",
                     active ? "text-gray-600" : "text-gray-400"
                   )}
                 >
