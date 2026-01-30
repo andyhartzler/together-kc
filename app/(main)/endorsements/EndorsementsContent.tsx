@@ -271,71 +271,25 @@ export default function EndorsementsContent() {
       </section>
 
       {/* Community Champions Section */}
-      <section className="relative py-20 sm:py-28 bg-gradient-to-br from-navy via-navy to-sky/90 overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute -top-1/2 -left-1/4 w-[800px] h-[800px] rounded-full opacity-10"
-            style={{
-              background: 'radial-gradient(circle, rgba(74, 144, 217, 0.8) 0%, transparent 70%)',
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              x: [0, 50, 0],
-              y: [0, 30, 0],
-            }}
-            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute -bottom-1/2 -right-1/4 w-[600px] h-[600px] rounded-full opacity-10"
-            style={{
-              background: 'radial-gradient(circle, rgba(229, 57, 53, 0.6) 0%, transparent 70%)',
-            }}
-            animate={{
-              scale: [1.2, 1, 1.2],
-              x: [0, -30, 0],
-              y: [0, -50, 0],
-            }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </div>
-
-        {/* Decorative grid lines */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="h-full w-full" style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-            backgroundSize: '60px 60px'
-          }} />
-        </div>
-
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="section-padding bg-gradient-to-b from-light-gray to-white overflow-hidden">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6"
-            >
-              <span className="w-2 h-2 bg-coral rounded-full animate-pulse" />
-              <span className="text-white/90 text-sm font-medium">Voices of Kansas City</span>
-            </motion.div>
-            <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-navy mb-4">
               Community Champions
             </h2>
-            <p className="text-lg text-white/70 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Local leaders making a difference for our city
             </p>
           </motion.div>
 
           {/* Names displayed as elegant floating cards */}
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-5">
             {[
               'Clyde McQueen',
               'Dr. Carmaletta Williams',
@@ -356,32 +310,27 @@ export default function EndorsementsContent() {
                 className="group relative"
               >
                 <motion.div
-                  whileHover={{ y: -6, scale: 1.05 }}
+                  whileHover={{ y: -6, scale: 1.03 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                   className="relative"
                 >
                   {/* Glow effect on hover */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-coral via-golden to-sky rounded-2xl opacity-0 group-hover:opacity-60 blur-lg transition-all duration-500" />
+                  <div className="absolute -inset-1 bg-gradient-to-r from-navy via-sky to-coral rounded-2xl opacity-0 group-hover:opacity-40 blur-lg transition-all duration-500" />
 
                   {/* Card */}
-                  <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 sm:px-8 py-4 sm:py-5 overflow-hidden">
+                  <div className="relative bg-white rounded-2xl px-6 sm:px-8 py-4 sm:py-5 shadow-lg shadow-navy/5 border border-gray-100 overflow-hidden">
                     {/* Shimmer effect */}
-                    <motion.div
+                    <div
                       className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
                       style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
+                        background: 'linear-gradient(90deg, transparent, rgba(74, 144, 217, 0.08), transparent)',
                       }}
                     />
 
-                    {/* Accent line */}
-                    <motion.div
-                      className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-coral via-golden to-sky"
-                      initial={{ width: '0%' }}
-                      whileHover={{ width: '100%' }}
-                      transition={{ duration: 0.4 }}
-                    />
+                    {/* Accent line that animates on hover */}
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-navy via-sky to-coral scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
-                    <span className="relative text-white font-semibold text-base sm:text-lg tracking-wide">
+                    <span className="relative text-navy font-semibold text-base sm:text-lg">
                       {name}
                     </span>
                   </div>
@@ -389,21 +338,6 @@ export default function EndorsementsContent() {
               </motion.div>
             ))}
           </div>
-
-          {/* Decorative bottom flourish */}
-          <motion.div
-            initial={{ opacity: 0, scaleX: 0 }}
-            whileInView={{ opacity: 1, scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-16 flex justify-center"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-12 sm:w-20 h-[1px] bg-gradient-to-r from-transparent to-white/30" />
-              <div className="w-2 h-2 rounded-full bg-coral" />
-              <div className="w-12 sm:w-20 h-[1px] bg-gradient-to-l from-transparent to-white/30" />
-            </div>
-          </motion.div>
         </div>
       </section>
 
