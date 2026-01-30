@@ -82,7 +82,7 @@ export const ENDORSERS = {
     { name: 'Heavy Constructors Association', fullName: 'Heavy Constructors Association of the Greater Kansas City Area', logo: '/images/endorsers/Heavy Constructors.png', website: 'https://kcheavyconstruction.com/' },
     { name: 'Greater KC Chamber of Commerce', fullName: 'Greater Kansas City Chamber of Commerce', logo: '/images/endorsers/KC Chamber.PNG', website: 'https://www.kcchamber.com/' },
     { name: 'Civic Council of Greater Kansas City', fullName: 'Civic Council of Greater Kansas City', logo: '/images/endorsers/Civic Council of Greater Kansas City.png', website: 'https://www.kcciviccouncil.org/' },
-    { name: 'Missouri AFL-CIO', fullName: 'Missouri AFL-CIO', logo: '/images/endorsers/ALF-CIO.png', website: 'https://moaflcio.org/' },
+    { name: 'Greater KC AFL-CIO', fullName: 'Greater Kansas City AFL-CIO', logo: '/images/endorsers/Greater Kansas City AFL-CIO.png', website: 'https://gkcaflcio.org/' },
     { name: 'Urban League', fullName: 'Urban League of Greater Kansas City', logo: '/images/endorsers/Urban League.png', website: 'https://www.ulkc.org/' },
     // Confirmed endorsers
     { name: 'Heartland Black Chamber of Commerce', fullName: 'Heartland Black Chamber of Commerce', logo: '/images/endorsers/Heartland Black Chamber.PNG', website: 'https://heartlandblackchamber.com/' },
@@ -113,6 +113,7 @@ export const ENDORSERS = {
     { name: 'IBEW Local 53', fullName: 'International Brotherhood of Electrical Workers Local 53', logo: '/images/endorsers/IBEW Local 53.png', website: 'https://www.ibewlocal53.org/' },
     { name: 'IAFF Local 3808', fullName: 'International Association of Fire Fighters Local 3808', logo: '/images/endorsers/IAFF Local 3808.png', website: null },
     { name: 'Pipefitters Local 533', fullName: 'Pipefitters Local Union 533, United Association', logo: '/images/endorsers/Pipefitters Local 533.png', website: 'https://www.local533.com/' },
+    { name: 'Missouri AFL-CIO', fullName: 'Missouri AFL-CIO', logo: '/images/endorsers/ALF-CIO.png', website: 'https://moaflcio.org/' },
   ],
   cityOfficials: [
     { name: 'Quinton Lucas', title: 'Mayor', district: '', photo: '/images/council/mayor-q.png' },
