@@ -97,7 +97,7 @@ export const ENDORSERS = {
     { name: 'Northeast Chamber of Commerce', fullName: 'Northeast Kansas City Chamber of Commerce', logo: '/images/endorsers/Northeast Chamber of Commerce.png', website: 'https://nekcchamber.com/' },
     { name: 'South KC Chamber of Commerce', fullName: 'South Kansas City Chamber of Commerce', logo: '/images/endorsers/South Kansas City Chamber.PNG', website: 'https://www.southkcchamber.com/' },
     // Union endorsers
-    { name: 'Plumbers Local 8', fullName: 'Plumbers & Gasfitters Local 8, United Association', logo: '/images/endorsers/Plumbers Local 8.png', website: 'https://plumberslocal8.com/' },
+    { name: 'Plumbers Local 8', fullName: 'Plumbers & Gasfitters Local 8, United Association', logo: '/images/endorsers/Plumbers Local 8.png', website: 'https://plumberslocal8.com/', logoScale: 1.3 },
     { name: 'IBEW Local 124', fullName: 'International Brotherhood of Electrical Workers Local 124', logo: '/images/endorsers/IBEW Local 124.png', website: 'https://ibew124.org/' },
     { name: 'OPCMIA Local 518', fullName: "Operative Plasterers' and Cement Masons' International Association Local 518", logo: '/images/endorsers/OPCMIA Local 518.png', website: 'https://opcmia518.org/' },
     { name: 'IUPAT DC #3', fullName: 'International Union of Painters and Allied Trades District Council 3', logo: '/images/endorsers/IUPAT-DC-3.png', website: 'https://iupatdc3.com/' },

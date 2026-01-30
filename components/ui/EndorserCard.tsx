@@ -11,9 +11,10 @@ interface EndorserCardProps {
   logo: string;
   website?: string | null;
   index?: number;
+  logoScale?: number;
 }
 
-export function EndorserCard({ name, fullName, logo, website, index = 0 }: EndorserCardProps) {
+export function EndorserCard({ name, fullName, logo, website, index = 0, logoScale = 1 }: EndorserCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -120,7 +121,10 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
 
         {/* Logo */}
         <div className="absolute inset-0 flex items-center justify-center p-6">
-          <div className="relative w-full h-full">
+          <div
+            className="relative w-full h-full transition-transform"
+            style={{ transform: `scale(${logoScale})` }}
+          >
             <Image
               src={logo}
               alt={name}
@@ -188,7 +192,10 @@ export function EndorserCard({ name, fullName, logo, website, index = 0 }: Endor
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy/95 to-sky/40" />
                 <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <div className="relative w-full h-full">
+                  <div
+                    className="relative w-full h-full"
+                    style={{ transform: `scale(${logoScale})` }}
+                  >
                     <Image
                       src={logo}
                       alt={name}
