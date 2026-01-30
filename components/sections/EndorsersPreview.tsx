@@ -37,7 +37,7 @@ export default function EndorsersPreview() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="mb-20"
+          className="mb-28"
         >
           <EndorserCardStack
             quotes={quotes}
@@ -54,7 +54,7 @@ export default function EndorsersPreview() {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <h3 className="text-xl font-semibold text-navy text-center mb-8">
+          <h3 className="text-2xl font-semibold text-navy text-center mb-8">
             Supported by organizations<br className="sm:hidden" /> across Kansas City
           </h3>
 
