@@ -271,107 +271,139 @@ export default function EndorsementsContent() {
       </section>
 
       {/* Community Champions Section */}
-      <section className="section-padding bg-gradient-to-b from-light-gray to-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 sm:py-28 bg-gradient-to-br from-navy via-navy to-sky/90 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute -top-1/2 -left-1/4 w-[800px] h-[800px] rounded-full opacity-10"
+            style={{
+              background: 'radial-gradient(circle, rgba(74, 144, 217, 0.8) 0%, transparent 70%)',
+            }}
+            animate={{
+              scale: [1, 1.2, 1],
+              x: [0, 50, 0],
+              y: [0, 30, 0],
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute -bottom-1/2 -right-1/4 w-[600px] h-[600px] rounded-full opacity-10"
+            style={{
+              background: 'radial-gradient(circle, rgba(229, 57, 53, 0.6) 0%, transparent 70%)',
+            }}
+            animate={{
+              scale: [1.2, 1, 1.2],
+              x: [0, -30, 0],
+              y: [0, -50, 0],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </div>
+
+        {/* Decorative grid lines */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="h-full w-full" style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+            backgroundSize: '60px 60px'
+          }} />
+        </div>
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-navy mb-4">
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6"
+            >
+              <span className="w-2 h-2 bg-coral rounded-full animate-pulse" />
+              <span className="text-white/90 text-sm font-medium">Voices of Kansas City</span>
+            </motion.div>
+            <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4">
               Community Champions
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Local leaders and voices making a difference for Kansas City.
+            <p className="text-lg text-white/70 max-w-2xl mx-auto">
+              Local leaders making a difference for our city
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          {/* Names displayed as elegant floating cards */}
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             {[
-              { name: 'Melissa Patterson Hazley', initials: 'MPH' },
-              { name: 'Ryana Parks-Shaw', initials: 'RPS' },
-              { name: 'Wes Rogers', initials: 'WR' },
-              { name: 'Clyde McQueen', initials: 'CM' },
-              { name: 'Dr. Carmaletta Williams', initials: 'CW' },
-              { name: 'Dr. Kimberly Beatty', initials: 'KB' },
-              { name: 'Maurice Watson', initials: 'MW' },
-              { name: 'Pastor Ron Lindsey', initials: 'RL' },
-            ].map((person, index) => (
+              'Clyde McQueen',
+              'Dr. Carmaletta Williams',
+              'Dr. Kimberly Beatty',
+              'Maurice Watson',
+              'Pastor Ron Lindsey',
+            ].map((name, index) => (
               <motion.div
-                key={person.name}
-                initial={{ opacity: 0, y: 40, rotateX: -15 }}
-                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                key={name}
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{
                   duration: 0.6,
                   delay: index * 0.1,
                   ease: [0.25, 0.46, 0.45, 0.94]
                 }}
-                className="group"
+                className="group relative"
               >
                 <motion.div
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className="bg-white rounded-2xl p-5 shadow-lg shadow-navy/5 border border-gray-100 text-center relative overflow-hidden"
+                  whileHover={{ y: -6, scale: 1.05 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  className="relative"
                 >
-                  {/* Animated gradient background on hover */}
-                  <motion.div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(74, 144, 217, 0.05) 0%, rgba(30, 58, 95, 0.08) 100%)'
-                    }}
-                  />
+                  {/* Glow effect on hover */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-coral via-golden to-sky rounded-2xl opacity-0 group-hover:opacity-60 blur-lg transition-all duration-500" />
 
-                  {/* Initials circle with reveal animation */}
-                  <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
-                    whileInView={{ scale: 1, rotate: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 200,
-                      damping: 15,
-                      delay: 0.2 + index * 0.1
-                    }}
-                    className="relative mx-auto mb-4 w-16 h-16"
-                  >
-                    {/* Outer ring animation */}
+                  {/* Card */}
+                  <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 sm:px-8 py-4 sm:py-5 overflow-hidden">
+                    {/* Shimmer effect */}
                     <motion.div
-                      className="absolute inset-0 rounded-full"
+                      className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
                       style={{
-                        background: 'conic-gradient(from 0deg, #4a90d9, #1e3a5f, #4a90d9)',
-                      }}
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 8,
-                        repeat: Infinity,
-                        ease: 'linear'
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
                       }}
                     />
-                    {/* Inner circle with initials */}
-                    <div className="absolute inset-[3px] rounded-full bg-gradient-to-br from-navy to-sky flex items-center justify-center">
-                      <span className="text-white font-bold text-lg tracking-wide">
-                        {person.initials}
-                      </span>
-                    </div>
-                  </motion.div>
 
-                  {/* Name with staggered letter reveal */}
-                  <motion.p
-                    className="font-semibold text-navy text-sm relative z-10"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-                  >
-                    {person.name}
-                  </motion.p>
+                    {/* Accent line */}
+                    <motion.div
+                      className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-coral via-golden to-sky"
+                      initial={{ width: '0%' }}
+                      whileHover={{ width: '100%' }}
+                      transition={{ duration: 0.4 }}
+                    />
+
+                    <span className="relative text-white font-semibold text-base sm:text-lg tracking-wide">
+                      {name}
+                    </span>
+                  </div>
                 </motion.div>
               </motion.div>
             ))}
           </div>
+
+          {/* Decorative bottom flourish */}
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            whileInView={{ opacity: 1, scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="mt-16 flex justify-center"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-12 sm:w-20 h-[1px] bg-gradient-to-r from-transparent to-white/30" />
+              <div className="w-2 h-2 rounded-full bg-coral" />
+              <div className="w-12 sm:w-20 h-[1px] bg-gradient-to-l from-transparent to-white/30" />
+            </div>
+          </motion.div>
         </div>
       </section>
 
