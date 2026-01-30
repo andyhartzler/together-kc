@@ -26,12 +26,9 @@ export default function EndorsersPreview() {
           transition={{ duration: 0.8 }}
           className="text-center mb-10"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy">
             Endorsed by Leaders Across Kansas City
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Hear from the voices championing our city&apos;s future
-          </p>
         </motion.div>
 
         {/* Endorser Card Stack */}
