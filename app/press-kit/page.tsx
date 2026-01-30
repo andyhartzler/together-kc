@@ -156,6 +156,7 @@ function DownloadCard({
   filename,
   icon,
   preview,
+  tall,
   onPreview
 }: {
   title: string;
@@ -163,6 +164,7 @@ function DownloadCard({
   filename: string;
   icon?: string;
   preview?: string;
+  tall?: boolean;
   onPreview: () => void;
 }) {
   const isPdf = filename.endsWith('.pdf');
@@ -171,16 +173,16 @@ function DownloadCard({
 
   return (
     <motion.div
-      className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100"
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 ${tall ? 'h-full' : ''}`}
       whileHover={{ y: -4 }}
     >
       {preview ? (
-        <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+        <div className={`relative w-full overflow-hidden bg-gray-100 ${tall ? 'flex-1 min-h-48' : 'h-48'}`}>
           <Image
             src={preview}
             alt={title}
             fill
-            className="object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-105"
+            className="object-cover object-[center_20%] transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
@@ -227,12 +229,6 @@ function DownloadCard({
 
 export default function PressKitPage() {
   const [previewItem, setPreviewItem] = useState<{ title: string; filename: string; type: 'pdf' | 'image' } | null>(null);
-
-  const allItems = [
-    ...documents.map(d => ({ ...d, type: 'document' as const })),
-    ...images.map(i => ({ ...i, type: 'image' as const })),
-    ...logos.map(l => ({ ...l, type: 'logo' as const })),
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -384,41 +380,65 @@ export default function PressKitPage() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Downloads Grid */}
+        {/* Downloads Grid - Desktop: 3 cols with Mayor spanning 2 rows */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          <AnimatePresence mode="popLayout">
-            {allItems.map((item, index) => (
-              <motion.div
-                key={item.filename}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-              >
-                <DownloadCard
-                  title={item.title}
-                  description={item.description}
-                  filename={item.filename}
-                  icon={'icon' in item ? item.icon : undefined}
-                  preview={item.type === 'image' && 'preview' in item ? item.preview : undefined}
-                  onPreview={() => {
-                    const isPdf = item.filename.endsWith('.pdf');
-                    setPreviewItem({
-                      title: item.title,
-                      filename: item.filename,
-                      type: isPdf ? 'pdf' : 'image'
-                    });
-                  }}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          {/* Documents - first two columns */}
+          {documents.map((doc, index) => (
+            <motion.div
+              key={doc.filename}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+            >
+              <DownloadCard
+                title={doc.title}
+                description={doc.description}
+                filename={doc.filename}
+                icon={doc.icon}
+                onPreview={() => setPreviewItem({ title: doc.title, filename: doc.filename, type: 'pdf' })}
+              />
+            </motion.div>
+          ))}
+
+          {/* Mayor Photo - spans 2 rows on desktop */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="lg:row-span-2"
+          >
+            <DownloadCard
+              title={images[0].title}
+              description={images[0].description}
+              filename={images[0].filename}
+              preview={images[0].preview}
+              tall
+              onPreview={() => setPreviewItem({ title: images[0].title, filename: images[0].filename, type: 'image' })}
+            />
+          </motion.div>
+
+          {/* Logos - bottom row */}
+          {logos.map((logo, index) => (
+            <motion.div
+              key={logo.filename}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: 0.15 + index * 0.05 }}
+            >
+              <DownloadCard
+                title={logo.title}
+                description={logo.description}
+                filename={logo.filename}
+                icon={logo.icon}
+                onPreview={() => setPreviewItem({ title: logo.title, filename: logo.filename, type: 'image' })}
+              />
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* Key Messages Section */}
