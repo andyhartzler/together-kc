@@ -186,22 +186,11 @@ function ContactCard({ name, role, org, email, phone }: typeof contacts[0]) {
 }
 
 export default function PressKitPage() {
-  const [activeTab, setActiveTab] = useState<'all' | 'documents' | 'photos' | 'logos'>('all');
-
   const allItems = [
     ...documents.map(d => ({ ...d, type: 'document' as const })),
     ...images.map(i => ({ ...i, type: 'image' as const })),
     ...logos.map(l => ({ ...l, type: 'logo' as const })),
   ];
-
-  const filteredItems = activeTab === 'all'
-    ? allItems
-    : allItems.filter(item => {
-        if (activeTab === 'documents') return item.type === 'document';
-        if (activeTab === 'photos') return item.type === 'image';
-        if (activeTab === 'logos') return item.type === 'logo';
-        return true;
-      });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -254,40 +243,15 @@ export default function PressKitPage() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Filter Tabs */}
+        {/* Downloads Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-wrap gap-2 mb-10"
-        >
-          {[
-            { id: 'all', label: 'All Resources' },
-            { id: 'documents', label: 'Documents' },
-            { id: 'photos', label: 'Photos' },
-            { id: 'logos', label: 'Logos' },
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                activeTab === tab.id
-                  ? 'bg-coral text-white shadow-lg shadow-coral/25'
-                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </motion.div>
-
-        {/* Downloads Grid */}
-        <motion.div
-          layout
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           <AnimatePresence mode="popLayout">
-            {filteredItems.map((item, index) => (
+            {allItems.map((item, index) => (
               <motion.div
                 key={item.filename}
                 layout
