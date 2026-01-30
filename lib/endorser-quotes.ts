@@ -87,13 +87,13 @@ const LUCAS_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "Without the earnings tax, we face devastating cuts—including first responder layoffs and longer emergency response times. Kansas City cannot afford that.",
+    quote: "Without the earnings tax, we face devastating cuts, including first responder layoffs and longer emergency response times. Kansas City cannot afford that.",
     imageSrc: "/images/council/mayor-q.png",
   },
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "The e-tax is about supporting our entire city's future. It funds fire rescue, EMTs, trash collection, snow removal, and pothole repair—the services Kansas Citians rely on every day.",
+    quote: "The e-tax is about supporting our entire city's future. It funds fire rescue, EMTs, trash collection, snow removal, and pothole repair. These are the services Kansas Citians rely on every day.",
     imageSrc: "/images/council/mayor-q.png",
   },
   {
@@ -105,7 +105,7 @@ const LUCAS_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "Voters adopted the earnings tax in 1963 and have renewed it ever since. It's our city's largest revenue source—and replacing it would mean massive increases in sales and property taxes.",
+    quote: "Voters adopted the earnings tax in 1963 and have renewed it ever since. It's our city's largest revenue source, and replacing it would mean massive increases in sales and property taxes.",
     imageSrc: "/images/council/mayor-q.png",
   },
 ];
