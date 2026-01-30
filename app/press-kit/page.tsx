@@ -33,69 +33,127 @@ const images = [
 
 const logos = [
   {
-    title: 'Together KC Logo (Print)',
+    title: 'Together KC Logo',
     description: 'High-resolution logo for print materials.',
     filename: 'together-kc-logo-print.jpg',
-    preview: '/press-kit/together-kc-logo-print.jpg',
+    icon: '🏛️',
     category: 'Logos',
   },
   {
-    title: 'E-Tax Renewal Logo (Print)',
+    title: 'E-Tax Renewal Logo',
     description: 'Campaign logo for print materials.',
     filename: 'e-tax-renewal-logo-print.jpg',
-    preview: '/press-kit/e-tax-renewal-logo-print.jpg',
+    icon: '✅',
     category: 'Logos',
   },
 ];
 
-const quickFacts = [
-  { label: 'Annual Revenue', value: '$373.7 Million' },
-  { label: 'General Fund %', value: '47%' },
-  { label: 'In Place Since', value: '1963' },
-  { label: '2021 Approval', value: '77%' },
-  { label: 'Election Date', value: 'April 7, 2026' },
-];
+function PreviewModal({
+  isOpen,
+  onClose,
+  title,
+  filename,
+  type
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  filename: string;
+  type: 'pdf' | 'image';
+}) {
+  if (!isOpen) return null;
 
-const contacts = [
-  {
-    name: 'Tammy Edwards',
-    role: 'Campaign Manager',
-    org: 'Parker Advisory Group',
-    email: 'tammy@parkeradvisorygroup.com',
-    phone: '913-269-5075',
-  },
-  {
-    name: 'Andrew Hartzler',
-    role: 'Media Relations',
-    org: 'Together KC',
-    email: 'andrew@hartzler.us',
-  },
-];
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl overflow-hidden shadow-2xl"
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <h3 className="font-semibold text-gray-900">{title}</h3>
+            <div className="flex items-center gap-3">
+              <a
+                href={`/press-kit/${filename}`}
+                download={filename}
+                className="flex items-center gap-2 px-4 py-2 bg-coral text-white rounded-lg hover:bg-coral/90 transition-colors text-sm font-medium"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download
+              </a>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="h-[70vh] overflow-auto">
+            {type === 'pdf' ? (
+              <iframe
+                src={`/press-kit/${filename}#view=FitH`}
+                className="w-full h-full"
+                title={title}
+              />
+            ) : (
+              <div className="relative w-full h-full flex items-center justify-center bg-gray-100 p-4">
+                <Image
+                  src={`/press-kit/${filename}`}
+                  alt={title}
+                  width={800}
+                  height={800}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 function DownloadCard({
   title,
   description,
   filename,
   icon,
-  preview
+  preview,
+  onPreview
 }: {
   title: string;
   description: string;
   filename: string;
   icon?: string;
   preview?: string;
+  onPreview: () => void;
 }) {
-  const [isHovered, setIsHovered] = useState(false);
+  const isPdf = filename.endsWith('.pdf');
+  const isImage = filename.endsWith('.jpg') || filename.endsWith('.png');
+  const canPreview = isPdf || isImage;
 
   return (
-    <motion.a
-      href={`/press-kit/${filename}`}
-      download={filename}
+    <motion.div
       className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       whileHover={{ y: -4 }}
-      whileTap={{ scale: 0.98 }}
     >
       {preview ? (
         <div className="relative h-48 w-full overflow-hidden bg-gray-100">
@@ -103,7 +161,7 @@ function DownloadCard({
             src={preview}
             alt={title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
@@ -119,73 +177,38 @@ function DownloadCard({
         </h3>
         <p className="text-gray-500 text-sm flex-grow">{description}</p>
 
-        <div className="flex items-center gap-2 mt-4 text-coral font-medium text-sm">
-          <svg className="w-4 h-4 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-          <span>Download</span>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute top-3 right-3 bg-coral text-white text-xs font-medium px-2 py-1 rounded-full"
+        <div className="flex items-center gap-3 mt-4">
+          {canPreview && (
+            <button
+              onClick={onPreview}
+              className="flex items-center gap-2 text-sky font-medium text-sm hover:text-sky/80 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <span>Preview</span>
+            </button>
+          )}
+          <a
+            href={`/press-kit/${filename}`}
+            download={filename}
+            className="flex items-center gap-2 text-coral font-medium text-sm hover:text-coral/80 transition-colors"
           >
-            Click to download
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.a>
-  );
-}
-
-function QuickFactCard({ label, value }: { label: string; value: string }) {
-  return (
-    <motion.div
-      className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
-      whileHover={{ scale: 1.02, y: -2 }}
-      transition={{ type: 'spring', stiffness: 300 }}
-    >
-      <div className="text-2xl md:text-3xl font-bold text-coral mb-1">{value}</div>
-      <div className="text-gray-500 text-sm">{label}</div>
-    </motion.div>
-  );
-}
-
-function ContactCard({ name, role, org, email, phone }: typeof contacts[0]) {
-  return (
-    <motion.div
-      className="bg-white rounded-xl p-5 shadow-md border border-gray-100"
-      whileHover={{ y: -2 }}
-    >
-      <h4 className="font-semibold text-gray-900 text-lg">{name}</h4>
-      <p className="text-coral text-sm font-medium">{role}</p>
-      <p className="text-gray-500 text-sm mb-3">{org}</p>
-      <div className="space-y-1">
-        <a href={`mailto:${email}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-coral transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          {email}
-        </a>
-        {phone && (
-          <a href={`tel:${phone}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-coral transition-colors">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            {phone}
+            <span>Download</span>
           </a>
-        )}
+        </div>
       </div>
     </motion.div>
   );
 }
 
 export default function PressKitPage() {
+  const [previewItem, setPreviewItem] = useState<{ title: string; filename: string; type: 'pdf' | 'image' } | null>(null);
+
   const allItems = [
     ...documents.map(d => ({ ...d, type: 'document' as const })),
     ...images.map(i => ({ ...i, type: 'image' as const })),
@@ -194,6 +217,17 @@ export default function PressKitPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Preview Modal */}
+      {previewItem && (
+        <PreviewModal
+          isOpen={!!previewItem}
+          onClose={() => setPreviewItem(null)}
+          title={previewItem.title}
+          filename={previewItem.filename}
+          type={previewItem.type}
+        />
+      )}
+
       {/* Hero Section */}
       <header className="relative bg-navy overflow-hidden">
         <div className="absolute inset-0">
@@ -233,11 +267,99 @@ export default function PressKitPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-5 gap-3"
+          className="space-y-3"
         >
-          {quickFacts.map((fact, index) => (
-            <QuickFactCard key={fact.label} {...fact} />
-          ))}
+          {/* Desktop: 5 columns */}
+          <div className="hidden md:grid md:grid-cols-5 gap-3">
+            <motion.div
+              className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+              whileHover={{ scale: 1.02, y: -2 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <div className="text-2xl md:text-3xl font-bold text-coral mb-1">$373.7M</div>
+              <div className="text-gray-500 text-sm">Annual Revenue</div>
+            </motion.div>
+            <motion.div
+              className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+              whileHover={{ scale: 1.02, y: -2 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-coral mb-1">47%</div>
+              <div className="text-gray-500 text-sm">General Fund</div>
+            </motion.div>
+            <motion.div
+              className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+              whileHover={{ scale: 1.02, y: -2 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-coral mb-1">1963</div>
+              <div className="text-gray-500 text-sm">In Place Since</div>
+            </motion.div>
+            <motion.div
+              className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+              whileHover={{ scale: 1.02, y: -2 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-coral mb-1">77%</div>
+              <div className="text-gray-500 text-sm">2021 Approval</div>
+            </motion.div>
+            <motion.div
+              className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+              whileHover={{ scale: 1.02, y: -2 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <div className="text-xl font-bold text-coral mb-1">April 7, 2026</div>
+              <div className="text-gray-500 text-sm">Election Date</div>
+            </motion.div>
+          </div>
+
+          {/* Mobile: 2 columns top row, then full-width election date */}
+          <div className="md:hidden space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <motion.div
+                className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+                whileHover={{ scale: 1.02, y: -2 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <div className="text-2xl font-bold text-coral mb-1">$373.7M</div>
+                <div className="text-gray-500 text-sm">Annual Revenue</div>
+              </motion.div>
+              <motion.div
+                className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+                whileHover={{ scale: 1.02, y: -2 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <div className="text-2xl font-bold text-coral mb-1">47%</div>
+                <div className="text-gray-500 text-sm">General Fund</div>
+              </motion.div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <motion.div
+                className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+                whileHover={{ scale: 1.02, y: -2 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <div className="text-2xl font-bold text-coral mb-1">1963</div>
+                <div className="text-gray-500 text-sm">In Place Since</div>
+              </motion.div>
+              <motion.div
+                className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+                whileHover={{ scale: 1.02, y: -2 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <div className="text-2xl font-bold text-coral mb-1">77%</div>
+                <div className="text-gray-500 text-sm">2021 Approval</div>
+              </motion.div>
+            </div>
+            <motion.div
+              className="bg-white rounded-xl p-4 shadow-md border border-gray-100 text-center"
+              whileHover={{ scale: 1.02, y: -2 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <div className="text-2xl font-bold text-coral mb-1">April 7, 2026</div>
+              <div className="text-gray-500 text-lg">Election Date</div>
+            </motion.div>
+          </div>
         </motion.div>
       </section>
 
@@ -265,7 +387,15 @@ export default function PressKitPage() {
                   description={item.description}
                   filename={item.filename}
                   icon={'icon' in item ? item.icon : undefined}
-                  preview={'preview' in item ? item.preview : undefined}
+                  preview={item.type === 'image' && 'preview' in item ? item.preview : undefined}
+                  onPreview={() => {
+                    const isPdf = item.filename.endsWith('.pdf');
+                    setPreviewItem({
+                      title: item.title,
+                      filename: item.filename,
+                      type: isPdf ? 'pdf' : 'image'
+                    });
+                  }}
                 />
               </motion.div>
             ))}
@@ -319,7 +449,7 @@ export default function PressKitPage() {
           </div>
         </motion.section>
 
-        {/* Media Contacts */}
+        {/* Media Contact */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -328,14 +458,22 @@ export default function PressKitPage() {
           className="mt-20"
         >
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
-            Media Contacts
+            Media Contact
           </h2>
 
-          <div className="grid sm:grid-cols-2 gap-6">
-            {contacts.map(contact => (
-              <ContactCard key={contact.email} {...contact} />
-            ))}
-          </div>
+          <motion.div
+            className="bg-white rounded-xl p-6 shadow-md border border-gray-100 max-w-md"
+            whileHover={{ y: -2 }}
+          >
+            <h4 className="font-semibold text-gray-900 text-lg">Tammy Edwards</h4>
+            <p className="text-coral text-sm font-medium mb-3">Campaign Manager</p>
+            <a href="mailto:action@together-kc.com" className="flex items-center gap-2 text-sm text-gray-600 hover:text-coral transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              action@together-kc.com
+            </a>
+          </motion.div>
         </motion.section>
       </main>
 
@@ -351,8 +489,9 @@ export default function PressKitPage() {
             </svg>
             Back to Together KC
           </a>
-          <p className="text-gray-400 text-sm mt-4">
-            &copy; 2026 Together KC. All rights reserved.
+          <p className="text-gray-500 text-sm mt-4">
+            Paid for by Together KC, Dan Kopp, Treasurer.<br />
+            Not authorized by any candidate or candidate committee.
           </p>
         </div>
       </footer>
