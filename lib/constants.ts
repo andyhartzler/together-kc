@@ -109,11 +109,11 @@ export const ENDORSERS = {
     { name: 'SEATU', fullName: 'Seafarers Entertainment and Allied Trades Union', logo: '/images/endorsers/SEATU.png', website: 'https://www.seatu.org/' },
     { name: 'APWU Local 67', fullName: 'American Postal Workers Union, Greater Kansas City Metro Area Local 67', logo: '/images/endorsers/APWU Local 67.png', website: 'https://www.gkcmal.org/' },
     { name: 'Greater KC Building Construction Trades Council', fullName: 'Greater Kansas City Building & Construction Trades Council', logo: '/images/endorsers/Greater KC Building Construction Trades Council .png', website: 'https://www.buildkc.org/' },
+    { name: 'Missouri AFL-CIO', fullName: 'Missouri AFL-CIO', logo: '/images/endorsers/ALF-CIO.png', website: 'https://moaflcio.org/' },
     { name: 'AFGE 1336', fullName: 'American Federation of Government Employees Local 1336', logo: '/images/endorsers/AFGE 1336.png', website: 'https://afge1336.com/' },
     { name: 'IBEW Local 53', fullName: 'International Brotherhood of Electrical Workers Local 53', logo: '/images/endorsers/IBEW Local 53.png', website: 'https://www.ibewlocal53.org/' },
     { name: 'IAFF Local 3808', fullName: 'International Association of Fire Fighters Local 3808', logo: '/images/endorsers/IAFF Local 3808.png', website: null },
     { name: 'Pipefitters Local 533', fullName: 'Pipefitters Local Union 533, United Association', logo: '/images/endorsers/Pipefitters Local 533.png', website: 'https://www.local533.com/' },
-    { name: 'Missouri AFL-CIO', fullName: 'Missouri AFL-CIO', logo: '/images/endorsers/ALF-CIO.png', website: 'https://moaflcio.org/' },
   ],
   cityOfficials: [
     { name: 'Quinton Lucas', title: 'Mayor', district: '', photo: '/images/council/mayor-q.png' },
