@@ -270,6 +270,111 @@ export default function EndorsementsContent() {
         </div>
       </section>
 
+      {/* Community Champions Section */}
+      <section className="section-padding bg-gradient-to-b from-light-gray to-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl font-bold text-navy mb-4">
+              Community Champions
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Local leaders and voices making a difference for Kansas City.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            {[
+              { name: 'Melissa Patterson Hazley', initials: 'MPH' },
+              { name: 'Ryana Parks-Shaw', initials: 'RPS' },
+              { name: 'Wes Rogers', initials: 'WR' },
+              { name: 'Clyde McQueen', initials: 'CM' },
+              { name: 'Dr. Carmaletta Williams', initials: 'CW' },
+              { name: 'Dr. Kimberly Beatty', initials: 'KB' },
+              { name: 'Maurice Watson', initials: 'MW' },
+              { name: 'Pastor Ron Lindsey', initials: 'RL' },
+            ].map((person, index) => (
+              <motion.div
+                key={person.name}
+                initial={{ opacity: 0, y: 40, rotateX: -15 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.1,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                className="group"
+              >
+                <motion.div
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  className="bg-white rounded-2xl p-5 shadow-lg shadow-navy/5 border border-gray-100 text-center relative overflow-hidden"
+                >
+                  {/* Animated gradient background on hover */}
+                  <motion.div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(74, 144, 217, 0.05) 0%, rgba(30, 58, 95, 0.08) 100%)'
+                    }}
+                  />
+
+                  {/* Initials circle with reveal animation */}
+                  <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 200,
+                      damping: 15,
+                      delay: 0.2 + index * 0.1
+                    }}
+                    className="relative mx-auto mb-4 w-16 h-16"
+                  >
+                    {/* Outer ring animation */}
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        background: 'conic-gradient(from 0deg, #4a90d9, #1e3a5f, #4a90d9)',
+                      }}
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: 'linear'
+                      }}
+                    />
+                    {/* Inner circle with initials */}
+                    <div className="absolute inset-[3px] rounded-full bg-gradient-to-br from-navy to-sky flex items-center justify-center">
+                      <span className="text-white font-bold text-lg tracking-wide">
+                        {person.initials}
+                      </span>
+                    </div>
+                  </motion.div>
+
+                  {/* Name with staggered letter reveal */}
+                  <motion.p
+                    className="font-semibold text-navy text-sm relative z-10"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+                  >
+                    {person.name}
+                  </motion.p>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Endorsement Form Section */}
       <section id="endorse" className="section-padding bg-gradient-to-b from-white to-light-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
