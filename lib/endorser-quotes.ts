@@ -1,4 +1,4 @@
-import { EndorserQuote } from "@/components/ui/EndorserShowcase";
+import { EndorserQuote } from "@/components/ui/EndorserCardStack";
 
 // Quotes organized by person - will be grouped alphabetically
 const DUKE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
@@ -120,13 +120,13 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-// Build the final quotes array: alphabetical by person, random within each person's quotes
+// Build the final quotes array: ordered by person, random within each person's quotes
 export function getOrderedQuotes(): EndorserQuote[] {
-  // Alphabetical order: Duke, Joe, Quinton
+  // Order: Mayor, Duke, Joe
   const orderedGroups = [
+    shuffleArray(LUCAS_QUOTES),
     shuffleArray(DUKE_QUOTES),
     shuffleArray(JOE_QUOTES),
-    shuffleArray(LUCAS_QUOTES),
   ];
 
   // Flatten and add IDs

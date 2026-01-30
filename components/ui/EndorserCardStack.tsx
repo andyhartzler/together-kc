@@ -55,10 +55,10 @@ export function EndorserCardStack({
   cardWidth = 400,
   cardHeight = 480,
   overlap = 0.55,
-  spreadDeg = 35,
+  spreadDeg = 12,
   perspectivePx = 1200,
   depthPx = 100,
-  tiltXDeg = 4,
+  tiltXDeg = 2,
   activeLiftPx = 30,
   activeScale = 1.05,
   inactiveScale = 0.88,
@@ -163,6 +163,8 @@ export function EndorserCardStack({
               const lift = isActive ? -activeLiftPx : 0;
               const rotateX = isActive ? 0 : tiltXDeg;
               const zIndex = 100 - abs;
+              // Blur increases with distance from center
+              const blurAmount = isActive ? 0 : Math.min(abs * 1.5, 4);
 
               const dragProps = isActive
                 ? {
@@ -228,6 +230,7 @@ export function EndorserCardStack({
                     style={{
                       transform: `translateZ(${z}px)`,
                       transformStyle: "preserve-3d",
+                      filter: blurAmount > 0 ? `blur(${blurAmount}px)` : undefined,
                     }}
                   >
                     <EndorserCard quote={quote} active={isActive} />
