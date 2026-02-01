@@ -77,6 +77,23 @@ const JOE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   },
 ];
 
+const BRIDGETTE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
+  {
+    name: "Bridgette Williams",
+    title: "Executive Director",
+    organization: "Heavy Constructors Association of Greater Kansas City",
+    quote: "Kansas City's ability to remain competitive depends on renewing the earnings tax. It is an investment that is critical for our future. Kansas City's ability to repair and upgrade its aging infrastructure is at stake.",
+    imageSrc: "/images/endorsers/bridget williams.png",
+  },
+  {
+    name: "Bridgette Williams",
+    title: "Executive Director",
+    organization: "Heavy Constructors Association of Greater Kansas City",
+    quote: "The renewal of the e-tax protects Kansas City from drastic cuts to street repair, snow removal, transportation, and other basic services. It's vital that we renew the E-Tax on April 7th.",
+    imageSrc: "/images/endorsers/bridget williams.png",
+  },
+];
+
 const LUCAS_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Quinton Lucas",
@@ -120,21 +137,23 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-// Build the final quotes array: interleaved by person (Mayor, Duke, Joe, Mayor, Duke, Joe...)
+// Build the final quotes array: interleaved by person (Mayor, Duke, Joe, Bridgette, Mayor, Duke, Joe, Bridgette...)
 export function getOrderedQuotes(): EndorserQuote[] {
   // Shuffle each person's quotes
   const lucas = shuffleArray(LUCAS_QUOTES);
   const duke = shuffleArray(DUKE_QUOTES);
   const joe = shuffleArray(JOE_QUOTES);
+  const bridgette = shuffleArray(BRIDGETTE_QUOTES);
 
-  // Interleave: Mayor, Duke, Joe, Mayor, Duke, Joe...
+  // Interleave: Mayor, Duke, Joe, Bridgette, Mayor, Duke, Joe, Bridgette...
   const interleaved: Omit<EndorserQuote, 'id'>[] = [];
-  const maxLen = Math.max(lucas.length, duke.length, joe.length);
+  const maxLen = Math.max(lucas.length, duke.length, joe.length, bridgette.length);
 
   for (let i = 0; i < maxLen; i++) {
     if (i < lucas.length) interleaved.push(lucas[i]);
     if (i < duke.length) interleaved.push(duke[i]);
     if (i < joe.length) interleaved.push(joe[i]);
+    if (i < bridgette.length) interleaved.push(bridgette[i]);
   }
 
   // Add IDs
