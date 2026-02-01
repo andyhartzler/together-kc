@@ -87,7 +87,7 @@ export const ENDORSERS = {
     // Confirmed endorsers
     { name: 'Heartland Black Chamber of Commerce', fullName: 'Heartland Black Chamber of Commerce', logo: '/images/endorsers/Heartland Black Chamber.PNG', website: 'https://heartlandblackchamber.com/' },
     { name: 'Freedom, Inc.', fullName: 'Freedom, Incorporated', logo: '/images/endorsers/Freedom Inc.PNG', website: 'https://freedomincorporated.org/' },
-    { name: 'Southland Progress', fullName: 'Southland Progress', logo: '/images/endorsers/Southland Progress.png', website: null },
+    { name: 'Downtown Council', fullName: 'Downtown Council of Kansas City', logo: '/images/endorsers/Downtown Council.png', website: 'https://www.downtownkc.org/' },
     { name: '12th Street Heritage', fullName: 'Twelfth Street Heritage Development Corporation', logo: '/images/endorsers/12th Street Heritage.png', website: 'https://www.twelfthstreetheritage.org/' },
     { name: 'LiUNA Local 264', fullName: "Laborers' International Union of North America Local 264", logo: '/images/endorsers/Laborers 264.PNG', website: 'https://www.local264.com/' },
     { name: 'LaRaza', fullName: 'LaRaza Political Club', logo: '/images/endorsers/LaRaza.png', website: null, logoScale: 0.85 },
