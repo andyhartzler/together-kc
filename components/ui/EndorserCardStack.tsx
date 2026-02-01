@@ -368,7 +368,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
             <div className="flex-1 min-w-0">
               <div
                 className={cn(
-                  "font-bold truncate transition-colors duration-300 text-base",
+                  "font-bold transition-colors duration-300 text-base leading-tight",
                   active ? "text-navy" : "text-navy/80"
                 )}
               >
@@ -376,7 +376,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
               </div>
               <div
                 className={cn(
-                  "text-sm truncate transition-colors duration-300",
+                  "text-xs transition-colors duration-300 leading-tight",
                   active ? "text-sky font-medium" : "text-gray-500"
                 )}
               >
@@ -385,7 +385,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
               {quote.organization && (
                 <div
                   className={cn(
-                    "text-sm truncate transition-colors duration-300",
+                    "text-xs transition-colors duration-300 leading-tight",
                     active ? "text-gray-600" : "text-gray-400"
                   )}
                 >
