@@ -359,6 +359,9 @@ export default function EndorsementsContent() {
               'Dr. Kimberly Beatty',
               'Maurice Watson',
               'Pastor Ron Lindsey',
+              'Bill Dietrich',
+              'Tracey Lewis',
+              'Qiana Thomason',
             ].map((name, index) => (
               <ChampionCard key={name} name={name} index={index} />
             ))}

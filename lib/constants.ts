@@ -96,6 +96,7 @@ export const ENDORSERS = {
     { name: 'Holmes Garden Neighborhood Association', fullName: 'Holmes Garden Neighborhood Association', logo: '/images/endorsers/Holmes Garden Neighborhood Association.png', website: null, logoScale: 1.1 },
     { name: 'Northeast Chamber of Commerce', fullName: 'Northeast Kansas City Chamber of Commerce', logo: '/images/endorsers/Northeast Chamber of Commerce.png', website: 'https://nekcchamber.com/', logoScale: 1.05 },
     { name: 'South KC Chamber of Commerce', fullName: 'South Kansas City Chamber of Commerce', logo: '/images/endorsers/South Kansas City Chamber.PNG', website: 'https://www.southkcchamber.com/' },
+    { name: 'Health Forward Foundation', fullName: 'Health Forward Foundation', logo: '/images/endorsers/Health Forward Foundation.png', website: 'https://healthforward.org/' },
     // Union endorsers
     { name: 'Plumbers Local 8', fullName: 'Plumbers & Gasfitters Local 8, United Association', logo: '/images/endorsers/Plumbers Local 8.png', website: 'https://plumberslocal8.com/', logoScale: 1.25 },
     { name: 'IBEW Local 124', fullName: 'International Brotherhood of Electrical Workers Local 124', logo: '/images/endorsers/IBEW Local 124.png', website: 'https://ibew124.org/', logoScale: 1.25 },
