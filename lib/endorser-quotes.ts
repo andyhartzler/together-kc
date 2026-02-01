@@ -137,7 +137,7 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-// Build the final quotes array: interleaved by person (Mayor, Duke, Joe, Bridgette, Mayor, Duke, Joe, Bridgette...)
+// Build the final quotes array: interleaved by person (Mayor, Bridgette, Duke, Joe, Mayor, Bridgette, Duke, Joe...)
 export function getOrderedQuotes(): EndorserQuote[] {
   // Shuffle each person's quotes
   const lucas = shuffleArray(LUCAS_QUOTES);
@@ -145,15 +145,15 @@ export function getOrderedQuotes(): EndorserQuote[] {
   const joe = shuffleArray(JOE_QUOTES);
   const bridgette = shuffleArray(BRIDGETTE_QUOTES);
 
-  // Interleave: Mayor, Duke, Joe, Bridgette, Mayor, Duke, Joe, Bridgette...
+  // Interleave: Mayor, Bridgette, Duke, Joe, Mayor, Bridgette, Duke, Joe...
   const interleaved: Omit<EndorserQuote, 'id'>[] = [];
   const maxLen = Math.max(lucas.length, duke.length, joe.length, bridgette.length);
 
   for (let i = 0; i < maxLen; i++) {
     if (i < lucas.length) interleaved.push(lucas[i]);
+    if (i < bridgette.length) interleaved.push(bridgette[i]);
     if (i < duke.length) interleaved.push(duke[i]);
     if (i < joe.length) interleaved.push(joe[i]);
-    if (i < bridgette.length) interleaved.push(bridgette[i]);
   }
 
   // Add IDs
