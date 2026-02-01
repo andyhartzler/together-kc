@@ -347,7 +347,7 @@ export default function EndorsementsContent() {
               Community Champions
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Local leaders making a difference for our city
+              Local leaders who support the earnings tax renewal
             </p>
           </motion.div>
 
