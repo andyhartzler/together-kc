@@ -218,6 +218,7 @@ export default function EndorsementsContent() {
                 logo={org.logo}
                 website={org.website}
                 logoScale={'logoScale' in org ? (org as { logoScale?: number }).logoScale : undefined}
+                logoOffsetY={'logoOffsetY' in org ? (org as { logoOffsetY?: number }).logoOffsetY : undefined}
                 index={index}
               />
             ))}

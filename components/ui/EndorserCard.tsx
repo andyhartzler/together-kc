@@ -12,9 +12,10 @@ interface EndorserCardProps {
   website?: string | null;
   index?: number;
   logoScale?: number;
+  logoOffsetY?: number;
 }
 
-export function EndorserCard({ name, fullName, logo, website, index = 0, logoScale = 1 }: EndorserCardProps) {
+export function EndorserCard({ name, fullName, logo, website, index = 0, logoScale = 1, logoOffsetY = 0 }: EndorserCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -123,7 +124,7 @@ export function EndorserCard({ name, fullName, logo, website, index = 0, logoSca
         <div className="absolute inset-0 flex items-center justify-center p-6">
           <div
             className="relative w-full h-full transition-transform"
-            style={{ transform: `scale(${logoScale})` }}
+            style={{ transform: `scale(${logoScale}) translateY(${logoOffsetY}px)` }}
           >
             <Image
               src={logo}
@@ -194,7 +195,7 @@ export function EndorserCard({ name, fullName, logo, website, index = 0, logoSca
                 <div className="absolute inset-0 flex items-center justify-center p-8">
                   <div
                     className="relative w-full h-full"
-                    style={{ transform: `scale(${logoScale})` }}
+                    style={{ transform: `scale(${logoScale}) translateY(${logoOffsetY}px)` }}
                   >
                     <Image
                       src={logo}
