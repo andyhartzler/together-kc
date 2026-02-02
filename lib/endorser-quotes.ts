@@ -100,31 +100,31 @@ const LUCAS_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "The earnings tax funds nearly half the cost of city services: first responders, street repair, trash pickup, and more. It is critical that we vote yes to renew.",
+    quote: "This tax has funded our city since 1963. It covers nearly half our city services, from fire rescue to street repairs to trash pickup. Vote yes to keep Kansas City working.",
     imageSrc: "/images/council/mayor-q.png",
   },
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "Without the earnings tax, we face devastating cuts, including first responder layoffs and longer emergency response times. Kansas City cannot afford that.",
+    quote: "If this fails, we're not talking hypotheticals. We're talking layoffs of firefighters, police officers, and EMTs. We're talking longer response times when you call 911. Kansas City can't afford that.",
     imageSrc: "/images/council/mayor-q.png",
   },
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "The e-tax is about supporting our entire city's future. It funds fire rescue, EMTs, trash collection, snow removal, and pothole repair. These are the services Kansas Citians rely on every day.",
+    quote: "Kansas City is where the region comes to work, to play, to celebrate. The earnings tax lets us provide services to everyone who uses our roads and relies on our first responders, not just residents.",
     imageSrc: "/images/council/mayor-q.png",
   },
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "Kansas City is a regional hub that entertains, excites, and employs people from across the metro. The earnings tax allows us to provide services to everyone who works in and visits our city.",
+    quote: "This isn't a new tax. It's been in place since 1963, and replacing it would force massive increases in property and sales taxes that still couldn't cover the gap.",
     imageSrc: "/images/council/mayor-q.png",
   },
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "Voters adopted the earnings tax in 1963 and have renewed it ever since. It's our city's largest revenue source, and replacing it would mean massive increases in sales and property taxes.",
+    quote: "Labor unions, faith leaders, the Chamber of Commerce, the Civic Council, members of City Council, we're all saying the same thing: renew the earnings tax. This isn't partisan. This is about keeping Kansas City running.",
     imageSrc: "/images/council/mayor-q.png",
   },
 ];
