@@ -148,14 +148,15 @@ export function getOrderedQuotes(): EndorserQuote[] {
   const bridgette = shuffleArray(BRIDGETTE_QUOTES);
 
   // Interleave: Mayor, Bridgette, Duke, Joe, Mayor, Bridgette, Duke, Joe...
+  // Each person stays in rotation, with quotes cycling if they have fewer than maxLen
   const interleaved: Omit<EndorserQuote, 'id'>[] = [];
   const maxLen = Math.max(lucas.length, duke.length, joe.length, bridgette.length);
 
   for (let i = 0; i < maxLen; i++) {
-    if (i < lucas.length) interleaved.push(lucas[i]);
-    if (i < bridgette.length) interleaved.push(bridgette[i]);
-    if (i < duke.length) interleaved.push(duke[i]);
-    if (i < joe.length) interleaved.push(joe[i]);
+    interleaved.push(lucas[i % lucas.length]);
+    interleaved.push(bridgette[i % bridgette.length]);
+    interleaved.push(duke[i % duke.length]);
+    interleaved.push(joe[i % joe.length]);
   }
 
   // Add IDs
