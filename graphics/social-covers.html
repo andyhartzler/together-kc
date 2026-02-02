@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Together KC - Social Cover Photos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --kc-blue: #0077C8;
+      --kc-red: #C8102E;
+      --navy: #002855;
+      --deep-navy: #00152A;
+      --white: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #08080c;
+      min-height: 100vh;
+      padding: 50px;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 70px;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 8px;
+      color: var(--white);
+    }
+
+    .subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-top: -50px;
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .label::before,
+    .label::after {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .note {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* ============================================
+       FACEBOOK COVER - 820 x 312
+       ============================================ */
+    .facebook-cover {
+      width: 820px;
+      height: 312px;
+      background: var(--deep-navy);
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 50px 100px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.05);
+    }
+
+    .facebook-cover .bg-pattern {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 20%, rgba(0,119,200,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(200,16,46,0.1) 0%, transparent 40%);
+    }
+
+    .facebook-cover .diagonal-lines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.015) 40px,
+        rgba(255,255,255,0.015) 41px
+      );
+    }
+
+    .facebook-cover .accent-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--kc-red), var(--kc-blue));
+    }
+
+    .facebook-cover .content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 60px;
+    }
+
+    .facebook-cover .left-section {
+      flex: 1;
+      padding-left: 40px;
+    }
+
+    .facebook-cover .eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--kc-blue);
+      margin-bottom: 8px;
+    }
+
+    .facebook-cover .main-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      color: var(--white);
+      line-height: 0.9;
+      letter-spacing: 2px;
+    }
+
+    .facebook-cover .main-text .highlight {
+      color: var(--kc-red);
+    }
+
+    .facebook-cover .right-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .facebook-cover .vote-box {
+      background: var(--kc-red);
+      padding: 16px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .facebook-cover .vote-box .vote {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      color: var(--white);
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+
+    .facebook-cover .vote-box .date {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 4px;
+    }
+
+    .facebook-cover .website {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ============================================
+       TWITTER/X HEADER - 1500 x 500
+       ============================================ */
+    .twitter-cover {
+      width: 1500px;
+      height: 500px;
+      background: var(--deep-navy);
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 50px 100px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.05);
+    }
+
+    .twitter-cover .starburst {
+      position: absolute;
+      inset: 0;
+      background: repeating-conic-gradient(
+        from 0deg at 75% 120%,
+        transparent 0deg,
+        transparent 4deg,
+        rgba(0,119,200,0.03) 4deg,
+        rgba(0,119,200,0.03) 8deg
+      );
+    }
+
+    .twitter-cover .glow-blue {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,119,200,0.2) 0%, transparent 60%);
+      top: -300px;
+      right: -100px;
+      filter: blur(80px);
+    }
+
+    .twitter-cover .glow-red {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,16,46,0.15) 0%, transparent 60%);
+      bottom: -200px;
+      left: 100px;
+      filter: blur(100px);
+    }
+
+    .twitter-cover .accent-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--kc-red), var(--kc-blue));
+    }
+
+    .twitter-cover .content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 100px;
+      padding: 0 120px;
+    }
+
+    .twitter-cover .left-section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .twitter-cover .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--kc-blue);
+      margin-bottom: 12px;
+    }
+
+    .twitter-cover .main-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 120px;
+      color: var(--white);
+      line-height: 0.85;
+      letter-spacing: 3px;
+    }
+
+    .twitter-cover .main-text .highlight {
+      color: var(--kc-red);
+    }
+
+    .twitter-cover .subtext {
+      font-size: 18px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      margin-top: 16px;
+      letter-spacing: 1px;
+    }
+
+    .twitter-cover .divider {
+      width: 2px;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.2), transparent);
+    }
+
+    .twitter-cover .right-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .twitter-cover .vote-box {
+      background: var(--kc-red);
+      padding: 24px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .twitter-cover .vote-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    }
+
+    .twitter-cover .vote-box .vote {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      color: var(--white);
+      letter-spacing: 6px;
+      line-height: 1;
+      position: relative;
+    }
+
+    .twitter-cover .vote-box .date {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 6px;
+      position: relative;
+    }
+
+    .twitter-cover .website {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .twitter-cover .corner-accent {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .twitter-cover .corner-accent .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--kc-red);
+      border-radius: 50%;
+    }
+
+    .twitter-cover .corner-accent span {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ============================================
+       LINKEDIN BANNER - 1584 x 396
+       ============================================ */
+    .linkedin-cover {
+      width: 1584px;
+      height: 396px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--deep-navy) 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 50px 100px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.05);
+    }
+
+    .linkedin-cover .grid-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .linkedin-cover .glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,119,200,0.12) 0%, transparent 60%);
+      top: -200px;
+      left: 30%;
+      filter: blur(60px);
+    }
+
+    .linkedin-cover .accent-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--kc-red), var(--kc-blue));
+    }
+
+    .linkedin-cover .content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 100px;
+    }
+
+    .linkedin-cover .left-section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .linkedin-cover .eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--kc-blue);
+      margin-bottom: 10px;
+    }
+
+    .linkedin-cover .main-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 86px;
+      color: var(--white);
+      line-height: 0.9;
+      letter-spacing: 2px;
+    }
+
+    .linkedin-cover .main-text .highlight {
+      color: var(--kc-red);
+    }
+
+    .linkedin-cover .subtext {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      margin-top: 14px;
+      letter-spacing: 1px;
+    }
+
+    .linkedin-cover .center-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .linkedin-cover .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 100px;
+      color: var(--white);
+      line-height: 0.85;
+      letter-spacing: -2px;
+    }
+
+    .linkedin-cover .stat-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .linkedin-cover .right-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 18px;
+    }
+
+    .linkedin-cover .vote-box {
+      background: var(--kc-red);
+      padding: 18px 44px;
+    }
+
+    .linkedin-cover .vote-box .vote {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      color: var(--white);
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+
+    .linkedin-cover .vote-box .date {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .linkedin-cover .website {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* Export note */
+    .export-note {
+      max-width: 800px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+      line-height: 1.7;
+      padding: 24px 32px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    .export-note code {
+      background: rgba(255,255,255,0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>TOGETHER KC</h1>
+  <p class="subtitle">Social Media Cover Photos</p>
+
+  <!-- FACEBOOK COVER -->
+  <div class="section">
+    <p class="label">Facebook Cover • 820 × 312</p>
+    <div class="facebook-cover">
+      <div class="bg-pattern"></div>
+      <div class="diagonal-lines"></div>
+      <div class="accent-bar"></div>
+
+      <div class="content">
+        <div class="left-section">
+          <div class="eyebrow">April 7, 2026</div>
+          <div class="main-text">
+            RENEW THE<br>
+            <span class="highlight">KC E-TAX</span>
+          </div>
+        </div>
+
+        <div class="right-section">
+          <div class="vote-box">
+            <div class="vote">VOTE YES</div>
+            <div class="date">APRIL 7</div>
+          </div>
+          <div class="website">together-kc.com</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Profile picture appears on the left side — key content positioned center-right</p>
+  </div>
+
+  <!-- TWITTER HEADER -->
+  <div class="section">
+    <p class="label">Twitter / X Header • 1500 × 500</p>
+    <div class="twitter-cover">
+      <div class="starburst"></div>
+      <div class="glow-blue"></div>
+      <div class="glow-red"></div>
+      <div class="accent-bar"></div>
+
+      <div class="corner-accent">
+        <div class="dot"></div>
+        <span>E-Tax Renewal</span>
+      </div>
+
+      <div class="content">
+        <div class="left-section">
+          <div class="eyebrow">Kansas City</div>
+          <div class="main-text">
+            RENEW<br>
+            THE <span class="highlight">E-TAX</span>
+          </div>
+          <div class="subtext">Protecting essential city services since 1963</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="right-section">
+          <div class="vote-box">
+            <div class="vote">VOTE YES</div>
+            <div class="date">APRIL 7, 2026</div>
+          </div>
+          <div class="website">together-kc.com</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Profile picture appears bottom-left on Twitter — content centered with breathing room</p>
+  </div>
+
+  <!-- LINKEDIN BANNER -->
+  <div class="section">
+    <p class="label">LinkedIn Banner • 1584 × 396</p>
+    <div class="linkedin-cover">
+      <div class="grid-pattern"></div>
+      <div class="glow"></div>
+      <div class="accent-bar"></div>
+
+      <div class="content">
+        <div class="left-section">
+          <div class="eyebrow">Kansas City E-Tax Renewal</div>
+          <div class="main-text">
+            RENEW THE<br>
+            <span class="highlight">KC E-TAX</span>
+          </div>
+          <div class="subtext">Funding city services since 1963</div>
+        </div>
+
+        <div class="center-section">
+          <div class="stat-number">47%</div>
+          <div class="stat-label">of City's Budget</div>
+        </div>
+
+        <div class="right-section">
+          <div class="vote-box">
+            <div class="vote">VOTE YES</div>
+            <div class="date">APRIL 7, 2026</div>
+          </div>
+          <div class="website">together-kc.com</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Profile picture appears bottom-left on LinkedIn — content uses full width</p>
+  </div>
+
+  <p class="export-note">
+    <strong>To export:</strong> Use browser DevTools → Toggle device toolbar → Set custom viewport to exact dimensions → Screenshot each cover.
+    Or use <code>html2canvas</code> / Puppeteer for programmatic export.
+  </p>
+
+</body>
+</html>

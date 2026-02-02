@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="820" height="312" viewBox="0 0 820 312" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8f9fa"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="820" height="312" fill="url(#bgGrad)"/>
+
+  <!-- Left accent bar -->
+  <rect x="0" y="0" width="6" height="312" fill="#C8102E"/>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="306" width="820" height="6" fill="#002855"/>
+
+  <!-- LEFT SIDE: CTA Section -->
+  <rect x="30" y="50" width="200" height="80" fill="#C8102E" rx="4"/>
+  <text x="130" y="102"
+    font-family="'Bebas Neue', 'Arial Narrow', Impact, sans-serif"
+    font-size="48"
+    font-weight="700"
+    fill="#FFFFFF"
+    text-anchor="middle"
+    letter-spacing="3">VOTE YES</text>
+
+  <text x="30" y="165"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="22"
+    font-weight="700"
+    fill="#002855"
+    letter-spacing="0.5">Renew the</text>
+  <text x="30" y="195"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="26"
+    font-weight="800"
+    fill="#002855"
+    letter-spacing="0.5">Earnings Tax</text>
+
+  <text x="30" y="240"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="18"
+    font-weight="700"
+    fill="#C8102E"
+    letter-spacing="1">APRIL 7, 2026</text>
+
+  <!-- Paid for line -->
+  <text x="30" y="280"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="9"
+    fill="#666666">Paid for by Together KC</text>
+
+  <!-- Divider line -->
+  <rect x="250" y="40" width="2" height="250" fill="#e0e0e0"/>
+
+  <!-- RIGHT SIDE: Endorsements -->
+  <text x="535" y="35"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="14"
+    font-weight="700"
+    fill="#C8102E"
+    text-anchor="middle"
+    letter-spacing="1">Endorsed by:</text>
+
+  <!-- Logo Grid - Row 1 -->
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Fraternal Order of Police.png" x="270" y="50" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Firefighters Local 42.png" x="365" y="50" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/IAFF Local 3808.png" x="460" y="50" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Greater Kansas City AFL-CIO.png" x="555" y="50" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Greater KC Building Construction Trades Council .png" x="650" y="50" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/KC Chamber.PNG" x="745" y="50" width="65" height="52" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Logo Grid - Row 2 -->
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/IBEW Local 124.png" x="270" y="110" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Laborers 264.PNG" x="365" y="110" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/IUOE Local 101 logo.png" x="460" y="110" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Freedom Inc.PNG" x="555" y="110" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Civic Council of Greater Kansas City.png" x="650" y="110" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Downtown Council.png" x="745" y="110" width="65" height="52" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Logo Grid - Row 3 -->
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Pipefitters Local 533.png" x="270" y="170" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Plumbers Local 8.png" x="365" y="170" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Heavy Constructors.png" x="460" y="170" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/NAACP KC.png" x="555" y="170" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Urban League.png" x="650" y="170" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Southland Progress.png" x="745" y="170" width="65" height="52" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Logo Grid - Row 4 -->
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/SEIU Local 1 MO.png" x="270" y="230" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Forward KC.png" x="365" y="230" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Empower Missouri.PNG" x="460" y="230" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Health Forward Foundation.png" x="555" y="230" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/Northland Regional Chamber.png" x="650" y="230" width="85" height="52" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/ALF-CIO.png" x="745" y="230" width="65" height="52" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- "+More" indicator -->
+  <text x="800" y="298"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="11"
+    font-weight="600"
+    fill="#0077C8"
+    text-anchor="end">+40 more endorsers</text>
+</svg>

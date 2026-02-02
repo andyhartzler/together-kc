@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="820" height="312" viewBox="0 0 820 312" xmlns="http://www.w3.org/2000/svg">
+  <!-- Navy background -->
+  <rect width="820" height="312" fill="#002855"/>
+
+  <!-- Red left accent -->
+  <rect x="0" y="0" width="5" height="312" fill="#C8102E"/>
+
+  <!-- Red bottom accent -->
+  <rect x="0" y="307" width="820" height="5" fill="#C8102E"/>
+
+  <!-- Vote Yes red box -->
+  <rect x="20" y="25" width="170" height="150" rx="6" fill="#C8102E"/>
+
+  <!-- VOTE text -->
+  <text x="105" y="80" font-family="Impact, Arial Black, sans-serif" font-size="52" fill="white" text-anchor="middle" letter-spacing="4">VOTE</text>
+
+  <!-- YES text -->
+  <text x="105" y="140" font-family="Impact, Arial Black, sans-serif" font-size="52" fill="white" text-anchor="middle" letter-spacing="4">YES</text>
+
+  <!-- Renew the -->
+  <text x="20" y="210" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="white">Renew the</text>
+
+  <!-- Earnings Tax -->
+  <text x="20" y="240" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="800" fill="white">Earnings Tax</text>
+
+  <!-- by April 7th -->
+  <text x="20" y="272" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#C8102E">by April 7th</text>
+
+  <!-- Paid for -->
+  <text x="20" y="295" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#8899aa">Paid for by Together KC</text>
+
+  <!-- Endorsed by: header -->
+  <text x="520" y="35" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#C8102E" text-anchor="middle">Endorsed by:</text>
+</svg>

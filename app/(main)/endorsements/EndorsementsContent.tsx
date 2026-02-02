@@ -297,8 +297,6 @@ export default function EndorsementsContent() {
           <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
             {ENDORSERS.electedOfficials.map((official, index) => {
               const getObjectPosition = () => {
-                if (official.name === 'Michael Johnson') return 'object-[center_30%]';
-                if (official.name === 'Maggie Nurrenbern') return 'object-top';
                 if (official.name === 'Barbara Washington') return 'object-top';
                 return '';
               };

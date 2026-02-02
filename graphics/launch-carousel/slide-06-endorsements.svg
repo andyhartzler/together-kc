@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1080" height="1350" viewBox="0 0 1080 1350" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Navy to Sky gradient (hero background style) - MORE DRAMATIC -->
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#152a47;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#1e3a5f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a90d9;stop-opacity:0.85" />
+    </linearGradient>
+
+    <!-- Coral glow gradient - STRONGER -->
+    <radialGradient id="coralGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ff4444;stop-opacity:0.6" />
+      <stop offset="70%" style="stop-color:#e53935;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#e53935;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Sky glow gradient - ENHANCED -->
+    <radialGradient id="skyGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#5da0e9;stop-opacity:0.45" />
+      <stop offset="100%" style="stop-color:#4a90d9;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Golden glow gradient - BRIGHTER -->
+    <radialGradient id="goldenGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffb830;stop-opacity:0.35" />
+      <stop offset="100%" style="stop-color:#f5a623;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Text glow filter - MUCH STRONGER -->
+    <filter id="coralTextGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="blur"/>
+      <feFlood flood-color="#ff4444" flood-opacity="0.8"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- White text shadow for readability -->
+    <filter id="textShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#152a47" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Strong drop shadow for elements -->
+    <filter id="dropShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#152a47" flood-opacity="0.4"/>
+    </filter>
+
+    <!-- Coral button shadow - ENHANCED -->
+    <filter id="coralShadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="6" stdDeviation="24" flood-color="#e53935" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Golden text glow -->
+    <filter id="goldenTextGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+      <feFlood flood-color="#ffb830" flood-opacity="0.7"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Urgent red background gradient -->
+    <linearGradient id="urgentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#152a47;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1e3a5f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3d1a1a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+      
+  <!-- Base gradient -->
+  <rect width="1080" height="1350" fill="url(#heroGradient)"/>
+
+  <!-- Coral orb top-left - LARGER -->
+  <ellipse cx="54" cy="135" rx="594" ry="540" fill="url(#coralGlow)"/>
+
+  <!-- Sky orb bottom-right - LARGER -->
+  <ellipse cx="972" cy="1147.5" rx="648" ry="675" fill="url(#skyGlow)"/>
+
+  <!-- Golden orb center-right - LARGER -->
+  <ellipse cx="810" cy="405" rx="378" ry="405" fill="url(#goldenGlow)"/>
+
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#grid)" opacity="0.4"/>
+
+      <!-- Big number -->
+      <text x="540" y="378.00000000000006"
+        font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif"
+        font-size="200"
+        font-weight="800"
+        fill="#f5a623"
+        text-anchor="middle"
+        filter="url(#goldenTextGlow)">70+</text>
+
+      <text x="540" y="540"
+        font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif"
+        font-size="56"
+        font-weight="700"
+        fill="#ffffff"
+        text-anchor="middle">Endorsements</text>
+
+      <!-- Who supports -->
+      <rect x="80" y="648" width="920" height="380" rx="28" fill="rgba(255,255,255,0.08)"/>
+
+      <g font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif" text-anchor="middle">
+        <text x="540" y="756.0000000000001" font-size="44" font-weight="600" fill="#ffffff">Mayor Lucas</text>
+        <text x="540" y="864" font-size="44" font-weight="600" fill="#ffffff">City Council</text>
+        <text x="540" y="972" font-size="44" font-weight="600" fill="#ffffff">Business Leaders</text>
+        <text x="540" y="1080" font-size="44" font-weight="600" fill="#ffffff">Labor Unions</text>
+      </g>
+
+      <!-- Prompt -->
+      <text x="540" y="1242"
+        font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif"
+        font-size="36"
+        fill="rgba(255,255,255,0.6)"
+        text-anchor="middle">See full list at together-kc.com</text>
+
+      <circle cx="456" cy="1300" r="6" fill="rgba(255,255,255,0.35)"/>
+<circle cx="480" cy="1300" r="6" fill="rgba(255,255,255,0.35)"/>
+<circle cx="504" cy="1300" r="6" fill="rgba(255,255,255,0.35)"/>
+<circle cx="528" cy="1300" r="6" fill="rgba(255,255,255,0.35)"/>
+<circle cx="552" cy="1300" r="6" fill="rgba(255,255,255,0.35)"/>
+<circle cx="576" cy="1300" r="7" fill="#e53935"/>
+<circle cx="600" cy="1300" r="6" fill="rgba(255,255,255,0.35)"/>
+<circle cx="624" cy="1300" r="6" fill="rgba(255,255,255,0.35)"/>
+    </svg>

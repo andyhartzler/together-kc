@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Twitter Header Banner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: none;
+    }
+
+    .banner {
+      width: 1500px;
+      height: 500px;
+      background: #002855;
+      position: relative;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .left-accent {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 5px;
+      height: 100%;
+      background: #C8102E;
+    }
+
+    .bottom-accent {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: #C8102E;
+    }
+
+    .left-side {
+      width: 380px;
+      padding: 15px 15px 15px 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .vote-yes-box {
+      background: #C8102E;
+      border-radius: 6px;
+      padding: 35px 50px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .vote-yes-text {
+      font-family: 'Bebas Neue', 'Arial Narrow', Impact, sans-serif;
+      font-size: 110px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+
+    .by-april {
+      font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-top: 12px;
+      letter-spacing: 2px;
+    }
+
+    .renew-text {
+      font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #FFFFFF;
+      white-space: nowrap;
+    }
+
+    .right-side {
+      flex: 1;
+      padding: 20px 25px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .endorsed-header {
+      font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #C8102E;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .logo-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .logo-row.featured {
+      margin-bottom: 20px;
+    }
+
+    .logo-row.featured img {
+      height: 75px;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
+    }
+
+    .logo-row.small img {
+      height: 75px;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
+    }
+
+    .logo-row.small img.bigger {
+      height: 100px;
+      max-width: 250px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div class="left-accent"></div>
+    <div class="bottom-accent"></div>
+
+    <div class="left-side">
+      <div class="vote-yes-box">
+        <div class="vote-yes-text">VOTE<br>YES</div>
+        <div class="by-april">By APRIL 7</div>
+      </div>
+      <div class="renew-text">Renew the Earnings Tax</div>
+    </div>
+
+    <div class="right-side">
+      <div class="endorsed-header">Endorsed by:</div>
+
+      <!-- Row 1: 4 Featured (bigger) -->
+      <div class="logo-row featured">
+        <img src="../public/images/endorsers/Heavy Constructors.png" alt="Heavy Constructors">
+        <img src="../public/images/endorsers/KC Chamber.PNG" alt="KC Chamber">
+        <img src="../public/images/endorsers/Civic Council of Greater Kansas City.png" alt="Civic Council">
+        <img src="../public/images/endorsers/Greater Kansas City AFL-CIO.png" alt="AFL-CIO">
+      </div>
+
+      <!-- Row 2: 5 logos -->
+      <div class="logo-row small">
+        <img src="../public/images/endorsers/Urban League.png" alt="Urban League" class="bigger">
+        <img src="../public/images/endorsers/Freedom Inc.PNG" alt="Freedom Inc">
+        <img src="../public/images/endorsers/Downtown Council.png" alt="Downtown Council">
+        <img src="../public/images/endorsers/Health Forward Foundation.png" alt="Health Forward" class="bigger">
+        <img src="../public/images/endorsers/Laborers 264.PNG" alt="LiUNA 264">
+      </div>
+
+      <!-- Row 3: 5 logos -->
+      <div class="logo-row small">
+        <img src="../public/images/endorsers/Plumbers Local 8.png" alt="Plumbers 8">
+        <img src="../public/images/endorsers/IBEW Local 124.png" alt="IBEW 124">
+        <img src="../public/images/endorsers/IUOE Local 101 logo.png" alt="IUOE 101">
+        <img src="../public/images/endorsers/Pipefitters Local 533.png" alt="Pipefitters">
+        <img src="../public/images/endorsers/Greater KC Building Construction Trades Council .png" alt="Building Trades">
+      </div>
+
+      <!-- Row 4: 5 logos -->
+      <div class="logo-row small">
+        <img src="../public/images/endorsers/Heartland Black Chamber.PNG" alt="Heartland Black Chamber">
+        <img src="../public/images/endorsers/Northeast Chamber of Commerce.png" alt="Northeast Chamber">
+        <img src="../public/images/endorsers/12th Street Heritage.png" alt="12th Street Heritage" class="bigger">
+        <img src="../public/images/endorsers/ALF-CIO.png" alt="Missouri AFL-CIO">
+        <img src="../public/images/endorsers/IAFF Local 3808.png" alt="IAFF 3808">
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

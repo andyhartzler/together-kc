@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="820" height="312" viewBox="0 0 820 312" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <!-- Subtle gradient for depth -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8f9fa"/>
+    </linearGradient>
+
+    <!-- Red accent gradient -->
+    <linearGradient id="redAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C8102E"/>
+      <stop offset="100%" stop-color="#e31837"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="820" height="312" fill="url(#bgGrad)"/>
+
+  <!-- Left accent bar -->
+  <rect x="0" y="0" width="6" height="312" fill="#C8102E"/>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="306" width="820" height="6" fill="#002855"/>
+
+  <!-- LEFT SIDE: CTA Section -->
+  <!-- Vote Yes Box -->
+  <rect x="30" y="60" width="200" height="80" fill="#C8102E" rx="4"/>
+  <text x="130" y="112"
+    font-family="'Bebas Neue', 'Arial Narrow', Impact, sans-serif"
+    font-size="48"
+    font-weight="700"
+    fill="#FFFFFF"
+    text-anchor="middle"
+    letter-spacing="3">VOTE YES</text>
+
+  <!-- Renew the Earnings Tax -->
+  <text x="30" y="175"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="22"
+    font-weight="700"
+    fill="#002855"
+    letter-spacing="0.5">Renew the</text>
+  <text x="30" y="205"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="26"
+    font-weight="800"
+    fill="#002855"
+    letter-spacing="0.5">Earnings Tax</text>
+
+  <!-- Date -->
+  <text x="30" y="250"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="18"
+    font-weight="700"
+    fill="#C8102E"
+    letter-spacing="1">APRIL 7, 2026</text>
+
+  <!-- Divider line -->
+  <rect x="250" y="50" width="2" height="212" fill="#e0e0e0"/>
+
+  <!-- RIGHT SIDE: Endorsements -->
+  <!-- Header -->
+  <text x="280" y="45"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="11"
+    font-weight="700"
+    fill="#666666"
+    letter-spacing="2">ENDORSED BY 70+ ORGANIZATIONS</text>
+
+  <!-- Logo Grid - Row 1 -->
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/kc-chamber.png" x="270" y="55" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/civic-council.png" x="360" y="55" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/afl-cio.png" x="450" y="55" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/freedom-inc.png" x="540" y="55" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/kc-realtors.jpg" x="630" y="55" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/kcata.png" x="720" y="55" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Logo Grid - Row 2 -->
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/ibew124.png" x="270" y="115" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/liuna.png" x="360" y="115" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/carpenters.png" x="450" y="115" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/ironworkers.png" x="540" y="115" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/kc-iffa.png" x="630" y="115" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/kc-fop.png" x="720" y="115" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Logo Grid - Row 3 -->
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/urban-league.png" x="270" y="175" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/naacp.png" x="360" y="175" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/more2.png" x="450" y="175" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/westside-housing.png" x="540" y="175" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/pipefitters.png" x="630" y="175" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/sheet-metal.png" x="720" y="175" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Logo Grid - Row 4 -->
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/teamsters.png" x="270" y="235" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/operating-engineers.png" x="360" y="235" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/laborers-264.png" x="450" y="235" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/plumbers.png" x="540" y="235" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/boilermakers.png" x="630" y="235" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+  <image xlink:href="/Users/andrew/together-kc/public/images/endorsers/painters.png" x="720" y="235" width="80" height="50" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- "+More" indicator -->
+  <text x="780" y="300"
+    font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif"
+    font-size="12"
+    font-weight="600"
+    fill="#0077C8"
+    text-anchor="end">+50 more</text>
+</svg>

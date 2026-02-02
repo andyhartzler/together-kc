@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1080" height="1350" viewBox="0 0 1080 1350" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Text shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Strong glow -->
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="blur"/>
+      <feFlood flood-color="#ff4757" flood-opacity="0.8"/>
+      <feComposite in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="glowCyan" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="blur"/>
+      <feFlood flood-color="#00d4ff" flood-opacity="0.8"/>
+      <feComposite in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="glowGold" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="blur"/>
+      <feFlood flood-color="#ffc312" flood-opacity="0.8"/>
+      <feComposite in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+      
+  <!-- Solid background -->
+  <rect width="1080" height="1350" fill="#0a0f1a"/>
+
+  <!-- Accent shapes -->
+  <polygon points="0,0 280,0 80,280 0,280" fill="#ffc312" opacity="0.85" transform="translate(-5400, 180)"/><circle cx="1100" cy="320" r="200" fill="#ff4757" opacity="0.9"/>
+
+  <!-- KC Skyline -->
+  
+    <defs>
+      <clipPath id="slideClip">
+        <rect x="0" y="0" width="1080" height="1350"/>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#slideClip)" transform="translate(-5400, 0)">
+      <!-- Skyline layer 1 - darkest, back -->
+      <path d="
+    M 0 1350
+    L 0 1150
+
+    /* Slide 1 area - Western edge */
+    L 50 1150
+    L 50 1050
+    L 120 1050
+    L 120 980
+    L 180 980
+    L 180 1050
+    L 250 1050
+    L 250 900
+    L 280 900
+    L 280 850
+    L 320 850
+    L 320 900
+    L 380 900
+    L 380 1150
+    L 450 1150
+    L 450 920
+    L 520 920
+    L 520 800
+    L 560 800
+    L 560 750
+    L 600 750
+    L 600 800
+    L 680 800
+    L 680 1150
+    L 800 1150
+    L 800 950
+    L 900 950
+    L 900 850
+    L 950 850
+    L 950 780
+    L 1000 780
+    L 1000 850
+    L 1080 850
+
+    /* Slide 2 area */
+    L 1080 1150
+    L 1150 1150
+    L 1150 900
+    L 1200 900
+    L 1200 700
+    L 1250 700
+    L 1250 650
+    L 1320 650
+    L 1320 700
+    L 1380 700
+    L 1380 900
+    L 1450 900
+    L 1450 1150
+    L 1550 1150
+    L 1550 850
+    L 1650 850
+    L 1650 600
+    L 1700 600
+    L 1700 500
+    L 1780 500
+    L 1780 600
+    L 1850 600
+    L 1850 850
+    L 1950 850
+    L 1950 1150
+    L 2100 1150
+    L 2100 900
+    L 2160 900
+
+    /* Slide 3 area - Union Station dome */
+    L 2160 1150
+    L 2250 1150
+    L 2250 950
+    L 2350 950
+    L 2350 800
+    L 2400 800
+    L 2450 650
+    L 2500 550
+    L 2550 500
+    L 2600 480
+    L 2650 500
+    L 2700 550
+    L 2750 650
+    L 2800 800
+    L 2850 800
+    L 2850 950
+    L 2950 950
+    L 2950 1150
+    L 3100 1150
+    L 3100 880
+    L 3200 880
+    L 3200 1150
+    L 3240 1150
+
+    /* Slide 4 area - Downtown towers */
+    L 3240 900
+    L 3300 900
+    L 3300 600
+    L 3350 600
+    L 3350 400
+    L 3380 400
+    L 3380 350
+    L 3450 350
+    L 3450 400
+    L 3480 400
+    L 3480 600
+    L 3550 600
+    L 3550 500
+    L 3600 500
+    L 3600 300
+    L 3650 300
+    L 3650 250
+    L 3750 250
+    L 3750 300
+    L 3800 300
+    L 3800 500
+    L 3900 500
+    L 3900 650
+    L 4000 650
+    L 4000 1150
+    L 4100 1150
+    L 4100 750
+    L 4200 750
+    L 4200 550
+    L 4280 550
+    L 4280 450
+    L 4320 450
+
+    /* Slide 5 area - More downtown */
+    L 4320 1150
+    L 4400 1150
+    L 4400 700
+    L 4500 700
+    L 4500 480
+    L 4550 480
+    L 4550 380
+    L 4650 380
+    L 4650 480
+    L 4700 480
+    L 4700 700
+    L 4800 700
+    L 4800 1150
+    L 4900 1150
+    L 4900 850
+    L 5000 850
+    L 5000 650
+    L 5100 650
+    L 5100 550
+    L 5200 550
+    L 5200 650
+    L 5300 650
+    L 5300 850
+    L 5400 850
+
+    /* Slide 6 area - T-Mobile Center */
+    L 5400 1150
+    L 5500 1150
+    L 5500 900
+    L 5600 900
+    L 5600 750
+    L 5700 700
+    L 5850 680
+    L 6000 700
+    L 6100 750
+    L 6100 900
+    L 6200 900
+    L 6200 1150
+    L 6350 1150
+    L 6350 850
+    L 6450 850
+    L 6450 700
+    L 6500 700
+    L 6500 600
+    L 6580 600
+    L 6580 700
+    L 6650 700
+    L 6650 850
+    L 6480 850
+
+    /* Slide 7 area */
+    L 6480 1150
+    L 6600 1150
+    L 6600 900
+    L 6700 900
+    L 6700 750
+    L 6800 750
+    L 6800 650
+    L 6900 650
+    L 6900 750
+    L 7000 750
+    L 7000 900
+    L 7100 900
+    L 7100 1150
+    L 7250 1150
+    L 7250 950
+    L 7400 950
+    L 7400 800
+    L 7500 800
+    L 7500 700
+    L 7560 700
+
+    /* Slide 8 area - East side */
+    L 7560 1150
+    L 7650 1150
+    L 7650 850
+    L 7750 850
+    L 7750 750
+    L 7850 750
+    L 7850 680
+    L 7950 680
+    L 7950 750
+    L 8050 750
+    L 8050 850
+    L 8150 850
+    L 8150 1150
+    L 8300 1150
+    L 8300 950
+    L 8400 950
+    L 8400 1150
+    L 8500 1150
+    L 8500 1000
+    L 8600 1000
+    L 8600 1150
+    L 8640 1150
+    L 8640 1350
+    Z" fill="#141e2e" transform="translate(0, -80) scale(1, 0.9)"/>
+      <!-- Skyline layer 2 - mid -->
+      <path d="
+    M 0 1350
+    L 0 1150
+
+    /* Slide 1 area - Western edge */
+    L 50 1150
+    L 50 1050
+    L 120 1050
+    L 120 980
+    L 180 980
+    L 180 1050
+    L 250 1050
+    L 250 900
+    L 280 900
+    L 280 850
+    L 320 850
+    L 320 900
+    L 380 900
+    L 380 1150
+    L 450 1150
+    L 450 920
+    L 520 920
+    L 520 800
+    L 560 800
+    L 560 750
+    L 600 750
+    L 600 800
+    L 680 800
+    L 680 1150
+    L 800 1150
+    L 800 950
+    L 900 950
+    L 900 850
+    L 950 850
+    L 950 780
+    L 1000 780
+    L 1000 850
+    L 1080 850
+
+    /* Slide 2 area */
+    L 1080 1150
+    L 1150 1150
+    L 1150 900
+    L 1200 900
+    L 1200 700
+    L 1250 700
+    L 1250 650
+    L 1320 650
+    L 1320 700
+    L 1380 700
+    L 1380 900
+    L 1450 900
+    L 1450 1150
+    L 1550 1150
+    L 1550 850
+    L 1650 850
+    L 1650 600
+    L 1700 600
+    L 1700 500
+    L 1780 500
+    L 1780 600
+    L 1850 600
+    L 1850 850
+    L 1950 850
+    L 1950 1150
+    L 2100 1150
+    L 2100 900
+    L 2160 900
+
+    /* Slide 3 area - Union Station dome */
+    L 2160 1150
+    L 2250 1150
+    L 2250 950
+    L 2350 950
+    L 2350 800
+    L 2400 800
+    L 2450 650
+    L 2500 550
+    L 2550 500
+    L 2600 480
+    L 2650 500
+    L 2700 550
+    L 2750 650
+    L 2800 800
+    L 2850 800
+    L 2850 950
+    L 2950 950
+    L 2950 1150
+    L 3100 1150
+    L 3100 880
+    L 3200 880
+    L 3200 1150
+    L 3240 1150
+
+    /* Slide 4 area - Downtown towers */
+    L 3240 900
+    L 3300 900
+    L 3300 600
+    L 3350 600
+    L 3350 400
+    L 3380 400
+    L 3380 350
+    L 3450 350
+    L 3450 400
+    L 3480 400
+    L 3480 600
+    L 3550 600
+    L 3550 500
+    L 3600 500
+    L 3600 300
+    L 3650 300
+    L 3650 250
+    L 3750 250
+    L 3750 300
+    L 3800 300
+    L 3800 500
+    L 3900 500
+    L 3900 650
+    L 4000 650
+    L 4000 1150
+    L 4100 1150
+    L 4100 750
+    L 4200 750
+    L 4200 550
+    L 4280 550
+    L 4280 450
+    L 4320 450
+
+    /* Slide 5 area - More downtown */
+    L 4320 1150
+    L 4400 1150
+    L 4400 700
+    L 4500 700
+    L 4500 480
+    L 4550 480
+    L 4550 380
+    L 4650 380
+    L 4650 480
+    L 4700 480
+    L 4700 700
+    L 4800 700
+    L 4800 1150
+    L 4900 1150
+    L 4900 850
+    L 5000 850
+    L 5000 650
+    L 5100 650
+    L 5100 550
+    L 5200 550
+    L 5200 650
+    L 5300 650
+    L 5300 850
+    L 5400 850
+
+    /* Slide 6 area - T-Mobile Center */
+    L 5400 1150
+    L 5500 1150
+    L 5500 900
+    L 5600 900
+    L 5600 750
+    L 5700 700
+    L 5850 680
+    L 6000 700
+    L 6100 750
+    L 6100 900
+    L 6200 900
+    L 6200 1150
+    L 6350 1150
+    L 6350 850
+    L 6450 850
+    L 6450 700
+    L 6500 700
+    L 6500 600
+    L 6580 600
+    L 6580 700
+    L 6650 700
+    L 6650 850
+    L 6480 850
+
+    /* Slide 7 area */
+    L 6480 1150
+    L 6600 1150
+    L 6600 900
+    L 6700 900
+    L 6700 750
+    L 6800 750
+    L 6800 650
+    L 6900 650
+    L 6900 750
+    L 7000 750
+    L 7000 900
+    L 7100 900
+    L 7100 1150
+    L 7250 1150
+    L 7250 950
+    L 7400 950
+    L 7400 800
+    L 7500 800
+    L 7500 700
+    L 7560 700
+
+    /* Slide 8 area - East side */
+    L 7560 1150
+    L 7650 1150
+    L 7650 850
+    L 7750 850
+    L 7750 750
+    L 7850 750
+    L 7850 680
+    L 7950 680
+    L 7950 750
+    L 8050 750
+    L 8050 850
+    L 8150 850
+    L 8150 1150
+    L 8300 1150
+    L 8300 950
+    L 8400 950
+    L 8400 1150
+    L 8500 1150
+    L 8500 1000
+    L 8600 1000
+    L 8600 1150
+    L 8640 1150
+    L 8640 1350
+    Z" fill="#1a2a3f" transform="translate(50, -30) scale(1, 0.95)"/>
+      <!-- Skyline layer 3 - front, lightest -->
+      <path d="
+    M 0 1350
+    L 0 1150
+
+    /* Slide 1 area - Western edge */
+    L 50 1150
+    L 50 1050
+    L 120 1050
+    L 120 980
+    L 180 980
+    L 180 1050
+    L 250 1050
+    L 250 900
+    L 280 900
+    L 280 850
+    L 320 850
+    L 320 900
+    L 380 900
+    L 380 1150
+    L 450 1150
+    L 450 920
+    L 520 920
+    L 520 800
+    L 560 800
+    L 560 750
+    L 600 750
+    L 600 800
+    L 680 800
+    L 680 1150
+    L 800 1150
+    L 800 950
+    L 900 950
+    L 900 850
+    L 950 850
+    L 950 780
+    L 1000 780
+    L 1000 850
+    L 1080 850
+
+    /* Slide 2 area */
+    L 1080 1150
+    L 1150 1150
+    L 1150 900
+    L 1200 900
+    L 1200 700
+    L 1250 700
+    L 1250 650
+    L 1320 650
+    L 1320 700
+    L 1380 700
+    L 1380 900
+    L 1450 900
+    L 1450 1150
+    L 1550 1150
+    L 1550 850
+    L 1650 850
+    L 1650 600
+    L 1700 600
+    L 1700 500
+    L 1780 500
+    L 1780 600
+    L 1850 600
+    L 1850 850
+    L 1950 850
+    L 1950 1150
+    L 2100 1150
+    L 2100 900
+    L 2160 900
+
+    /* Slide 3 area - Union Station dome */
+    L 2160 1150
+    L 2250 1150
+    L 2250 950
+    L 2350 950
+    L 2350 800
+    L 2400 800
+    L 2450 650
+    L 2500 550
+    L 2550 500
+    L 2600 480
+    L 2650 500
+    L 2700 550
+    L 2750 650
+    L 2800 800
+    L 2850 800
+    L 2850 950
+    L 2950 950
+    L 2950 1150
+    L 3100 1150
+    L 3100 880
+    L 3200 880
+    L 3200 1150
+    L 3240 1150
+
+    /* Slide 4 area - Downtown towers */
+    L 3240 900
+    L 3300 900
+    L 3300 600
+    L 3350 600
+    L 3350 400
+    L 3380 400
+    L 3380 350
+    L 3450 350
+    L 3450 400
+    L 3480 400
+    L 3480 600
+    L 3550 600
+    L 3550 500
+    L 3600 500
+    L 3600 300
+    L 3650 300
+    L 3650 250
+    L 3750 250
+    L 3750 300
+    L 3800 300
+    L 3800 500
+    L 3900 500
+    L 3900 650
+    L 4000 650
+    L 4000 1150
+    L 4100 1150
+    L 4100 750
+    L 4200 750
+    L 4200 550
+    L 4280 550
+    L 4280 450
+    L 4320 450
+
+    /* Slide 5 area - More downtown */
+    L 4320 1150
+    L 4400 1150
+    L 4400 700
+    L 4500 700
+    L 4500 480
+    L 4550 480
+    L 4550 380
+    L 4650 380
+    L 4650 480
+    L 4700 480
+    L 4700 700
+    L 4800 700
+    L 4800 1150
+    L 4900 1150
+    L 4900 850
+    L 5000 850
+    L 5000 650
+    L 5100 650
+    L 5100 550
+    L 5200 550
+    L 5200 650
+    L 5300 650
+    L 5300 850
+    L 5400 850
+
+    /* Slide 6 area - T-Mobile Center */
+    L 5400 1150
+    L 5500 1150
+    L 5500 900
+    L 5600 900
+    L 5600 750
+    L 5700 700
+    L 5850 680
+    L 6000 700
+    L 6100 750
+    L 6100 900
+    L 6200 900
+    L 6200 1150
+    L 6350 1150
+    L 6350 850
+    L 6450 850
+    L 6450 700
+    L 6500 700
+    L 6500 600
+    L 6580 600
+    L 6580 700
+    L 6650 700
+    L 6650 850
+    L 6480 850
+
+    /* Slide 7 area */
+    L 6480 1150
+    L 6600 1150
+    L 6600 900
+    L 6700 900
+    L 6700 750
+    L 6800 750
+    L 6800 650
+    L 6900 650
+    L 6900 750
+    L 7000 750
+    L 7000 900
+    L 7100 900
+    L 7100 1150
+    L 7250 1150
+    L 7250 950
+    L 7400 950
+    L 7400 800
+    L 7500 800
+    L 7500 700
+    L 7560 700
+
+    /* Slide 8 area - East side */
+    L 7560 1150
+    L 7650 1150
+    L 7650 850
+    L 7750 850
+    L 7750 750
+    L 7850 750
+    L 7850 680
+    L 7950 680
+    L 7950 750
+    L 8050 750
+    L 8050 850
+    L 8150 850
+    L 8150 1150
+    L 8300 1150
+    L 8300 950
+    L 8400 950
+    L 8400 1150
+    L 8500 1150
+    L 8500 1000
+    L 8600 1000
+    L 8600 1150
+    L 8640 1150
+    L 8640 1350
+    Z" fill="#243448"/>
+    </g>
+
+      <text x="540" y="150"
+        font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif"
+        font-size="100"
+        font-weight="900"
+        fill="#ffffff"
+        text-anchor="middle"
+        filter="url(#shadow)">THE FACTS</text>
+
+      <!-- Fact cards -->
+      <g>
+        <rect x="80" y="240" width="920" height="220" rx="24" fill="rgba(255,255,255,0.08)"/>
+        <text x="140" y="330" font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="36" font-weight="700" fill="#f5f5f0" opacity="0.6">NOT A NEW TAX</text>
+        <text x="140" y="410" font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="80" font-weight="900" fill="#ffffff">Since 1963</text>
+      </g>
+      <g>
+        <rect x="80" y="500" width="920" height="220" rx="24" fill="rgba(255,255,255,0.08)"/>
+        <text x="140" y="590" font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="36" font-weight="700" fill="#f5f5f0" opacity="0.6">THE RATE</text>
+        <text x="140" y="670" font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="80" font-weight="900" fill="#ffc312">Only 1%</text>
+      </g>
+      <g>
+        <rect x="80" y="760" width="920" height="220" rx="24" fill="rgba(255,255,255,0.08)"/>
+        <text x="140" y="850" font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="36" font-weight="700" fill="#f5f5f0" opacity="0.6">SHARED BURDEN</text>
+        <text x="140" y="930" font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="65" font-weight="900" fill="#00d4ff">~50% from visitors</text>
+      </g>
+
+      <text x="540" y="1070"
+        font-family="Geist, -apple-system, BlinkMacSystemFont, Arial, sans-serif"
+        font-size="36"
+        font-weight="600"
+        fill="#f5f5f0"
+        text-anchor="middle"
+        opacity="0.5">📌 Save this</text>
+    </svg>
