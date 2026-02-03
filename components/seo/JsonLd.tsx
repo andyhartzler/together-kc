@@ -80,6 +80,20 @@ export const electionEventSchema = {
     name: 'Kansas City, Missouri',
     url: 'https://www.kcmo.gov',
   },
+  performer: {
+    '@type': 'GovernmentOrganization',
+    name: 'Kansas City, Missouri',
+    url: 'https://www.kcmo.gov',
+  },
+  image: 'https://together-kc.com/images/og-image.png',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+    url: 'https://together-kc.com',
+    availability: 'https://schema.org/InStock',
+    validFrom: '2026-01-01',
+  },
   about: {
     '@type': 'GovernmentService',
     name: 'Kansas City Earnings Tax',
