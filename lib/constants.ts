@@ -84,6 +84,9 @@ export const ENDORSERS = {
     { name: 'Civic Council of Greater Kansas City', fullName: 'Civic Council of Greater Kansas City', logo: '/images/endorsers/Civic Council of Greater Kansas City.png', website: 'https://www.kcciviccouncil.org/' },
     { name: 'Greater KC AFL-CIO', fullName: 'Greater Kansas City AFL-CIO', logo: '/images/endorsers/Greater Kansas City AFL-CIO.png', website: 'https://www.kcaflcio.org/', logoScale: 1.25 },
     { name: 'Urban League', fullName: 'Urban League of Greater Kansas City', logo: '/images/endorsers/Urban League.png', website: 'https://www.ulkc.org/', logoScale: 1.3, logoOffsetY: 8 },
+    // IAFF Local 42 - second row
+    { name: 'IAFF Local 42', fullName: 'International Association of Fire Fighters Local 42', logo: '/images/endorsers/IAFF Local 42.png', website: 'https://www.iaff42.org/', logoScale: 1.25 },
+    { name: 'FOP Lodge 99', fullName: 'Fraternal Order of Police Lodge 99', logo: '/images/endorsers/FOP Lodge 99.png', website: 'https://www.kcfop.org/index.cfm', logoScale: 1.25 },
     // Confirmed endorsers
     { name: 'Heartland Black Chamber of Commerce', fullName: 'Heartland Black Chamber of Commerce', logo: '/images/endorsers/Heartland Black Chamber.PNG', website: 'https://heartlandblackchamber.com/' },
     { name: 'Freedom, Inc.', fullName: 'Freedom, Incorporated', logo: '/images/endorsers/Freedom Inc.PNG', website: 'https://freedomincorporated.org/' },
@@ -124,6 +127,7 @@ export const ENDORSERS = {
     { name: 'Melissa Patterson Hazley', title: 'Councilmember', district: '3rd District at Large', photo: '/images/council/Melissa-Patterson.png' },
     { name: 'Crispin Rea', title: 'Councilmember', district: '4th District at Large', photo: '/images/council/Crispin-Rea.png' },
     { name: 'Eric Bunch', title: 'Councilmember', district: '4th District', photo: '/images/council/Eric-Bunch.png' },
+    { name: 'Darrell Curls', title: 'Councilmember', district: '5th District at Large', photo: '/images/council/Darrell-Curls.png' },
     { name: 'Andrea Bough', title: 'Councilmember', district: '6th District at Large', photo: '/images/council/Andrea-Bough.png' },
     { name: 'Johnathan Duncan', title: 'Councilmember', district: '6th District', photo: '/images/council/Johnathan-Duncan.png' },
   ],
