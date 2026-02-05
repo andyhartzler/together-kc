@@ -1,6 +1,15 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
+
+const SOCIAL_LINKS = [
+  { name: 'Facebook', href: 'https://www.facebook.com/TogetherKC/', icon: '/images/social/facebook.png' },
+  { name: 'X', href: 'https://x.com/TogetherKCMO', icon: '/images/social/x.png' },
+  { name: 'Instagram', href: 'https://www.instagram.com/togetherkcmo/', icon: '/images/social/instagram.png' },
+  { name: 'Threads', href: 'https://www.threads.com/@togetherkcmo', icon: '/images/social/threads.png' },
+  { name: 'TikTok', href: 'https://www.tiktok.com/@togetherkcmo', icon: '/images/social/tiktok.png' },
+];
 
 export default function Footer() {
   return (
@@ -17,6 +26,28 @@ export default function Footer() {
             priority
           />
         </div>
+      </div>
+
+      {/* Social Links */}
+      <div className="flex justify-center gap-4 pt-4 pb-2">
+        {SOCIAL_LINKS.map((social) => (
+          <Link
+            key={social.name}
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-8 h-8 rounded-full overflow-hidden opacity-70 hover:opacity-100 transition-opacity"
+            aria-label={`Follow us on ${social.name}`}
+          >
+            <Image
+              src={social.icon}
+              alt={social.name}
+              width={32}
+              height={32}
+              className="w-full h-full object-cover"
+            />
+          </Link>
+        ))}
       </div>
 
       {/* Bottom disclaimer - centered */}
