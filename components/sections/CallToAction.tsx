@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
+import { EndorsementPopup } from '@/components/ui/EndorsementPopup';
 import { VOTE_DATE } from '@/lib/constants';
 import { downloadCalendarEvent } from '@/lib/calendar';
 
@@ -45,6 +46,7 @@ const socialLinks = [
 export default function CallToAction() {
   const [isCalendarClicked, setIsCalendarClicked] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showEndorseModal, setShowEndorseModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
@@ -74,7 +76,7 @@ export default function CallToAction() {
       title: 'Add Your Name',
       description: 'Show your support by endorsing the renewal.',
       buttonText: 'Endorse Now',
-      href: '/endorsements#endorse',
+      onClick: () => setShowEndorseModal(true),
       variant: 'primary' as const,
     },
     {
@@ -282,6 +284,9 @@ export default function CallToAction() {
           </motion.div>
         </div>
       </section>
+
+      {/* Endorsement Popup */}
+      <EndorsementPopup isOpen={showEndorseModal} onClose={() => setShowEndorseModal(false)} />
 
       {/* Share Modal */}
       <AnimatePresence>
