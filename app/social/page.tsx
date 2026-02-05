@@ -240,13 +240,13 @@ function SocialButton({ social, index }: { social: typeof SOCIAL_LINKS[0]; index
       aria-label={`Follow us on ${social.name}`}
     >
       {/* Icon container */}
-      <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-all duration-200 group-hover:bg-white/20 group-hover:scale-110 group-active:scale-95">
+      <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-all duration-200 group-hover:bg-white/20 group-hover:scale-110 group-active:scale-95">
         <Image
           src={social.icon}
           alt={social.name}
-          width={24}
-          height={24}
-          className="w-6 h-6 object-contain"
+          width={28}
+          height={28}
+          className="w-7 h-7 object-contain"
         />
       </div>
     </motion.a>
