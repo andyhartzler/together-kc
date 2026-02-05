@@ -387,7 +387,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
               {quote.organization && (
                 <div
                   className={cn(
-                    "text-xs transition-colors duration-300 leading-tight",
+                    "text-xs transition-colors duration-300 leading-tight whitespace-pre-line",
                     active ? "text-gray-600" : "text-gray-400"
                   )}
                 >

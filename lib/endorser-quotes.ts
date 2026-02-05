@@ -81,7 +81,7 @@ const BRIDGETTE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Bridgette Williams",
     title: "Executive Director",
-    organization: "Heavy Constructors Association of Greater Kansas City",
+    organization: "Heavy Constructors Association\nof Greater Kansas City",
     quote: "Kansas City's ability to remain competitive depends on renewing the earnings tax. It is an investment that is critical for our future. Kansas City's ability to repair and upgrade its aging infrastructure is at stake.",
     imageSrc: "/images/endorsers/bridget williams.png",
     imageScale: 1.25,
@@ -89,7 +89,7 @@ const BRIDGETTE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Bridgette Williams",
     title: "Executive Director",
-    organization: "Heavy Constructors Association of Greater Kansas City",
+    organization: "Heavy Constructors Association\nof Greater Kansas City",
     quote: "The renewal of the e-tax protects Kansas City from drastic cuts to street repair, snow removal, transportation, and other basic services. It's vital that we renew the E-Tax on April 7th.",
     imageSrc: "/images/endorsers/bridget williams.png",
     imageScale: 1.25,
@@ -97,7 +97,7 @@ const BRIDGETTE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Bridgette Williams",
     title: "Executive Director",
-    organization: "Heavy Constructors Association of Greater Kansas City",
+    organization: "Heavy Constructors Association\nof Greater Kansas City",
     quote: "The earnings tax is a significant portion of Kansas City, Missouri's budget. The income that comes from the earnings tax is critical to the basic services for the residents of Kansas City, Missouri.",
     imageSrc: "/images/endorsers/bridget williams.png",
     imageScale: 1.25,
@@ -105,7 +105,7 @@ const BRIDGETTE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Bridgette Williams",
     title: "Executive Director",
-    organization: "Heavy Constructors Association of Greater Kansas City",
+    organization: "Heavy Constructors Association\nof Greater Kansas City",
     quote: "If you care about getting back to work, your children getting to school, your trash getting picked up, your snow being removed, and your streets maintained, vote yes on April 7th.",
     imageSrc: "/images/endorsers/bridget williams.png",
     imageScale: 1.25,
@@ -113,7 +113,7 @@ const BRIDGETTE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Bridgette Williams",
     title: "Executive Director",
-    organization: "Heavy Constructors Association of Greater Kansas City",
+    organization: "Heavy Constructors Association\nof Greater Kansas City",
     quote: "This is not a new tax. The e-tax has been in place since 1963. This is simply a renewal of a tax that's already been in place.",
     imageSrc: "/images/endorsers/bridget williams.png",
     imageScale: 1.25,
