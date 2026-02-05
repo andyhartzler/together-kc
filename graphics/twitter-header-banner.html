@@ -19,7 +19,7 @@
       background: #002855;
       position: relative;
       display: flex;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .left-accent {
@@ -58,7 +58,7 @@
 
     .vote-yes-text {
       font-family: 'Bebas Neue', 'Arial Narrow', Impact, sans-serif;
-      font-size: 110px;
+      font-size: 95px;
       font-weight: 700;
       color: #FFFFFF;
       letter-spacing: 4px;
@@ -67,10 +67,10 @@
 
     .by-april {
       font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: #FFFFFF;
-      margin-top: 12px;
+      margin-top: 10px;
       letter-spacing: 2px;
     }
 
@@ -79,6 +79,17 @@
       font-size: 28px;
       font-weight: 700;
       color: #FFFFFF;
+      white-space: nowrap;
+    }
+
+    .disclaimer {
+      font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 9px;
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 1.4;
+      margin-top: auto;
+      padding-bottom: 15px;
       white-space: nowrap;
     }
 
@@ -116,6 +127,11 @@
       object-fit: contain;
     }
 
+    .logo-row.featured img.bigger {
+      height: 95px;
+      max-width: 220px;
+    }
+
     .logo-row.small img {
       height: 75px;
       width: auto;
@@ -141,6 +157,10 @@
         <div class="by-april">By APRIL 7</div>
       </div>
       <div class="renew-text">Renew the Earnings Tax</div>
+      <div class="disclaimer">
+        See the full list at together-kc.com/endorsements<br>
+        Paid for by Together KC, Dan Kopp, Treasurer.
+      </div>
     </div>
 
     <div class="right-side">
@@ -151,21 +171,21 @@
         <img src="../public/images/endorsers/Heavy Constructors.png" alt="Heavy Constructors">
         <img src="../public/images/endorsers/KC Chamber.PNG" alt="KC Chamber">
         <img src="../public/images/endorsers/Civic Council of Greater Kansas City.png" alt="Civic Council">
-        <img src="../public/images/endorsers/Greater Kansas City AFL-CIO.png" alt="AFL-CIO">
+        <img src="../public/images/endorsers/Greater Kansas City AFL-CIO.png" alt="AFL-CIO" class="bigger">
       </div>
 
       <!-- Row 2: 5 logos -->
       <div class="logo-row small">
+        <img src="../public/images/endorsers/FOP.png" alt="FOP" class="bigger">
+        <img src="../public/images/endorsers/Local 42.png" alt="Local 42" class="bigger">
         <img src="../public/images/endorsers/Urban League.png" alt="Urban League" class="bigger">
         <img src="../public/images/endorsers/Freedom Inc.PNG" alt="Freedom Inc">
         <img src="../public/images/endorsers/Downtown Council.png" alt="Downtown Council">
-        <img src="../public/images/endorsers/Health Forward Foundation.png" alt="Health Forward" class="bigger">
-        <img src="../public/images/endorsers/Laborers 264.PNG" alt="LiUNA 264">
       </div>
 
       <!-- Row 3: 5 logos -->
       <div class="logo-row small">
-        <img src="../public/images/endorsers/Plumbers Local 8.png" alt="Plumbers 8">
+        <img src="../public/images/endorsers/Plumbers Local 8.png" alt="Plumbers 8" style="transform: scale(1.25);">
         <img src="../public/images/endorsers/IBEW Local 124.png" alt="IBEW 124">
         <img src="../public/images/endorsers/IUOE Local 101 logo.png" alt="IUOE 101">
         <img src="../public/images/endorsers/Pipefitters Local 533.png" alt="Pipefitters">
@@ -177,8 +197,8 @@
         <img src="../public/images/endorsers/Heartland Black Chamber.PNG" alt="Heartland Black Chamber">
         <img src="../public/images/endorsers/Northeast Chamber of Commerce.png" alt="Northeast Chamber">
         <img src="../public/images/endorsers/12th Street Heritage.png" alt="12th Street Heritage" class="bigger">
-        <img src="../public/images/endorsers/ALF-CIO.png" alt="Missouri AFL-CIO">
-        <img src="../public/images/endorsers/IAFF Local 3808.png" alt="IAFF 3808">
+        <img src="../public/images/endorsers/Health Forward Foundation.png" alt="Health Forward" style="height: 120px; max-width: 280px;">
+        <img src="../public/images/endorsers/Laborers 264.PNG" alt="LiUNA 264" style="position: relative; top: -8px;">
       </div>
 
     </div>

@@ -19,7 +19,7 @@
       background: #002855;
       position: relative;
       display: flex;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .left-accent {
@@ -45,7 +45,7 @@
       padding: 25px 15px 15px 20px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .vote-yes-box {
@@ -74,19 +74,12 @@
       letter-spacing: 1px;
     }
 
-    .renew-text .line1 {
+    .renew-text-single {
       font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       color: #FFFFFF;
-    }
-
-    .renew-text .line2 {
-      font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-      font-size: 22px;
-      font-weight: 800;
-      color: #FFFFFF;
-      margin-bottom: 8px;
+      white-space: nowrap;
     }
 
     .date {
@@ -137,6 +130,11 @@
       object-fit: contain;
     }
 
+    .logo-row.featured img.bigger {
+      height: 65px;
+      max-width: 145px;
+    }
+
     .logo-row.small img {
       height: 40px;
       width: auto;
@@ -170,13 +168,7 @@
         <div class="by-april">By APRIL 7</div>
       </div>
 
-      <div class="renew-text">
-        <div class="line1">Renew the</div>
-        <div class="line2">Earnings Tax</div>
-      </div>
-
-      
-      <div class="paid-for">Paid for by Together KC, Dan Kopp, Treasurer.</div>
+      <div class="renew-text-single">Renew the Earnings Tax</div>
     </div>
 
     <div class="right-side">
@@ -192,11 +184,11 @@
 
       <!-- Row 2: 5 logos -->
       <div class="logo-row small">
-        <img src="../public/images/endorsers/Urban League.png" alt="Urban League" class="bigger">
+        <img src="../public/images/endorsers/FOP.png" alt="FOP">
+        <img src="../public/images/endorsers/Local 42.png" alt="Local 42">
+        <img src="../public/images/endorsers/Urban League.png" alt="Urban League" style="transform: scale(1.4);">
         <img src="../public/images/endorsers/Freedom Inc.PNG" alt="Freedom Inc">
         <img src="../public/images/endorsers/Downtown Council.png" alt="Downtown Council">
-        <img src="../public/images/endorsers/Health Forward Foundation.png" alt="Health Forward" class="bigger">
-        <img src="../public/images/endorsers/Laborers 264.PNG" alt="LiUNA 264">
       </div>
 
       <!-- Row 3: 5 logos -->
@@ -213,8 +205,8 @@
         <img src="../public/images/endorsers/Heartland Black Chamber.PNG" alt="Heartland Black Chamber">
         <img src="../public/images/endorsers/Northeast Chamber of Commerce.png" alt="Northeast Chamber">
         <img src="../public/images/endorsers/12th Street Heritage.png" alt="12th Street Heritage" class="bigger">
-        <img src="../public/images/endorsers/ALF-CIO.png" alt="Missouri AFL-CIO">
-        <img src="../public/images/endorsers/IAFF Local 3808.png" alt="IAFF 3808">
+        <img src="../public/images/endorsers/Health Forward Foundation.png" alt="Health Forward" style="transform: scale(1.4);">
+        <img src="../public/images/endorsers/Laborers 264.PNG" alt="LiUNA 264">
       </div>
 
       <div class="more-text">See the full list at together-kc.com/endorsements</div>
