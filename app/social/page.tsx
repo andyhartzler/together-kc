@@ -491,7 +491,7 @@ export default function SocialLandingPage() {
           {/* Add to Calendar */}
           <LinkButton
             onClick={handleCalendarDownload}
-            icon={calendarAdded ? <span className="text-2xl">✓</span> : <Image src="/images/calendar-april-7.png" alt="April 7" width={32} height={32} className="w-8 h-8 object-contain" />}
+            icon={calendarAdded ? <span className="text-2xl">✓</span> : <Image src="/images/calendar-april-7.png" alt="April 7" width={36} height={36} className="w-9 h-9 object-contain" />}
             description={calendarAdded ? 'Added to your calendar!' : 'Save Election Day'}
             index={2}
             variant={calendarAdded ? 'primary' : 'default'}

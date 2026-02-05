@@ -301,7 +301,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                       className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors group w-full text-left"
                     >
                       <div className="w-12 h-12 bg-sky/10 rounded-full flex items-center justify-center text-2xl">
-                        {calendarDownloaded ? '✓' : <Image src="/images/calendar-april-7.png" alt="April 7" width={28} height={28} className="w-7 h-7 object-contain" />}
+                        {calendarDownloaded ? '✓' : <Image src="/images/calendar-april-7.png" alt="April 7" width={36} height={36} className="w-9 h-9 object-contain" />}
                       </div>
                       <div className="flex-grow">
                         <h3 className="font-semibold text-navy">
