@@ -51,14 +51,78 @@ const SOCIAL_LINKS = [
   { name: 'Threads', href: 'https://www.threads.com/@togetherkcmo', icon: '/images/social/threads.png' },
 ];
 
-// Simple CSS-animated gradient background
+// Floating particles component
+function FloatingParticles() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 rounded-full bg-white/10"
+          initial={{
+            x: typeof window !== 'undefined' ? Math.random() * 400 : 200,
+            y: typeof window !== 'undefined' ? Math.random() * 800 : 400,
+            opacity: 0,
+          }}
+          animate={{
+            y: [null, -150],
+            opacity: [0, 0.6, 0],
+          }}
+          transition={{
+            duration: 12 + Math.random() * 8,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+            ease: 'linear',
+          }}
+          style={{
+            left: `${10 + Math.random() * 80}%`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Gradient background with orbs
 function GradientBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Static gradient orbs with CSS animations */}
-      <div className="absolute -top-32 -left-32 w-64 h-64 rounded-full bg-coral/20 blur-3xl animate-pulse" />
-      <div className="absolute -bottom-32 -right-32 w-64 h-64 rounded-full bg-sky/20 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/3 right-0 w-48 h-48 rounded-full bg-coral/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      {/* Animated gradient orbs */}
+      <motion.div
+        className="absolute -top-32 -left-32 w-64 h-64 rounded-full bg-coral/20 blur-3xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          x: [0, 20, 0],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+      <motion.div
+        className="absolute -bottom-32 -right-32 w-64 h-64 rounded-full bg-sky/20 blur-3xl"
+        animate={{
+          scale: [1, 1.3, 1],
+          x: [0, -20, 0],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+      <motion.div
+        className="absolute top-1/3 right-0 w-48 h-48 rounded-full bg-coral/10 blur-3xl"
+        animate={{
+          scale: [1, 1.15, 1],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
     </div>
   );
 }
@@ -351,6 +415,7 @@ export default function SocialLandingPage() {
     <div className="min-h-screen bg-navy relative overflow-hidden">
       {/* Background effects */}
       <GradientBackground />
+      <FloatingParticles />
 
       {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col px-4 py-8 max-w-md mx-auto">
