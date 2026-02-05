@@ -29,22 +29,22 @@ export default function Footer() {
       </div>
 
       {/* Social Links */}
-      <div className="flex justify-center gap-4 pt-4 pb-2">
+      <div className="flex justify-center gap-5 pt-4 pb-2">
         {SOCIAL_LINKS.map((social) => (
           <Link
             key={social.name}
             href={social.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-8 h-8 rounded-full overflow-hidden opacity-70 hover:opacity-100 transition-opacity"
+            className="opacity-70 hover:opacity-100 transition-opacity"
             aria-label={`Follow us on ${social.name}`}
           >
             <Image
               src={social.icon}
               alt={social.name}
-              width={32}
-              height={32}
-              className="w-full h-full object-cover"
+              width={28}
+              height={28}
+              className="w-7 h-7 object-contain"
             />
           </Link>
         ))}
