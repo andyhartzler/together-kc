@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -44,91 +44,26 @@ declare global {
 }
 
 const SOCIAL_LINKS = [
-  { name: 'Facebook', href: 'https://www.facebook.com/TogetherKC/', icon: '/images/social/facebook.png', color: '#1877F2' },
-  { name: 'Instagram', href: 'https://www.instagram.com/togetherkcmo/', icon: '/images/social/instagram.png', color: '#E4405F' },
-  { name: 'TikTok', href: 'https://www.tiktok.com/@togetherkcmo', icon: '/images/social/tiktok.png', color: '#000000' },
-  { name: 'X', href: 'https://x.com/TogetherKCMO', icon: '/images/social/x.png', color: '#000000' },
-  { name: 'Threads', href: 'https://www.threads.com/@togetherkcmo', icon: '/images/social/threads.png', color: '#000000' },
+  { name: 'Facebook', href: 'https://www.facebook.com/TogetherKC/', icon: '/images/social/facebook.png' },
+  { name: 'Instagram', href: 'https://www.instagram.com/togetherkcmo/', icon: '/images/social/instagram.png' },
+  { name: 'TikTok', href: 'https://www.tiktok.com/@togetherkcmo', icon: '/images/social/tiktok.png' },
+  { name: 'X', href: 'https://x.com/TogetherKCMO', icon: '/images/social/x.png' },
+  { name: 'Threads', href: 'https://www.threads.com/@togetherkcmo', icon: '/images/social/threads.png' },
 ];
 
-// Floating particles component
-function FloatingParticles() {
+// Simple CSS-animated gradient background
+function GradientBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-2 h-2 rounded-full bg-white/10"
-          initial={{
-            x: Math.random() * 400,
-            y: Math.random() * 800,
-          }}
-          animate={{
-            y: [null, -100],
-            opacity: [0, 0.5, 0],
-          }}
-          transition={{
-            duration: Math.random() * 10 + 10,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-            ease: 'linear',
-          }}
-          style={{
-            left: `${Math.random() * 100}%`,
-          }}
-        />
-      ))}
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Static gradient orbs with CSS animations */}
+      <div className="absolute -top-32 -left-32 w-64 h-64 rounded-full bg-coral/20 blur-3xl animate-pulse" />
+      <div className="absolute -bottom-32 -right-32 w-64 h-64 rounded-full bg-sky/20 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/3 right-0 w-48 h-48 rounded-full bg-coral/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
     </div>
   );
 }
 
-// Animated gradient orbs
-function GradientOrbs() {
-  return (
-    <>
-      <motion.div
-        className="absolute -top-32 -left-32 w-64 h-64 rounded-full bg-coral/30 blur-3xl"
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, 30, 0],
-          y: [0, -20, 0],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <motion.div
-        className="absolute -bottom-32 -right-32 w-64 h-64 rounded-full bg-sky/30 blur-3xl"
-        animate={{
-          scale: [1, 1.3, 1],
-          x: [0, -20, 0],
-          y: [0, 30, 0],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-navy/20 blur-3xl"
-        animate={{
-          scale: [1, 1.1, 1],
-          rotate: [0, 180, 360],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
-    </>
-  );
-}
-
-// Premium link button component
+// Premium link button component - simplified animations
 function LinkButton({
   children,
   href,
@@ -148,21 +83,16 @@ function LinkButton({
   variant?: 'default' | 'primary' | 'glass';
   external?: boolean;
 }) {
-  const baseClasses = "relative w-full p-4 rounded-2xl flex items-center gap-4 transition-all duration-300 overflow-hidden group";
+  const baseClasses = "relative w-full p-4 rounded-2xl flex items-center gap-4 transition-all duration-200 overflow-hidden group active:scale-[0.98]";
 
   const variantClasses = {
-    default: "bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/30",
-    primary: "bg-gradient-to-r from-coral to-coral/80 border border-coral/50 hover:from-coral/90 hover:to-coral/70 shadow-lg shadow-coral/25",
+    default: "bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/15 active:bg-white/20",
+    primary: "bg-gradient-to-r from-coral to-coral/80 border border-coral/50 shadow-lg shadow-coral/25 hover:shadow-coral/40 active:shadow-coral/20",
     glass: "bg-white/5 backdrop-blur-lg border border-white/10 hover:bg-white/10",
   };
 
   const content = (
     <>
-      {/* Shimmer effect on hover */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
-      />
-
       {/* Icon container */}
       <div className="relative z-10 w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
         {icon}
@@ -177,30 +107,27 @@ function LinkButton({
       </div>
 
       {/* Arrow */}
-      <motion.svg
-        className="relative z-10 w-5 h-5 text-white/60 flex-shrink-0"
+      <svg
+        className="relative z-10 w-5 h-5 text-white/60 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
-        whileHover={{ x: 3 }}
       >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-      </motion.svg>
+      </svg>
     </>
   );
 
-  const motionProps = {
-    initial: { opacity: 0, y: 20 },
+  const animationProps = {
+    initial: { opacity: 0, y: 15 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4, delay: index * 0.1 },
-    whileHover: { scale: 1.02, y: -2 },
-    whileTap: { scale: 0.98 },
+    transition: { duration: 0.3, delay: index * 0.05 },
   };
 
   if (onClick) {
     return (
       <motion.button
-        {...motionProps}
+        {...animationProps}
         onClick={onClick}
         className={`${baseClasses} ${variantClasses[variant]} text-left`}
       >
@@ -212,7 +139,7 @@ function LinkButton({
   if (external) {
     return (
       <motion.a
-        {...motionProps}
+        {...animationProps}
         href={href}
         target="_blank"
         rel="noopener noreferrer"
@@ -226,7 +153,7 @@ function LinkButton({
   return (
     <Link href={href || '/'} className="block">
       <motion.div
-        {...motionProps}
+        {...animationProps}
         className={`${baseClasses} ${variantClasses[variant]}`}
       >
         {content}
@@ -235,48 +162,34 @@ function LinkButton({
   );
 }
 
-// Social icon button
+// Social icon button - simplified
 function SocialButton({ social, index }: { social: typeof SOCIAL_LINKS[0]; index: number }) {
   return (
     <motion.a
       href={social.href}
       target="_blank"
       rel="noopener noreferrer"
-      initial={{ opacity: 0, scale: 0 }}
+      initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, delay: 0.5 + index * 0.1, type: 'spring' }}
-      whileHover={{ scale: 1.15, y: -5 }}
-      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.2, delay: 0.3 + index * 0.05 }}
       className="relative group"
       aria-label={`Follow us on ${social.name}`}
     >
-      {/* Glow effect */}
-      <div className="absolute inset-0 rounded-full bg-white/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
       {/* Icon container */}
-      <div className="relative w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center overflow-hidden group-hover:bg-white/20 transition-all duration-300">
+      <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-all duration-200 group-hover:bg-white/20 group-hover:scale-110 group-active:scale-95">
         <Image
           src={social.icon}
           alt={social.name}
-          width={28}
-          height={28}
-          className="w-7 h-7 object-contain opacity-90 group-hover:opacity-100 transition-opacity"
+          width={24}
+          height={24}
+          className="w-6 h-6 object-contain"
         />
       </div>
-
-      {/* Tooltip */}
-      <motion.span
-        initial={{ opacity: 0, y: 10 }}
-        whileHover={{ opacity: 1, y: 0 }}
-        className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs text-white/70 whitespace-nowrap pointer-events-none"
-      >
-        {social.name}
-      </motion.span>
     </motion.a>
   );
 }
 
-// Modal component
+// Modal component - simplified animations
 function Modal({
   isOpen,
   onClose,
@@ -288,15 +201,6 @@ function Modal({
   title: string;
   children: React.ReactNode;
 }) {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -304,26 +208,22 @@ function Modal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
           onClick={onClose}
         >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
           <motion.div
-            initial={{ opacity: 0, y: 100 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 100 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.25 }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full sm:max-w-md bg-gradient-to-b from-navy to-navy/95 sm:rounded-2xl rounded-t-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
           >
             {/* Header */}
-            <div className="sticky top-0 bg-navy/90 backdrop-blur-md p-4 border-b border-white/10 flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-navy/95 backdrop-blur-md p-4 border-b border-white/10 flex items-center justify-between z-10">
               <h2 className="text-xl font-bold text-white">{title}</h2>
               <button
                 onClick={onClose}
@@ -448,44 +348,37 @@ export default function SocialLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-navy via-navy/95 to-navy relative overflow-hidden">
+    <div className="min-h-screen bg-navy relative overflow-hidden">
       {/* Background effects */}
-      <GradientOrbs />
-      <FloatingParticles />
+      <GradientBackground />
 
       {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col px-4 py-8 max-w-md mx-auto">
         {/* Header / Logo */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          transition={{ duration: 0.4 }}
+          className="text-center mb-6"
         >
           {/* Logo */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, type: 'spring' }}
-            className="relative inline-block mb-4"
-          >
-            <div className="absolute inset-0 bg-coral/30 blur-2xl rounded-full" />
+          <div className="relative inline-block mb-3">
             <Image
-              src="/images/together-kc-logo.png"
+              src="/images/together-kc-footer.png"
               alt="Together KC"
-              width={180}
-              height={60}
-              className="relative h-16 w-auto object-contain"
+              width={200}
+              height={70}
+              className="h-14 w-auto object-contain"
               priority
             />
-          </motion.div>
+          </div>
 
           {/* Tagline */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-white/80 text-lg font-medium"
+            transition={{ delay: 0.2 }}
+            className="text-white/90 text-lg font-semibold"
           >
             Vote YES on April 7
           </motion.p>
@@ -494,7 +387,7 @@ export default function SocialLandingPage() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.25 }}
             className="text-white/60 text-sm mt-1"
           >
             Renew the Kansas City Earnings Tax
@@ -502,34 +395,40 @@ export default function SocialLandingPage() {
         </motion.div>
 
         {/* Social Links Row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="flex justify-center gap-3 mb-8"
-        >
+        <div className="flex justify-center gap-3 mb-6">
           {SOCIAL_LINKS.map((social, index) => (
             <SocialButton key={social.name} social={social} index={index} />
           ))}
-        </motion.div>
+        </div>
 
         {/* Divider */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8"
+          transition={{ delay: 0.5, duration: 0.3 }}
+          className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-6"
         />
 
         {/* Action Links */}
         <div className="space-y-3 flex-grow">
+          {/* Visit Website - NOW FIRST */}
+          <LinkButton
+            href="/"
+            icon={<span className="text-2xl">🌐</span>}
+            description="Learn more about the renewal"
+            index={0}
+            variant="glass"
+          >
+            Visit Website
+          </LinkButton>
+
           {/* Check Registration */}
           <LinkButton
             href="https://voteroutreach.sos.mo.gov/portal/"
             external
             icon={<span className="text-2xl">📋</span>}
             description="Verify you're registered to vote"
-            index={0}
+            index={1}
           >
             Check Your Registration
           </LinkButton>
@@ -539,7 +438,7 @@ export default function SocialLandingPage() {
             onClick={handleCalendarDownload}
             icon={<span className="text-2xl">{calendarAdded ? '✓' : '📅'}</span>}
             description={calendarAdded ? 'Added to your calendar!' : 'Save Election Day'}
-            index={1}
+            index={2}
             variant={calendarAdded ? 'primary' : 'default'}
           >
             {calendarAdded ? 'Calendar Reminder Set!' : 'Remind Me to Vote'}
@@ -553,7 +452,7 @@ export default function SocialLandingPage() {
             }}
             icon={<span className="text-2xl">📍</span>}
             description="Locate where to vote in your county"
-            index={2}
+            index={3}
           >
             Find My Polling Location
           </LinkButton>
@@ -563,21 +462,10 @@ export default function SocialLandingPage() {
             onClick={() => setActiveModal('endorse')}
             icon={<span className="text-2xl">❤️</span>}
             description="Join thousands of supporters"
-            index={3}
+            index={4}
             variant="primary"
           >
             Add Your Endorsement
-          </LinkButton>
-
-          {/* Visit Website */}
-          <LinkButton
-            href="/"
-            icon={<span className="text-2xl">🌐</span>}
-            description="Learn more about the renewal"
-            index={4}
-            variant="glass"
-          >
-            Visit Website
           </LinkButton>
         </div>
 
@@ -585,7 +473,7 @@ export default function SocialLandingPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 0.6 }}
           className="mt-8 text-center"
         >
           <p className="text-white/40 text-xs leading-relaxed">
@@ -611,20 +499,19 @@ export default function SocialLandingPage() {
               exit={{ opacity: 0 }}
             >
               <p className="text-white/70 text-center mb-4">
-                Kansas City spans 4 counties. Select yours to find voting info.
+                Kansas City spans 4 counties.<br />
+                Select yours to find voting info.
               </p>
 
               <div className="grid grid-cols-2 gap-3 mb-6">
                 {(['Jackson', 'Clay', 'Platte', 'Cass'] as County[]).map((county) => (
-                  <motion.button
+                  <button
                     key={county}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedCounty(county)}
-                    className="p-4 rounded-xl bg-white/10 hover:bg-coral text-white font-semibold transition-colors"
+                    className="p-4 rounded-xl bg-white/10 hover:bg-coral text-white font-semibold transition-colors active:scale-95"
                   >
                     {county} County
-                  </motion.button>
+                  </button>
                 ))}
               </div>
 
@@ -646,8 +533,8 @@ export default function SocialLandingPage() {
                 </button>
               ) : (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   className="space-y-3"
                 >
                   <div className="flex gap-2">
@@ -676,19 +563,14 @@ export default function SocialLandingPage() {
           ) : (
             <motion.div
               key="result"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="text-center"
             >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring' }}
-                className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl text-white bg-coral"
-              >
+              <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl text-white bg-coral">
                 ✓
-              </motion.div>
+              </div>
 
               <h3 className="text-xl font-bold text-white mb-1">
                 {selectedCounty} County
