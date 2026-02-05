@@ -94,6 +94,68 @@ const BRIDGETTE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     imageSrc: "/images/endorsers/bridget williams.png",
     imageScale: 1.25,
   },
+  {
+    name: "Bridgette Williams",
+    title: "Executive Director",
+    organization: "Heavy Constructors Association of Greater Kansas City",
+    quote: "The earnings tax is a significant portion of Kansas City, Missouri's budget. The income that comes from the earnings tax is critical to the basic services for the residents of Kansas City, Missouri.",
+    imageSrc: "/images/endorsers/bridget williams.png",
+    imageScale: 1.25,
+  },
+  {
+    name: "Bridgette Williams",
+    title: "Executive Director",
+    organization: "Heavy Constructors Association of Greater Kansas City",
+    quote: "If you care about getting back to work, your children getting to school, your trash getting picked up, your snow being removed, and your streets maintained, vote yes on April 7th.",
+    imageSrc: "/images/endorsers/bridget williams.png",
+    imageScale: 1.25,
+  },
+  {
+    name: "Bridgette Williams",
+    title: "Executive Director",
+    organization: "Heavy Constructors Association of Greater Kansas City",
+    quote: "This is not a new tax. The e-tax has been in place since 1963. This is simply a renewal of a tax that's already been in place.",
+    imageSrc: "/images/endorsers/bridget williams.png",
+    imageScale: 1.25,
+  },
+];
+
+const CHARLIE_QUOTES: Omit<EndorserQuote, 'id'>[] = [
+  {
+    name: "Charlie Shields",
+    title: "President & CEO",
+    organization: "University Health",
+    quote: "The earnings tax in Kansas City is really what makes this community work. Whether it's supporting our Kansas City Police Department, the ambulances that bring patients to the hospital, or the roads that get repaired. This city doesn't work without the earnings tax.",
+    imageSrc: "/images/endorsers/charlie-shields.webp",
+  },
+  {
+    name: "Charlie Shields",
+    title: "President & CEO",
+    organization: "University Health",
+    quote: "The earnings tax is certainly not a new tax. This tax has been around for decades, but it has to be renewed every five years. For us to continue the great work we do as a hospital and for this city to continue its great work, we need the renewal.",
+    imageSrc: "/images/endorsers/charlie-shields.webp",
+  },
+  {
+    name: "Charlie Shields",
+    title: "President & CEO",
+    organization: "University Health",
+    quote: "A lot of folks that commute in use all the services in Kansas City, and they help pay for them. That's why everybody has to pay their fair share including those that not only live here, but those that work in this great community.",
+    imageSrc: "/images/endorsers/charlie-shields.webp",
+  },
+  {
+    name: "Charlie Shields",
+    title: "President & CEO",
+    organization: "University Health",
+    quote: "There are a lot of great things happening in Kansas City right now. It's like the city is on a roll. We need to keep that going and that doesn't happen without renewal of the earnings tax. It's that important.",
+    imageSrc: "/images/endorsers/charlie-shields.webp",
+  },
+  {
+    name: "Charlie Shields",
+    title: "President & CEO",
+    organization: "University Health",
+    quote: "If you were in an accident in this city, you're gonna come to University Health by ambulance—that's supported by the earnings tax. You're gonna travel on those roads—that's supported by the earnings tax. It's that important.",
+    imageSrc: "/images/endorsers/charlie-shields.webp",
+  },
 ];
 
 const LUCAS_QUOTES: Omit<EndorserQuote, 'id'>[] = [
@@ -139,22 +201,24 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-// Build the final quotes array: interleaved by person (Mayor, Bridgette, Duke, Joe, Mayor, Bridgette, Duke, Joe...)
+// Build the final quotes array: interleaved by person (Mayor, Bridgette, Charlie, Duke, Joe...)
 export function getOrderedQuotes(): EndorserQuote[] {
   // Shuffle each person's quotes
   const lucas = shuffleArray(LUCAS_QUOTES);
   const duke = shuffleArray(DUKE_QUOTES);
   const joe = shuffleArray(JOE_QUOTES);
   const bridgette = shuffleArray(BRIDGETTE_QUOTES);
+  const charlie = shuffleArray(CHARLIE_QUOTES);
 
-  // Interleave: Mayor, Bridgette, Duke, Joe, Mayor, Bridgette, Duke, Joe...
+  // Interleave: Mayor, Bridgette, Charlie, Duke, Joe...
   // Each person stays in rotation, with quotes cycling if they have fewer than maxLen
   const interleaved: Omit<EndorserQuote, 'id'>[] = [];
-  const maxLen = Math.max(lucas.length, duke.length, joe.length, bridgette.length);
+  const maxLen = Math.max(lucas.length, duke.length, joe.length, bridgette.length, charlie.length);
 
   for (let i = 0; i < maxLen; i++) {
     interleaved.push(lucas[i % lucas.length]);
     interleaved.push(bridgette[i % bridgette.length]);
+    interleaved.push(charlie[i % charlie.length]);
     interleaved.push(duke[i % duke.length]);
     interleaved.push(joe[i % joe.length]);
   }
