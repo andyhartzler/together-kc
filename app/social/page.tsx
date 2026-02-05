@@ -382,16 +382,6 @@ export default function SocialLandingPage() {
           >
             Vote YES on April 7
           </motion.p>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.25 }}
-            className="text-white/60 text-sm mt-1"
-          >
-            Renew the Kansas City Earnings Tax
-          </motion.p>
         </motion.div>
 
         {/* Social Links Row */}
