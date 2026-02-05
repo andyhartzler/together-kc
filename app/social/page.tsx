@@ -364,7 +364,7 @@ export default function SocialLandingPage() {
           {/* Logo */}
           <div className="relative inline-block mb-3">
             <Image
-              src="/images/together-kc-footer.png"
+              src="/images/renew-kc-logo-white.png"
               alt="Together KC"
               width={200}
               height={70}
