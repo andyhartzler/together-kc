@@ -133,11 +133,11 @@ export const ENDORSERS = {
     { name: 'Johnathan Duncan', title: 'Councilmember', district: '6th District', photo: '/images/council/Johnathan-Duncan.png' },
   ],
   electedOfficials: [
-    { name: 'Ashley Aune', title: 'State Representative', district: '', photo: '/images/council/Ashley Aune .jpg' },
-    { name: 'Barbara Washington', title: 'State Senator', district: '', photo: '/images/council/Senator Barbara Washington.jpg' },
-    { name: 'Michael Johnson', title: 'State Representative', district: '23rd District', photo: '/images/council/Michael Johnson.jpg' },
-    { name: 'Patty Lewis', title: 'State Senator', district: '7th District', photo: '/images/council/Patty_Lewis.jpg' },
-    { name: 'Maggie Nurrenbern', title: 'State Senator', district: '17th District', photo: '/images/council/Maggie Nurrenbern.jpg' },
+    { name: 'Ashley Aune', title: 'State Representative', district: 'House District 14', photo: '/images/council/Ashley Aune .jpg' },
+    { name: 'Barbara Washington', title: 'State Senator', district: 'Senate District 9', photo: '/images/council/Senator Barbara Washington.jpg' },
+    { name: 'Michael Johnson', title: 'State Representative', district: 'House District 23', photo: '/images/council/Michael Johnson.jpg' },
+    { name: 'Patty Lewis', title: 'State Senator', district: 'Senate District 7', photo: '/images/council/Patty_Lewis.jpg' },
+    { name: 'Maggie Nurrenbern', title: 'State Senator', district: 'Senate District 17', photo: '/images/council/Maggie Nurrenbern.jpg' },
   ],
 } as const;
 
