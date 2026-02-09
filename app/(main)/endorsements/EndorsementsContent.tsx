@@ -298,6 +298,8 @@ export default function EndorsementsContent() {
             {ENDORSERS.electedOfficials.map((official, index) => {
               const getObjectPosition = () => {
                 if (official.name === 'Barbara Washington') return 'object-top';
+                if (official.name === 'Michael Johnson') return 'object-[center_20%]';
+                if (official.name === 'Patty Lewis') return 'object-[center_20%]';
                 return '';
               };
               return (
