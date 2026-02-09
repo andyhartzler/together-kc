@@ -299,7 +299,8 @@ export default function EndorsementsContent() {
               const getObjectPosition = () => {
                 if (official.name === 'Barbara Washington') return 'object-top';
                 if (official.name === 'Michael Johnson') return 'object-[center_20%]';
-                if (official.name === 'Patty Lewis') return 'object-[center_20%]';
+                if (official.name === 'Patty Lewis') return 'object-[center_30%]';
+                if (official.name === 'Maggie Nurrenbern') return 'object-[center_30%]';
                 return '';
               };
               return (
