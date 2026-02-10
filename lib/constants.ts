@@ -135,7 +135,7 @@ export const ENDORSERS = {
   electedOfficials: [
     { name: 'Ashley Aune', title: 'State Representative', district: 'House District 14', photo: '/images/council/Ashley Aune .jpg' },
     { name: 'Barbara Washington', title: 'State Senator', district: 'Senate District 9', photo: '/images/council/Senator Barbara Washington.jpg' },
-    { name: 'Michael Johnson', title: 'State Representative', district: 'House District 23', photo: '/images/council/Michael Johnson.jpg' },
+    { name: 'Michael Johnson', title: 'State Representative', district: 'House District 23', photo: '/images/council/Michael Johnson.png' },
     { name: 'Patty Lewis', title: 'State Senator', district: 'Senate District 7', photo: '/images/council/Patty_Lewis.jpg' },
     { name: 'Maggie Nurrenbern', title: 'State Senator', district: 'Senate District 17', photo: '/images/council/Maggie Nurrenbern.jpg' },
     { name: 'Bill Allen', title: 'State Representative', district: 'House District 17', photo: '/images/council/Bill_Allen.png' },
