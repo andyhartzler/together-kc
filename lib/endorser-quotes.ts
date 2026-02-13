@@ -138,6 +138,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "MLP Holdings",
     quote: "When I represent the business and civic community, I'm not taking a pro-tax position. In the case of the earnings tax, I'm taking a pro-Kansas City position.",
     imageSrc: "/images/endorsers/bill-gautreaux.jpg",
+    imageScale: 1.25,
   },
   {
     name: "Bill Gautreaux",
@@ -145,6 +146,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "MLP Holdings",
     quote: "This is part of what allows us as a city to host a World Series parade, a Super Bowl parade, an NFL draft, an upcoming World Cup. You cannot operate a city without these essential services.",
     imageSrc: "/images/endorsers/bill-gautreaux.jpg",
+    imageScale: 1.25,
   },
 
   // 10. Johnathan Duncan (M)
