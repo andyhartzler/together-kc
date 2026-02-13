@@ -42,7 +42,8 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "University Health",
     quote: "The earnings tax in Kansas City is really what makes this community work. Whether it's supporting our Kansas City Police Department, the ambulances that bring patients to the hospital, or the roads that get repaired. This city doesn't work without the earnings tax.",
     imageSrc: "/images/endorsers/charlie-shields.png",
-    imageScale: 1.25,
+    imageScale: 1.27,
+    imageOffsetY: 4,
   },
   {
     name: "Charlie Shields",
@@ -50,7 +51,8 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "University Health",
     quote: "If you were in an accident in this city, you're gonna come to University Health by ambulance\u2014that's supported by the earnings tax. You're gonna travel on those roads\u2014that's supported by the earnings tax. It's that important.",
     imageSrc: "/images/endorsers/charlie-shields.png",
-    imageScale: 1.25,
+    imageScale: 1.27,
+    imageOffsetY: 4,
   },
 
   // 4. Ashley Aune (F)

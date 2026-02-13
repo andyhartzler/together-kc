@@ -13,6 +13,7 @@ export type EndorserQuote = {
   quote: string;
   imageSrc: string;
   imageScale?: number;
+  imageOffsetY?: number;
 };
 
 export type EndorserCardStackProps = {
@@ -361,7 +362,7 @@ function EndorserCard({ quote, active }: { quote: EndorserQuote; active: boolean
                 alt={quote.name}
                 fill
                 className="object-cover object-top"
-                style={{ transform: `scale(${quote.imageScale || 1})` }}
+                style={{ transform: `scale(${quote.imageScale || 1}) translateY(${quote.imageOffsetY || 0}px)` }}
                 sizes="80px"
               />
             </div>
