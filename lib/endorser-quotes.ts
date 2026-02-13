@@ -42,6 +42,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "University Health",
     quote: "The earnings tax in Kansas City is really what makes this community work. Whether it's supporting our Kansas City Police Department, the ambulances that bring patients to the hospital, or the roads that get repaired. This city doesn't work without the earnings tax.",
     imageSrc: "/images/endorsers/charlie-shields.png",
+    imageScale: 1.25,
   },
   {
     name: "Charlie Shields",
@@ -49,6 +50,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "University Health",
     quote: "If you were in an accident in this city, you're gonna come to University Health by ambulance\u2014that's supported by the earnings tax. You're gonna travel on those roads\u2014that's supported by the earnings tax. It's that important.",
     imageSrc: "/images/endorsers/charlie-shields.png",
+    imageScale: 1.25,
   },
 
   // 4. Ashley Aune (F)
@@ -154,7 +156,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     name: "Johnathan Duncan",
     title: "Councilmember, 6th District",
     organization: "Kansas City City Council",
-    quote: "The street you live on should tell you how much your city cares about you. The e-tax is that investment.",
+    quote: "Every neighborhood in Kansas City depends on the e-tax. It's not just a line on your paycheck, it's the investment that keeps our city running for all of us.",
     imageSrc: "/images/council/Johnathan-Duncan.png",
   },
   {
