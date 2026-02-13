@@ -197,8 +197,11 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
 ];
 
 // Build the final quotes array with IDs
+// First rotation: everyone's quote 1, second rotation: everyone's quote 2
 export function getOrderedQuotes(): EndorserQuote[] {
-  return ORDERED_QUOTES.map((quote, index) => ({
+  const firstQuotes = ORDERED_QUOTES.filter((_, i) => i % 2 === 0);
+  const secondQuotes = ORDERED_QUOTES.filter((_, i) => i % 2 === 1);
+  return [...firstQuotes, ...secondQuotes].map((quote, index) => ({
     ...quote,
     id: `quote-${index}`,
   }));
