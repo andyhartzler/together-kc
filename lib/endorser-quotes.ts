@@ -156,7 +156,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     name: "Johnathan Duncan",
     title: "Councilmember, 6th District",
     organization: "Kansas City City Council",
-    quote: "Every neighborhood in Kansas City depends on the e-tax. It's not just a line on your paycheck, it's the investment that keeps our city running for all of us.",
+    quote: "Every neighborhood in Kansas City depends on the e-tax. It's the investment that keeps our city running for all of us.",
     imageSrc: "/images/council/Johnathan-Duncan.png",
   },
   {
