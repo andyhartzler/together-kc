@@ -23,7 +23,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     title: "Executive Director",
     organization: "Heavy Constructors Association\nof Greater Kansas City",
     quote: "If you care about getting back to work, your children getting to school, your trash getting picked up, your snow being removed, and your streets maintained, vote yes on April 7th.",
-    imageSrc: "/images/endorsers/bridget williams.png",
+    imageSrc: "/images/endorsers/bridgette-williams.png",
     imageScale: 1.25,
   },
   {
@@ -31,7 +31,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     title: "Executive Director",
     organization: "Heavy Constructors Association\nof Greater Kansas City",
     quote: "Kansas City's ability to remain competitive depends on renewing the earnings tax. It is an investment that is critical for our future. Kansas City's ability to repair and upgrade its aging infrastructure is at stake.",
-    imageSrc: "/images/endorsers/bridget williams.png",
+    imageSrc: "/images/endorsers/bridgette-williams.png",
     imageScale: 1.25,
   },
 
@@ -77,14 +77,14 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     title: "President & CEO",
     organization: "Greater KC Chamber of Commerce",
     quote: "Almost 50% of the earnings tax is paid for by those individuals that don't live in Kansas City but work here every day. It's a fair way to make sure essential services are there for all of us.",
-    imageSrc: "/images/endorsers/joe-reardon.jpg",
+    imageSrc: "/images/endorsers/joe-reardon.png",
   },
   {
     name: "Joe Reardon",
     title: "President & CEO",
     organization: "Greater KC Chamber of Commerce",
     quote: "The Chamber represents 2,000 businesses in the Kansas City region. We desire to have a city that's strong, viable, and growing. The earnings tax helps make sure that happens.",
-    imageSrc: "/images/endorsers/joe-reardon.jpg",
+    imageSrc: "/images/endorsers/joe-reardon.png",
   },
 
   // 6. Ryana Parks-Shaw (F)
@@ -109,14 +109,14 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     title: "President",
     organization: "Greater Kansas City AFL-CIO",
     quote: "This is not a new tax. This is a renewal. This tax has been around longer than I have. It started in 1963. We've been paying this tax all of my life.",
-    imageSrc: "/images/endorsers/duke-dujakovich.jpg",
+    imageSrc: "/images/endorsers/duke-dujakovich.png",
   },
   {
     name: "Duke Dujakovich",
     title: "President",
     organization: "Greater Kansas City AFL-CIO",
     quote: "Somebody's gotta pay for the services you use when you're here in Kansas City. To fix the streets, to fix the bridges, to be there when you call 911.",
-    imageSrc: "/images/endorsers/duke-dujakovich.jpg",
+    imageSrc: "/images/endorsers/duke-dujakovich.png",
   },
 
   // 8. Wes Rogers (M)
@@ -141,7 +141,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     title: "Managing Partner",
     organization: "MLP Holdings",
     quote: "When I represent the business and civic community, I'm not taking a pro-tax position. In the case of the earnings tax, I'm taking a pro-Kansas City position.",
-    imageSrc: "/images/endorsers/bill-gautreaux.jpg",
+    imageSrc: "/images/endorsers/bill-gautreaux.png",
     imageScale: 1.25,
   },
   {
@@ -149,7 +149,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     title: "Managing Partner",
     organization: "MLP Holdings",
     quote: "This is part of what allows us as a city to host a World Series parade, a Super Bowl parade, an NFL draft, an upcoming World Cup. You cannot operate a city without these essential services.",
-    imageSrc: "/images/endorsers/bill-gautreaux.jpg",
+    imageSrc: "/images/endorsers/bill-gautreaux.png",
     imageScale: 1.25,
   },
 
