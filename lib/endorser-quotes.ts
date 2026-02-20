@@ -25,6 +25,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     quote: "If you care about getting back to work, your children getting to school, your trash getting picked up, your snow being removed, and your streets maintained, vote yes on April 7th.",
     imageSrc: "/images/endorsers/bridgette-williams.png",
     imageScale: 1.25,
+    imageOffsetY: 4,
   },
   {
     name: "Bridgette Williams",
@@ -33,6 +34,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     quote: "Kansas City's ability to remain competitive depends on renewing the earnings tax. It is an investment that is critical for our future. Kansas City's ability to repair and upgrade its aging infrastructure is at stake.",
     imageSrc: "/images/endorsers/bridgette-williams.png",
     imageScale: 1.25,
+    imageOffsetY: 4,
   },
 
   // 3. Charlie Shields (M)
@@ -61,14 +63,14 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     title: "State Representative",
     organization: "Missouri House of Representatives",
     quote: "Northlanders here in Kansas City rely on these services, just like the rest of Kansas City. First responders, trash pickup, snow removal. It's all on the line.",
-    imageSrc: "/images/council/Ashley Aune .jpg",
+    imageSrc: "/images/council/ashley-aune.png",
   },
   {
     name: "Ashley Aune",
     title: "State Representative",
     organization: "Missouri House of Representatives",
     quote: "The e-tax ensures that everyone who uses Kansas City services helps pay for them.",
-    imageSrc: "/images/council/Ashley Aune .jpg",
+    imageSrc: "/images/council/ashley-aune.png",
   },
 
   // 5. Joe Reardon (M)
@@ -143,6 +145,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     quote: "When I represent the business and civic community, I'm not taking a pro-tax position. In the case of the earnings tax, I'm taking a pro-Kansas City position.",
     imageSrc: "/images/endorsers/bill-gautreaux.png",
     imageScale: 1.25,
+    imageOffsetY: -3,
   },
   {
     name: "Bill Gautreaux",
@@ -151,6 +154,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     quote: "This is part of what allows us as a city to host a World Series parade, a Super Bowl parade, an NFL draft, an upcoming World Cup. You cannot operate a city without these essential services.",
     imageSrc: "/images/endorsers/bill-gautreaux.png",
     imageScale: 1.25,
+    imageOffsetY: -3,
   },
 
   // 10. Johnathan Duncan (M)
