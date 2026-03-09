@@ -119,6 +119,7 @@ export const ENDORSERS = {
     { name: 'IAFF Local 3808', fullName: 'International Association of Fire Fighters Local 3808', logo: '/images/endorsers/IAFF Local 3808.png', website: null, logoScale: 1.25 },
     { name: 'Pipefitters Local 533', fullName: 'Pipefitters Local Union 533, United Association', logo: '/images/endorsers/Pipefitters Local 533.png', website: 'https://www.local533.com/', logoScale: 1.25 },
     { name: 'South KC Alliance', fullName: 'South Kansas City Alliance', logo: '/images/endorsers/South KC Alliance.PNG', website: 'https://southkcalliance.org' },
+    { name: 'United We', fullName: 'United We', logo: '/images/endorsers/United We.png', website: 'https://www.united-we.org' },
   ],
   cityOfficials: [
     { name: 'Quinton Lucas', title: 'Mayor', district: '', photo: '/images/council/mayor-q.png' },
