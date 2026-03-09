@@ -365,6 +365,7 @@ export default function EndorsementsContent() {
               'Bill Dietrich',
               'Tracey Lewis',
               'Qiana Thomason',
+              'Rev. John Modest Miles',
             ].map((name, index) => (
               <ChampionCard key={name} name={name} index={index} />
             ))}
