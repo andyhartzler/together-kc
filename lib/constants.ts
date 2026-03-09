@@ -120,6 +120,7 @@ export const ENDORSERS = {
     { name: 'Pipefitters Local 533', fullName: 'Pipefitters Local Union 533, United Association', logo: '/images/endorsers/Pipefitters Local 533.png', website: 'https://www.local533.com/', logoScale: 1.25 },
     { name: 'South KC Alliance', fullName: 'South Kansas City Alliance', logo: '/images/endorsers/South KC Alliance.PNG', website: 'https://southkcalliance.org' },
     { name: 'United We', fullName: 'United We', logo: '/images/endorsers/United We.png', website: 'https://www.united-we.org' },
+    { name: 'Hispanic Chamber of Commerce', fullName: 'Hispanic Chamber of Commerce of Greater Kansas City', logo: '/images/endorsers/Hispanic Chamber.png', website: 'https://www.hccgkc.com' },
   ],
   cityOfficials: [
     { name: 'Quinton Lucas', title: 'Mayor', district: '', photo: '/images/council/mayor-q.png' },
