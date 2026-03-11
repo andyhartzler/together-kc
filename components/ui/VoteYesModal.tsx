@@ -35,7 +35,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
   const [lookupResult, setLookupResult] = useState<{ county: County; address: string } | null>(null);
   const [lookupError, setLookupError] = useState<string | null>(null);
   const [calendarDownloaded, setCalendarDownloaded] = useState(false);
-  const [yardSign, setYardSign] = useState({ name: '', address: '', email: '', phone: '' });
+  const [yardSign, setYardSign] = useState({ name: '', email: '', phone: '', fulfillment: 'pickup' as 'pickup' | 'delivery', address: '' });
   const [yardSignSubmitting, setYardSignSubmitting] = useState(false);
   const [yardSignError, setYardSignError] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -67,7 +67,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
     setLookupResult(null);
     setLookupError(null);
     setCalendarDownloaded(false);
-    setYardSign({ name: '', address: '', email: '', phone: '' });
+    setYardSign({ name: '', email: '', phone: '', fulfillment: 'pickup', address: '' });
     setYardSignSubmitting(false);
     setYardSignError(null);
     autocompleteInitialized.current = false;
@@ -92,7 +92,9 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
     setYardSignError(null);
 
     // Read address from the uncontrolled input ref (needed for Google Places Autocomplete compatibility)
-    const address = addressInputRef.current?.value || yardSign.address;
+    const address = yardSign.fulfillment === 'delivery'
+      ? (addressInputRef.current?.value || yardSign.address)
+      : 'PICKUP';
 
     try {
       const response = await fetch(FORM_HANDLER_URL, {
@@ -617,7 +619,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
 
                     <h3 className="text-lg font-bold text-navy mb-1 text-center">Get a Free Yard Sign</h3>
                     <p className="text-sm text-gray-600 mb-4 text-center">
-                      Tell us where to deliver your &quot;Vote Yes&quot; yard sign.
+                      Show your support for Kansas City!
                     </p>
 
                     <form onSubmit={handleYardSignSubmit} className="space-y-3">
@@ -627,14 +629,6 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                         value={yardSign.name}
                         onChange={(e) => setYardSign({ ...yardSign, name: e.target.value })}
                         placeholder="Your Name *"
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
-                      />
-                      <input
-                        ref={addressRefCallback}
-                        type="text"
-                        required
-                        defaultValue={yardSign.address}
-                        placeholder="Delivery Address *"
                         className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
                       />
                       <input
@@ -653,6 +647,73 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                         className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
                       />
 
+                      {/* Pick up or Delivery toggle */}
+                      <div>
+                        <label className="block text-sm font-medium text-navy mb-2">
+                          How would you like to get your sign?
+                        </label>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setYardSign({ ...yardSign, fulfillment: 'pickup' })}
+                            className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all border ${
+                              yardSign.fulfillment === 'pickup'
+                                ? 'bg-navy text-white border-navy'
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-navy/30'
+                            }`}
+                          >
+                            Pick Up
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setYardSign({ ...yardSign, fulfillment: 'delivery' })}
+                            className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all border ${
+                              yardSign.fulfillment === 'delivery'
+                                ? 'bg-navy text-white border-navy'
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-navy/30'
+                            }`}
+                          >
+                            Delivery
+                          </button>
+                        </div>
+                      </div>
+
+                      <AnimatePresence mode="wait">
+                        {yardSign.fulfillment === 'pickup' ? (
+                          <motion.div
+                            key="pickup"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="bg-sky/10 rounded-lg p-3"
+                          >
+                            <p className="text-sm text-navy font-medium">Pick up location:</p>
+                            <p className="text-sm text-gray-700 mt-1">
+                              Next Page KC<br />
+                              1216 Brooklyn Ave, Kansas City, MO<br />
+                              Monday - Friday, 9:00 AM - 4:00 PM
+                            </p>
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="delivery"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                          >
+                            <input
+                              ref={addressRefCallback}
+                              type="text"
+                              required
+                              defaultValue={yardSign.address}
+                              placeholder="Delivery Address *"
+                              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Kansas City addresses only</p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
                       {yardSignError && (
                         <p className="text-sm text-red-500 text-center">{yardSignError}</p>
                       )}
@@ -666,7 +727,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                       </button>
 
                       <p className="text-xs text-gray-500 text-center">
-                        Available while supplies last. Kansas City addresses only.
+                        Available while supplies last.
                       </p>
                     </form>
                   </motion.div>
