@@ -464,7 +464,6 @@ export default function SocialLandingPage() {
               icon={<span className="text-2xl">🪧</span>}
               description="Free yard signs available!"
               index={1}
-              variant="primary"
             >
               Get a Free Yard Sign
             </LinkButton>
