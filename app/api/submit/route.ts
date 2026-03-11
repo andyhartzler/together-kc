@@ -31,8 +31,7 @@ function getGmail() {
 }
 
 // Build RFC 2822 email and base64url encode it for Gmail API
-function buildRawEmail({ to, subject, html, text }: { to: string; subject: string; html?: string; text?: string }): string {
-  const boundary = `boundary_${Date.now()}`;
+function buildRawEmail({ to, subject, html, text, attachments }: { to: string; subject: string; html?: string; text?: string; attachments?: Array<{ filename: string; content: string; contentType: string }> }): string {
   const lines = [
     `From: Together KC <${ALERT_EMAIL}>`,
     `To: ${to}`,
@@ -40,7 +39,26 @@ function buildRawEmail({ to, subject, html, text }: { to: string; subject: strin
     `MIME-Version: 1.0`,
   ];
 
-  if (html) {
+  if (attachments && attachments.length > 0 && html) {
+    // multipart/mixed wrapping alternative + attachments
+    const mixedBoundary = `mixed_${Date.now()}`;
+    const altBoundary = `alt_${Date.now()}_inner`;
+    lines.push(`Content-Type: multipart/mixed; boundary="${mixedBoundary}"`, '');
+    lines.push(`--${mixedBoundary}`);
+    lines.push(`Content-Type: multipart/alternative; boundary="${altBoundary}"`, '');
+    lines.push(`--${altBoundary}`, 'Content-Type: text/plain; charset=UTF-8', '', text || '');
+    lines.push(`--${altBoundary}`, 'Content-Type: text/html; charset=UTF-8', '', html);
+    lines.push(`--${altBoundary}--`, '');
+    for (const att of attachments) {
+      lines.push(`--${mixedBoundary}`);
+      lines.push(`Content-Type: ${att.contentType}; name="${att.filename}"`);
+      lines.push(`Content-Disposition: attachment; filename="${att.filename}"`);
+      lines.push('Content-Transfer-Encoding: base64', '');
+      lines.push(Buffer.from(att.content).toString('base64'));
+    }
+    lines.push(`--${mixedBoundary}--`);
+  } else if (html) {
+    const boundary = `boundary_${Date.now()}`;
     lines.push(`Content-Type: multipart/alternative; boundary="${boundary}"`, '', `--${boundary}`, 'Content-Type: text/plain; charset=UTF-8', '', text || '', `--${boundary}`, 'Content-Type: text/html; charset=UTF-8', '', html, `--${boundary}--`);
   } else {
     lines.push('Content-Type: text/plain; charset=UTF-8', '', text || '');
@@ -51,10 +69,10 @@ function buildRawEmail({ to, subject, html, text }: { to: string; subject: strin
 }
 
 // Send email via Gmail API (as action@together-kc.com)
-async function sendGmail({ to, subject, html, text }: { to: string; subject: string; html?: string; text?: string }) {
+async function sendGmail({ to, subject, html, text, attachments }: { to: string; subject: string; html?: string; text?: string; attachments?: Array<{ filename: string; content: string; contentType: string }> }) {
   try {
     const gmail = getGmail();
-    const raw = buildRawEmail({ to, subject, html, text });
+    const raw = buildRawEmail({ to, subject, html, text, attachments });
     await gmail.users.messages.send({
       userId: 'me',
       requestBody: { raw },
@@ -195,7 +213,6 @@ async function sendEmailNotification(subject: string, body: string) {
 
 async function sendYardSignConfirmation(name: string, email: string, isPickup: boolean) {
   const BASE = 'https://together-kc.com';
-  const firstName = name.split(' ')[0];
 
   const pickupBlock = isPickup
     ? `<tr><td style="padding:0 32px 24px;">
@@ -218,16 +235,14 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
 
-  <!-- Header -->
-  <tr><td style="background:#1e3a5f;padding:32px 32px 24px;text-align:center;">
-    <img src="${BASE}/images/together-kc-footer.png" alt="Together KC" width="200" style="max-width:200px;height:auto;" />
+  <!-- Header + Hero - single navy block -->
+  <tr><td style="background:#1e3a5f;padding:32px 32px 12px;text-align:center;">
+    <img src="${BASE}/images/renew-kc-logo-white.png" alt="Renew KC" width="200" style="max-width:200px;height:auto;" />
   </td></tr>
-
-  <!-- Hero -->
-  <tr><td style="background:linear-gradient(135deg,#1e3a5f 0%,#2a4f7f 100%);padding:24px 32px 32px;text-align:center;">
-    <p style="margin:0 0 8px;font-size:48px;line-height:1;">&#127994;</p>
+  <tr><td style="background:#1e3a5f;padding:12px 32px 32px;text-align:center;">
+    <p style="margin:0 0 8px;font-size:48px;line-height:1;">&#129703;</p>
     <h1 style="margin:0 0 8px;font-size:24px;color:#ffffff;font-weight:700;">Your Yard Sign is on the way!</h1>
-    <p style="margin:0;font-size:16px;color:rgba(255,255,255,0.85);">Thanks for standing with Kansas City, ${firstName}.</p>
+    <p style="margin:0;font-size:16px;color:rgba(255,255,255,0.85);">Thanks for standing with Kansas City.</p>
   </td></tr>
 
   <!-- Fulfillment info -->
@@ -241,40 +256,8 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   <!-- Divider -->
   <tr><td style="padding:0 32px;"><hr style="border:none;border-top:1px solid #e8e8e8;margin:0;" /></td></tr>
 
-  <!-- Get Involved -->
-  <tr><td style="padding:24px 32px 8px;text-align:center;">
-    <h2 style="margin:0 0 16px;font-size:18px;color:#1e3a5f;font-weight:700;">More ways to get involved</h2>
-  </td></tr>
-
-  <!-- Action buttons -->
-  <tr><td style="padding:0 32px 24px;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-      <tr>
-        <td width="48%" style="padding-right:8px;">
-          <a href="${BASE}/endorsements" style="display:block;text-align:center;padding:14px 8px;background:#e53935;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Add Your Endorsement</a>
-        </td>
-        <td width="48%" style="padding-left:8px;">
-          <a href="${BASE}/faqs" style="display:block;text-align:center;padding:14px 8px;background:#4a90d9;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Learn the Facts</a>
-        </td>
-      </tr>
-    </table>
-  </td></tr>
-
-  <tr><td style="padding:0 32px 24px;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-      <tr>
-        <td width="48%" style="padding-right:8px;">
-          <a href="${BASE}/donate" style="display:block;text-align:center;padding:14px 8px;background:#1e3a5f;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Donate</a>
-        </td>
-        <td width="48%" style="padding-left:8px;">
-          <a href="${BASE}" style="display:block;text-align:center;padding:14px 8px;background:#f5a623;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Visit Our Website</a>
-        </td>
-      </tr>
-    </table>
-  </td></tr>
-
   <!-- Election reminder -->
-  <tr><td style="padding:0 32px 24px;">
+  <tr><td style="padding:24px 32px 24px;">
     <div style="background:#fff8f0;border:1px solid #f5a623;border-radius:12px;padding:16px;text-align:center;">
       <p style="margin:0 0 4px;font-size:13px;color:#666;text-transform:uppercase;letter-spacing:0.5px;">Election Day</p>
       <p style="margin:0;font-size:22px;color:#1e3a5f;font-weight:700;">April 7, 2026</p>
@@ -285,9 +268,42 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   <!-- Divider -->
   <tr><td style="padding:0 32px;"><hr style="border:none;border-top:1px solid #e8e8e8;margin:0;" /></td></tr>
 
-  <!-- Social -->
+  <!-- Get Involved -->
   <tr><td style="padding:24px 32px 8px;text-align:center;">
-    <p style="margin:0 0 12px;font-size:14px;color:#1e3a5f;font-weight:600;">Follow us on social media</p>
+    <h2 style="margin:0 0 16px;font-size:18px;color:#1e3a5f;font-weight:700;">More ways to get involved</h2>
+  </td></tr>
+
+  <!-- Action buttons row 1 -->
+  <tr><td style="padding:0 32px 12px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="48%" style="padding-right:8px;">
+          <a href="${BASE}/endorse" style="display:block;text-align:center;padding:14px 8px;background:#e53935;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Add Your Endorsement</a>
+        </td>
+        <td width="48%" style="padding-left:8px;">
+          <a href="${BASE}/api/calendar" style="display:block;text-align:center;padding:14px 8px;background:#4a90d9;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Remind Me to Vote</a>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- Action buttons row 2 -->
+  <tr><td style="padding:0 32px 24px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="48%" style="padding-right:8px;">
+          <a href="${BASE}/donate" style="display:block;text-align:center;padding:14px 8px;background:#2e7d32;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Donate</a>
+        </td>
+        <td width="48%" style="padding-left:8px;">
+          <a href="${BASE}/find-polling" style="display:block;text-align:center;padding:14px 8px;background:#f5a623;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Find Your Polling Location</a>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- Social + Footer - continuous navy block -->
+  <tr><td style="background:#1e3a5f;padding:24px 32px 12px;text-align:center;">
+    <p style="margin:0 0 12px;font-size:14px;color:#ffffff;font-weight:600;">Follow us on social media</p>
     <table role="presentation" cellpadding="0" cellspacing="0" align="center">
       <tr>
         <td style="padding:0 6px;"><a href="https://www.facebook.com/TogetherKC/"><img src="${BASE}/images/social/facebook.png" alt="Facebook" width="28" height="28" style="display:block;border:0;" /></a></td>
@@ -298,10 +314,8 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
       </tr>
     </table>
   </td></tr>
-
-  <!-- Footer -->
-  <tr><td style="padding:20px 32px 28px;text-align:center;">
-    <p style="margin:0;font-size:11px;color:#999;line-height:1.5;">
+  <tr><td style="background:#1e3a5f;padding:8px 32px 28px;text-align:center;">
+    <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.6);line-height:1.5;">
       Paid for by Together KC, Dan Kopp, Treasurer.<br />
       Not authorized by any candidate or candidate committee.
     </p>
@@ -317,7 +331,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
     to: email,
     subject: 'Your Vote Yes yard sign request is confirmed!',
     html,
-    text: `Hi ${firstName},\n\nThanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Friday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is April 7, 2026. Early voting begins March 24.\n\nVisit us at https://together-kc.com\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
+    text: `Thanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Friday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is April 7, 2026. Early voting begins March 24.\n\nAdd Your Endorsement: https://together-kc.com/endorse\nRemind Me to Vote: https://together-kc.com/api/calendar\nDonate: https://together-kc.com/donate\nFind Your Polling Location: https://together-kc.com/find-polling\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
   });
 }
 

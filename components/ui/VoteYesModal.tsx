@@ -22,12 +22,13 @@ const GOOGLE_API_KEY = 'AIzaSyA0tnMaQcXi8fn5azv72QOxF0UmsYY7d8k';
 interface VoteYesModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialView?: ModalView;
 }
 
 type ModalView = 'main' | 'findPolling' | 'countyResult' | 'endorse' | 'yardSign' | 'yardSignSuccess';
 
-const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
-  const [view, setView] = useState<ModalView>('main');
+const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialView }) => {
+  const [view, setView] = useState<ModalView>(initialView || 'main');
   const [selectedCounty, setSelectedCounty] = useState<County | null>(null);
   const [showAddressLookup, setShowAddressLookup] = useState(false);
   const [addressInput, setAddressInput] = useState('');
@@ -43,6 +44,13 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const autocompleteRef = useRef<any>(null);
   const autocompleteInitialized = useRef(false);
+
+  // Sync initialView when modal opens
+  useEffect(() => {
+    if (isOpen && initialView) {
+      setView(initialView);
+    }
+  }, [isOpen, initialView]);
 
   // Close on escape key
   useEffect(() => {
