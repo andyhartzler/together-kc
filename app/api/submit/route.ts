@@ -308,8 +308,8 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
     </table>
   </td></tr>
 
-  <!-- Social + Footer - continuous navy block -->
-  <tr><td style="background:#1e3a5f;padding:24px 32px 12px;text-align:center;">
+  <!-- Social + Footer - single navy cell to avoid white gap -->
+  <tr><td style="background:#1e3a5f;padding:24px 32px 28px;text-align:center;">
     <p style="margin:0 0 12px;font-size:14px;color:#ffffff;font-weight:600;">Follow us on social media</p>
     <table role="presentation" cellpadding="0" cellspacing="0" align="center">
       <tr>
@@ -320,9 +320,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
         <td style="padding:0 6px;"><a href="https://www.tiktok.com/@togetherkcmo"><img src="${BASE}/images/social/tiktok.png" alt="TikTok" width="28" height="28" style="display:block;border:0;" /></a></td>
       </tr>
     </table>
-  </td></tr>
-  <tr><td style="background:#1e3a5f;padding:8px 32px 28px;text-align:center;">
-    <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.6);line-height:1.5;">
+    <p style="margin:20px 0 0;font-size:11px;color:rgba(255,255,255,0.6);line-height:1.5;">
       Paid for by Together KC, Dan Kopp, Treasurer.<br />
       Not authorized by any candidate or candidate committee.
     </p>
