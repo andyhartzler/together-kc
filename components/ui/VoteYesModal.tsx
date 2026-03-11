@@ -36,7 +36,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialVie
   const [lookupResult, setLookupResult] = useState<{ county: County; address: string } | null>(null);
   const [lookupError, setLookupError] = useState<string | null>(null);
   const [calendarDownloaded, setCalendarDownloaded] = useState(false);
-  const [yardSign, setYardSign] = useState({ name: '', email: '', phone: '', fulfillment: 'pickup' as 'pickup' | 'delivery', address: '' });
+  const [yardSign, setYardSign] = useState({ name: '', email: '', phone: '', fulfillment: '' as '' | 'pickup' | 'delivery', address: '' });
   const [yardSignSubmitting, setYardSignSubmitting] = useState(false);
   const [yardSignError, setYardSignError] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialVie
     setLookupResult(null);
     setLookupError(null);
     setCalendarDownloaded(false);
-    setYardSign({ name: '', email: '', phone: '', fulfillment: 'pickup', address: '' });
+    setYardSign({ name: '', email: '', phone: '', fulfillment: '', address: '' });
     setYardSignSubmitting(false);
     setYardSignError(null);
     autocompleteInitialized.current = false;
@@ -96,13 +96,22 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialVie
     e.preventDefault();
     if (yardSignSubmitting) return;
 
-    setYardSignSubmitting(true);
-    setYardSignError(null);
+    if (!yardSign.fulfillment) {
+      setYardSignError('Please select pickup or delivery.');
+      return;
+    }
 
-    // Read address from the uncontrolled input ref (needed for Google Places Autocomplete compatibility)
     const address = yardSign.fulfillment === 'delivery'
       ? (addressInputRef.current?.value || yardSign.address)
       : 'PICKUP';
+
+    if (yardSign.fulfillment === 'delivery' && !address.trim()) {
+      setYardSignError('Please enter your delivery address.');
+      return;
+    }
+
+    setYardSignSubmitting(true);
+    setYardSignError(null);
 
     try {
       const response = await fetch(FORM_HANDLER_URL, {
@@ -687,7 +696,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialVie
                       </div>
 
                       <AnimatePresence mode="wait">
-                        {yardSign.fulfillment === 'pickup' ? (
+                        {yardSign.fulfillment === 'pickup' && (
                           <motion.div
                             key="pickup"
                             initial={{ opacity: 0, height: 0 }}
@@ -702,7 +711,8 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialVie
                               Monday - Friday, 9:00 AM - 4:00 PM
                             </p>
                           </motion.div>
-                        ) : (
+                        )}
+                        {yardSign.fulfillment === 'delivery' && (
                           <motion.div
                             key="delivery"
                             initial={{ opacity: 0, height: 0 }}
