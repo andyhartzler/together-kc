@@ -457,7 +457,7 @@ export default function SocialLandingPage() {
           {/* Request Yard Sign - with giggle animation */}
           <motion.div
             animate={{ rotate: [0, -1.5, 1.5, -1, 1, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2.5, ease: 'easeInOut' }}
+            transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 1.2, ease: 'easeInOut' }}
           >
             <LinkButton
               href="/sign"
