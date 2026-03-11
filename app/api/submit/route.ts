@@ -231,7 +231,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
           <p style="margin:0 0 4px;font-size:14px;color:#1e3a5f;font-weight:600;">Your pickup location</p>
           <p style="margin:0;font-size:15px;color:#333;">Next Page KC</p>
           <p style="margin:0;font-size:15px;color:#333;">1216 Brooklyn Ave, Kansas City, MO</p>
-          <p style="margin:4px 0 0;font-size:13px;color:#666;">Monday &ndash; Friday, 9:00 AM &ndash; 4:00 PM</p>
+          <p style="margin:4px 0 0;font-size:13px;color:#666;">Monday &ndash; Thursday, 9:00 AM &ndash; 4:00 PM</p>
         </div>
       </td></tr>`
     : `<tr><td style="padding:0 32px 24px;text-align:center;">
@@ -362,7 +362,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
     to: email,
     subject: 'Your E-Tax Yard Sign is Confirmed!',
     html,
-    text: `Thanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Friday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is April 7, 2026. Early voting begins March 24.\n\nAdd Your Endorsement: https://together-kc.com/endorse\nRemind Me to Vote: https://together-kc.com/api/calendar\nDonate: https://together-kc.com/donate\nFind Your Polling Location: https://together-kc.com/find-polling\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
+    text: `Thanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Thursday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is April 7, 2026. Early voting begins March 24.\n\nAdd Your Endorsement: https://together-kc.com/endorse\nRemind Me to Vote: https://together-kc.com/api/calendar\nDonate: https://together-kc.com/donate\nFind Your Polling Location: https://together-kc.com/find-polling\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
   });
 }
 

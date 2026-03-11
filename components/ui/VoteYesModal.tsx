@@ -704,7 +704,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialVie
                             <p className="text-sm text-gray-700 mt-1">
                               Next Page KC<br />
                               1216 Brooklyn Ave, Kansas City, MO<br />
-                              Monday - Friday, 9:00 AM - 4:00 PM
+                              Monday - Thursday, 9:00 AM - 4:00 PM
                             </p>
                           </motion.div>
                         )}
