@@ -245,6 +245,8 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
 <meta name="supported-color-schemes" content="light only">
 <style>
   :root { color-scheme: light only; supported-color-schemes: light only; }
+  u + .body .gmail-blend-screen { background:#000; mix-blend-mode:screen; }
+  u + .body .gmail-blend-difference { background:#000; mix-blend-mode:difference; }
   @media only screen and (max-width: 480px) {
     .btn-col { display:block !important; width:100% !important; padding:0 0 8px 0 !important; }
     .btn-col a { display:block !important; }
@@ -255,14 +257,16 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   }
 </style>
 </head>
-<body style="margin:0;padding:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<body class="body" style="margin:0;padding:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-wrapper" style="background:#f4f5f7;padding:24px 0;">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="email-card" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
 
   <!-- Header - navy logo bar -->
-  <tr><td style="background:#1e3a5f;padding:24px 32px;text-align:center;">
+  <tr><td style="background:#1e3a5f;background-image:linear-gradient(#1e3a5f,#1e3a5f);padding:24px 32px;text-align:center;">
+    <div class="gmail-blend-screen"><div class="gmail-blend-difference">
     <a href="${BASE}" target="_blank" style="display:inline-block;"><img src="${BASE}/images/renew-kc-logo-white.png" alt="Renew KC" width="200" style="max-width:200px;height:auto;border:0;" /></a>
+    </div></div>
   </td></tr>
 
   <!-- Hero - white background -->
@@ -329,7 +333,8 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   </td></tr>
 
   <!-- Social + Footer - single navy cell to avoid white gap -->
-  <tr><td style="background:#1e3a5f;padding:24px 32px 28px;text-align:center;">
+  <tr><td style="background:#1e3a5f;background-image:linear-gradient(#1e3a5f,#1e3a5f);padding:24px 32px 28px;text-align:center;">
+    <div class="gmail-blend-screen"><div class="gmail-blend-difference">
     <p style="margin:0 0 12px;font-size:14px;color:#ffffff;font-weight:600;">Follow us on social media</p>
     <table role="presentation" cellpadding="0" cellspacing="0" align="center">
       <tr>
@@ -344,6 +349,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
       Paid for by Together KC, Dan Kopp, Treasurer.<br />
       Not authorized by any candidate or candidate committee.
     </p>
+    </div></div>
   </td></tr>
 
 </table>
