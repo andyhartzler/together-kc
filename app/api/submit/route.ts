@@ -234,13 +234,17 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   @media only screen and (max-width: 480px) {
     .btn-col { display:block !important; width:100% !important; padding:0 0 8px 0 !important; }
     .btn-col a { display:block !important; }
+    .btn-row { padding-bottom:0 !important; }
+    .btn-row-last { padding-bottom:16px !important; }
+    .email-wrapper { padding:0 !important; }
+    .email-card { border-radius:0 !important; }
   }
 </style>
 </head>
 <body style="margin:0;padding:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:24px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-wrapper" style="background:#f4f5f7;padding:24px 0;">
 <tr><td align="center">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" class="email-card" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
 
   <!-- Header + Hero - single navy block -->
   <tr><td style="background:#1e3a5f;padding:32px 32px 12px;text-align:center;">
@@ -281,7 +285,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   </td></tr>
 
   <!-- Action buttons row 1 -->
-  <tr><td style="padding:0 32px 12px;">
+  <tr><td class="btn-row" style="padding:0 32px 12px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td class="btn-col" width="48%" style="padding-right:8px;">
@@ -295,7 +299,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   </td></tr>
 
   <!-- Action buttons row 2 -->
-  <tr><td style="padding:0 32px 24px;">
+  <tr><td class="btn-row btn-row-last" style="padding:0 32px 24px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td class="btn-col" width="48%" style="padding-right:8px;">
