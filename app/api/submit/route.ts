@@ -88,7 +88,18 @@ export async function POST(request: NextRequest) {
     const formType = data.formType || 'endorsement';
 
     const sheets = getGoogleSheets();
-    const timestamp = new Date().toISOString();
+    const now = new Date();
+    const ct = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Chicago',
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).formatToParts(now);
+    const p = (type: string) => ct.find((p) => p.type === type)?.value || '';
+    const timestamp = `${p('month')}/${p('day')}/${p('year')} @ ${p('hour')}:${p('minute')} ${p('dayPeriod')}`;
 
     if (formType === 'endorsement') {
       const row = [
