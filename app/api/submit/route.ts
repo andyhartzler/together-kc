@@ -239,9 +239,12 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
       </td></tr>`;
 
   const html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
 <style>
+  :root { color-scheme: light only; supported-color-schemes: light only; }
   @media only screen and (max-width: 480px) {
     .btn-col { display:block !important; width:100% !important; padding:0 0 8px 0 !important; }
     .btn-col a { display:block !important; }
