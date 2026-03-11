@@ -229,19 +229,24 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
 
   const html = `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+  @media only screen and (max-width: 480px) {
+    .btn-col { display:block !important; width:100% !important; padding:0 0 8px 0 !important; }
+    .btn-col a { display:block !important; }
+  }
+</style>
+</head>
 <body style="margin:0;padding:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:24px 0;">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
 
-  <!-- Logo on white -->
-  <tr><td style="padding:28px 32px 16px;text-align:center;">
-    <img src="${BASE}/images/renew%20kc%20logo.png" alt="Renew KC" width="200" style="max-width:200px;height:auto;" />
+  <!-- Header + Hero - single navy block -->
+  <tr><td style="background:#1e3a5f;padding:32px 32px 12px;text-align:center;">
+    <img src="${BASE}/images/renew-kc-logo-white.png" alt="Renew KC" width="200" style="max-width:200px;height:auto;" />
   </td></tr>
-
-  <!-- Hero navy block -->
-  <tr><td style="background:#1e3a5f;padding:24px 32px 32px;text-align:center;">
+  <tr><td style="background:#1e3a5f;padding:12px 32px 32px;text-align:center;">
     <p style="margin:0 0 8px;font-size:48px;line-height:1;">&#129703;</p>
     <h1 style="margin:0 0 8px;font-size:24px;color:#ffffff;font-weight:700;">${isPickup ? 'Your Yard Sign is ready for pickup!' : 'Your Yard Sign is on the way!'}</h1>
     <p style="margin:0;font-size:16px;color:rgba(255,255,255,0.85);">Thanks for standing with Kansas City.</p>
@@ -275,18 +280,32 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
     <h2 style="margin:0 0 16px;font-size:18px;color:#1e3a5f;font-weight:700;">More ways to get involved</h2>
   </td></tr>
 
-  <!-- Action buttons - stacked for consistent sizing -->
-  <tr><td style="padding:0 32px 10px;">
-    <a href="${BASE}/endorse" style="display:block;text-align:center;padding:14px 16px;background:#e53935;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Add Your Endorsement</a>
+  <!-- Action buttons row 1 -->
+  <tr><td style="padding:0 32px 12px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="btn-col" width="48%" style="padding-right:8px;">
+          <a href="${BASE}/endorse" style="display:block;text-align:center;padding:14px 8px;background:#e53935;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Add Your Endorsement</a>
+        </td>
+        <td class="btn-col" width="48%" style="padding-left:8px;">
+          <a href="${BASE}/api/calendar" style="display:block;text-align:center;padding:14px 8px;background:#4a90d9;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Remind Me to Vote</a>
+        </td>
+      </tr>
+    </table>
   </td></tr>
-  <tr><td style="padding:0 32px 10px;">
-    <a href="${BASE}/api/calendar" style="display:block;text-align:center;padding:14px 16px;background:#4a90d9;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Remind Me to Vote</a>
-  </td></tr>
-  <tr><td style="padding:0 32px 10px;">
-    <a href="${BASE}/find-polling" style="display:block;text-align:center;padding:14px 16px;background:#f5a623;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Find Your Polling Location</a>
-  </td></tr>
+
+  <!-- Action buttons row 2 -->
   <tr><td style="padding:0 32px 24px;">
-    <a href="${BASE}/donate" style="display:block;text-align:center;padding:14px 16px;background:#2e7d32;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Donate</a>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="btn-col" width="48%" style="padding-right:8px;">
+          <a href="${BASE}/donate" style="display:block;text-align:center;padding:14px 8px;background:#2e7d32;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Donate</a>
+        </td>
+        <td class="btn-col" width="48%" style="padding-left:8px;">
+          <a href="${BASE}/find-polling" style="display:block;text-align:center;padding:14px 8px;background:#f5a623;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Find Your Polling Location</a>
+        </td>
+      </tr>
+    </table>
   </td></tr>
 
   <!-- Social + Footer - continuous navy block -->
