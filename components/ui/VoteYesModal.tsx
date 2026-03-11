@@ -763,14 +763,25 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialVie
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', delay: 0.1 }}
-                      className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl text-white bg-green-500 shadow-lg"
+                      className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center bg-green-500 shadow-lg"
                     >
-                      🪧
+                      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none">
+                        <motion.path
+                          d="M5 13l4 4L19 7"
+                          stroke="white"
+                          strokeWidth={3}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.4, delay: 0.3, ease: 'easeOut' }}
+                        />
+                      </svg>
                     </motion.div>
 
                     <h3 className="text-xl font-bold text-navy mb-2">Sign Requested!</h3>
                     <p className="text-gray-600 mb-6">
-                      We&apos;ll get a &quot;Vote Yes&quot; yard sign to you soon. Thanks for showing your support!
+                      Thanks for showing your support!
                     </p>
 
                     <button

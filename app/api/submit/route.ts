@@ -248,7 +248,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
 
   <!-- Header - navy logo bar -->
   <tr><td style="background:#1e3a5f;padding:24px 32px;text-align:center;">
-    <img src="${BASE}/images/renew-kc-logo-white.png" alt="Renew KC" width="200" style="max-width:200px;height:auto;" />
+    <a href="${BASE}" target="_blank" style="display:inline-block;"><img src="${BASE}/images/renew-kc-logo-white.png" alt="Renew KC" width="200" style="max-width:200px;height:auto;border:0;" /></a>
   </td></tr>
 
   <!-- Hero - white background -->
