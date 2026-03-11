@@ -241,7 +241,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   </td></tr>
   <tr><td style="background:#1e3a5f;padding:12px 32px 32px;text-align:center;">
     <p style="margin:0 0 8px;font-size:48px;line-height:1;">&#129703;</p>
-    <h1 style="margin:0 0 8px;font-size:24px;color:#ffffff;font-weight:700;">Your Yard Sign is on the way!</h1>
+    <h1 style="margin:0 0 8px;font-size:24px;color:#ffffff;font-weight:700;">${isPickup ? 'Your Yard Sign is ready for pickup!' : 'Your Yard Sign is on the way!'}</h1>
     <p style="margin:0;font-size:16px;color:rgba(255,255,255,0.85);">Thanks for standing with Kansas City.</p>
   </td></tr>
 
@@ -329,7 +329,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
 
   await sendGmail({
     to: email,
-    subject: 'Your Vote Yes yard sign request is confirmed!',
+    subject: 'Your E-Tax Yard Sign is Confirmed!',
     html,
     text: `Thanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Friday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is April 7, 2026. Early voting begins March 24.\n\nAdd Your Endorsement: https://together-kc.com/endorse\nRemind Me to Vote: https://together-kc.com/api/calendar\nDonate: https://together-kc.com/donate\nFind Your Polling Location: https://together-kc.com/find-polling\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
   });
