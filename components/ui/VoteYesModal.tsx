@@ -348,10 +348,6 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose, initialVie
                 🗳️
               </motion.div>
               <h2 className="text-2xl font-bold text-white">Early Voting Begins<br className="sm:hidden" /> March 24th</h2>
-              <div className="mt-3 inline-block bg-coral/20 rounded-lg px-4 py-2">
-                <p className="text-white/90 text-sm">Last Day to Register to Vote</p>
-                <p className="text-coral font-bold text-xl">March 11</p>
-              </div>
             </div>
 
             {/* Close button */}
