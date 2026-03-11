@@ -8,7 +8,7 @@ import { downloadCalendarEvent } from '@/lib/calendar';
 import EndorsementForm from '@/components/forms/EndorsementForm';
 
 // Google Maps API for county lookup
-const GOOGLE_API_KEY = 'AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I';
+const GOOGLE_API_KEY = 'AIzaSyA0tnMaQcXi8fn5azv72QOxF0UmsYY7d8k';
 
 type County = 'Jackson' | 'Clay' | 'Platte' | 'Cass';
 

@@ -16,7 +16,7 @@ const COUNTY_URLS: Record<County, string> = {
   Cass: 'https://casscounty.com/2355/Absentee-Information',
 };
 
-const GOOGLE_API_KEY = 'AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I';
+const GOOGLE_API_KEY = 'AIzaSyA0tnMaQcXi8fn5azv72QOxF0UmsYY7d8k';
 
 
 interface VoteYesModalProps {

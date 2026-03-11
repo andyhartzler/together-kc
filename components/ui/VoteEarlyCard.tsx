@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-const GOOGLE_API_KEY = 'AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I';
+const GOOGLE_API_KEY = 'AIzaSyA0tnMaQcXi8fn5azv72QOxF0UmsYY7d8k';
 
 
 interface VoteEarlyCardProps {
