@@ -489,12 +489,28 @@ export default function SocialLandingPage() {
             Find My Polling Location
           </LinkButton>
 
+          {/* Request Yard Sign - with giggle animation */}
+          <motion.div
+            animate={{ rotate: [0, -1.5, 1.5, -1, 1, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2.5, ease: 'easeInOut' }}
+          >
+            <LinkButton
+              href="/sign"
+              icon={<span className="text-2xl">🪧</span>}
+              description="Free yard signs available!"
+              index={4}
+              variant="primary"
+            >
+              Get a Free Yard Sign
+            </LinkButton>
+          </motion.div>
+
           {/* Add Endorsement */}
           <LinkButton
             onClick={() => setActiveModal('endorse')}
             icon={<span className="text-2xl">❤️</span>}
             description="Join thousands of supporters"
-            index={4}
+            index={5}
             variant="primary"
           >
             Add Your Endorsement
