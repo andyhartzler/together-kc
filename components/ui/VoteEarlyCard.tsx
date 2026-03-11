@@ -95,7 +95,7 @@ const VoteEarlyCard: React.FC<VoteEarlyCardProps> = ({
 
       console.log('[VoteEarlyCard] Loading Google Maps script');
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
       script.async = true;
       script.onload = () => resolve();
       script.onerror = () => reject(new Error('Failed to load Google Maps'));

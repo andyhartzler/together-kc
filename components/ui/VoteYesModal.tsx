@@ -89,6 +89,9 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
     setYardSignSubmitting(true);
     setYardSignError(null);
 
+    // Read address from the uncontrolled input ref (needed for Google Places Autocomplete compatibility)
+    const address = addressInputRef.current?.value || yardSign.address;
+
     try {
       const response = await fetch(FORM_HANDLER_URL, {
         method: 'POST',
@@ -96,6 +99,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
         body: JSON.stringify({
           formType: 'yardSign',
           ...yardSign,
+          address,
         }),
       });
 
@@ -620,8 +624,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                         ref={addressInputRef}
                         type="text"
                         required
-                        value={yardSign.address}
-                        onChange={(e) => setYardSign({ ...yardSign, address: e.target.value })}
+                        defaultValue={yardSign.address}
                         placeholder="Delivery Address *"
                         className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
                       />
