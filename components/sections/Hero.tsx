@@ -47,6 +47,7 @@ export default function Hero() {
 
   return (
     <section
+      id="hero"
       ref={containerRef}
       className="relative min-h-[calc(100vh+100px)] flex items-center justify-center overflow-hidden"
     >

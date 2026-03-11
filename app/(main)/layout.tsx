@@ -1,6 +1,7 @@
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import ScrollToTop from '@/components/layout/ScrollToTop';
+import YardSignBanner from '@/components/ui/YardSignBanner';
 
 export default function MainLayout({
   children,
@@ -11,6 +12,7 @@ export default function MainLayout({
     <>
       <ScrollToTop />
       <Navigation />
+      <YardSignBanner />
       <main>{children}</main>
       <Footer />
     </>
