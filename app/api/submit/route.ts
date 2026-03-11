@@ -246,14 +246,16 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="email-card" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
 
-  <!-- Header + Hero - single navy block -->
-  <tr><td style="background:#1e3a5f;padding:32px 32px 12px;text-align:center;">
+  <!-- Header - navy logo bar -->
+  <tr><td style="background:#1e3a5f;padding:24px 32px;text-align:center;">
     <img src="${BASE}/images/renew-kc-logo-white.png" alt="Renew KC" width="200" style="max-width:200px;height:auto;" />
   </td></tr>
-  <tr><td style="background:#1e3a5f;padding:12px 32px 32px;text-align:center;">
+
+  <!-- Hero - white background -->
+  <tr><td style="padding:28px 32px 24px;text-align:center;">
     <p style="margin:0 0 8px;font-size:48px;line-height:1;">&#129703;</p>
-    <h1 style="margin:0 0 8px;font-size:24px;color:#ffffff;font-weight:700;">${isPickup ? 'Your Yard Sign is ready for pickup!' : 'Your Yard Sign is on the way!'}</h1>
-    <p style="margin:0;font-size:16px;color:rgba(255,255,255,0.85);">Thanks for standing with Kansas City.</p>
+    <h1 style="margin:0 0 8px;font-size:24px;color:#1e3a5f;font-weight:700;">${isPickup ? 'Your Yard Sign is ready for pickup!' : 'Your Yard Sign is on the way!'}</h1>
+    <p style="margin:0;font-size:16px;color:#666;">Thanks for standing with Kansas City.</p>
   </td></tr>
 
   <!-- Fulfillment info -->
