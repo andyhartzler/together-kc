@@ -16,16 +16,52 @@ function getGoogleSheets() {
   return google.sheets({ version: 'v4', auth });
 }
 
-// Initialize Gmail API for sending notifications
+// Initialize Gmail API with domain-wide delegation to send as action@together-kc.com
 function getGmail() {
   const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}');
 
-  const auth = new google.auth.GoogleAuth({
-    credentials,
+  const auth = new google.auth.JWT({
+    email: credentials.client_email,
+    key: credentials.private_key,
     scopes: ['https://www.googleapis.com/auth/gmail.send'],
+    subject: ALERT_EMAIL, // impersonate action@together-kc.com
   });
 
   return google.gmail({ version: 'v1', auth });
+}
+
+// Build RFC 2822 email and base64url encode it for Gmail API
+function buildRawEmail({ to, subject, html, text }: { to: string; subject: string; html?: string; text?: string }): string {
+  const boundary = `boundary_${Date.now()}`;
+  const lines = [
+    `From: Together KC <${ALERT_EMAIL}>`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+  ];
+
+  if (html) {
+    lines.push(`Content-Type: multipart/alternative; boundary="${boundary}"`, '', `--${boundary}`, 'Content-Type: text/plain; charset=UTF-8', '', text || '', `--${boundary}`, 'Content-Type: text/html; charset=UTF-8', '', html, `--${boundary}--`);
+  } else {
+    lines.push('Content-Type: text/plain; charset=UTF-8', '', text || '');
+  }
+
+  const raw = lines.join('\r\n');
+  return Buffer.from(raw).toString('base64url');
+}
+
+// Send email via Gmail API (as action@together-kc.com)
+async function sendGmail({ to, subject, html, text }: { to: string; subject: string; html?: string; text?: string }) {
+  try {
+    const gmail = getGmail();
+    const raw = buildRawEmail({ to, subject, html, text });
+    await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: { raw },
+    });
+  } catch (error) {
+    console.error('Gmail send failed:', error);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -154,41 +190,10 @@ export async function POST(request: NextRequest) {
 }
 
 async function sendEmailNotification(subject: string, body: string) {
-  // Using fetch to call our own MCP server or a simple SMTP relay
-  // For now, we'll use a simple approach with the Resend API if configured
-  const resendApiKey = process.env.RESEND_API_KEY;
-
-  if (!resendApiKey) {
-    console.log('Email notification skipped (no RESEND_API_KEY):', subject);
-    return;
-  }
-
-  try {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Together KC <notifications@together-kc.com>',
-        to: ALERT_EMAIL,
-        subject,
-        text: body,
-      }),
-    });
-  } catch (error) {
-    console.error('Failed to send email notification:', error);
-  }
+  await sendGmail({ to: ALERT_EMAIL, subject, text: body });
 }
 
 async function sendYardSignConfirmation(name: string, email: string, isPickup: boolean) {
-  const resendApiKey = process.env.RESEND_API_KEY;
-  if (!resendApiKey) {
-    console.log('Yard sign confirmation skipped (no RESEND_API_KEY)');
-    return;
-  }
-
   const BASE = 'https://together-kc.com';
   const firstName = name.split(' ')[0];
 
@@ -308,23 +313,12 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
 </body>
 </html>`;
 
-  try {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Together KC <notifications@together-kc.com>',
-        to: email,
-        subject: `Your Vote Yes yard sign request is confirmed!`,
-        html,
-      }),
-    });
-  } catch (error) {
-    console.error('Failed to send yard sign confirmation:', error);
-  }
+  await sendGmail({
+    to: email,
+    subject: 'Your Vote Yes yard sign request is confirmed!',
+    html,
+    text: `Hi ${firstName},\n\nThanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Friday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is April 7, 2026. Early voting begins March 24.\n\nVisit us at https://together-kc.com\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
+  });
 }
 
 export async function GET() {
