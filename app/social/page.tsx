@@ -443,7 +443,7 @@ export default function SocialLandingPage() {
 
         {/* Action Links */}
         <div className="space-y-3 flex-grow">
-          {/* Visit Website - NOW FIRST */}
+          {/* Visit Website */}
           <LinkButton
             href="/"
             icon={<span className="text-2xl">🌐</span>}
@@ -454,13 +454,29 @@ export default function SocialLandingPage() {
             Visit Website
           </LinkButton>
 
+          {/* Request Yard Sign - with giggle animation */}
+          <motion.div
+            animate={{ rotate: [0, -1.5, 1.5, -1, 1, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2.5, ease: 'easeInOut' }}
+          >
+            <LinkButton
+              href="/sign"
+              icon={<span className="text-2xl">🪧</span>}
+              description="Free yard signs available!"
+              index={1}
+              variant="primary"
+            >
+              Get a Free Yard Sign
+            </LinkButton>
+          </motion.div>
+
           {/* Check Registration */}
           <LinkButton
             href="https://voteroutreach.sos.mo.gov/portal/"
             external
             icon={<span className="text-2xl">📋</span>}
             description="Verify you're registered to vote"
-            index={1}
+            index={2}
           >
             Check Your Registration
           </LinkButton>
@@ -470,7 +486,7 @@ export default function SocialLandingPage() {
             onClick={handleCalendarDownload}
             icon={calendarAdded ? <span className="text-2xl">✓</span> : <Image src="/images/calendar-april-7.png" alt="April 7" width={36} height={36} className="w-9 h-9 object-contain" />}
             description={calendarAdded ? 'Added to your calendar!' : 'Save Election Day'}
-            index={2}
+            index={3}
             variant={calendarAdded ? 'primary' : 'default'}
           >
             {calendarAdded ? 'Calendar Reminder Set!' : 'Remind Me to Vote'}
@@ -484,26 +500,10 @@ export default function SocialLandingPage() {
             }}
             icon={<span className="text-2xl">📍</span>}
             description="Locate where to vote in your county"
-            index={3}
+            index={4}
           >
             Find My Polling Location
           </LinkButton>
-
-          {/* Request Yard Sign - with giggle animation */}
-          <motion.div
-            animate={{ rotate: [0, -1.5, 1.5, -1, 1, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2.5, ease: 'easeInOut' }}
-          >
-            <LinkButton
-              href="/sign"
-              icon={<span className="text-2xl">🪧</span>}
-              description="Free yard signs available!"
-              index={4}
-              variant="primary"
-            >
-              Get a Free Yard Sign
-            </LinkButton>
-          </motion.div>
 
           {/* Add Endorsement */}
           <LinkButton
