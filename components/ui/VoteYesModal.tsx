@@ -39,9 +39,10 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
   const [yardSignSubmitting, setYardSignSubmitting] = useState(false);
   const [yardSignError, setYardSignError] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const addressInputRef = useRef<HTMLInputElement>(null);
+  const addressInputRef = useRef<HTMLInputElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const autocompleteRef = useRef<any>(null);
+  const autocompleteInitialized = useRef(false);
 
   // Close on escape key
   useEffect(() => {
@@ -69,6 +70,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
     setYardSign({ name: '', address: '', email: '', phone: '' });
     setYardSignSubmitting(false);
     setYardSignError(null);
+    autocompleteInitialized.current = false;
   };
 
   const handleClose = () => {
@@ -144,11 +146,23 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
     });
   }, []);
 
-  // Initialize Google Places Autocomplete when yard sign view is active
-  useEffect(() => {
-    if (view !== 'yardSign' || !addressInputRef.current || autocompleteRef.current) return;
+  // Callback ref: fires when the address input actually mounts/unmounts in the DOM
+  // This avoids the AnimatePresence timing issue where useEffect runs before the element exists
+  const addressRefCallback = useCallback((node: HTMLInputElement | null) => {
+    addressInputRef.current = node;
 
-    const initAutocomplete = async () => {
+    if (!node) {
+      // Input unmounted — clean up
+      autocompleteRef.current = null;
+      autocompleteInitialized.current = false;
+      return;
+    }
+
+    if (autocompleteInitialized.current) return;
+    autocompleteInitialized.current = true;
+
+    // Initialize autocomplete now that the input is in the DOM
+    (async () => {
       try {
         await loadGoogleMaps();
 
@@ -175,24 +189,19 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
           const place = autocomplete.getPlace();
           if (place.formatted_address) {
             setYardSign((prev) => ({ ...prev, address: place.formatted_address! }));
+            // Also update the input value directly since it's uncontrolled
+            if (addressInputRef.current) {
+              addressInputRef.current.value = place.formatted_address;
+            }
           }
         });
 
         autocompleteRef.current = autocomplete;
       } catch {
-        // Silently fail - user can still type address manually
+        // Silently fail — user can still type address manually
       }
-    };
-
-    initAutocomplete();
-  }, [view, loadGoogleMaps]);
-
-  // Clean up autocomplete ref when leaving yard sign view
-  useEffect(() => {
-    if (view !== 'yardSign') {
-      autocompleteRef.current = null;
-    }
-  }, [view]);
+    })();
+  }, [loadGoogleMaps]);
 
   const lookupCounty = async () => {
     if (!addressInput.trim()) return;
@@ -621,7 +630,7 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                         className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
                       />
                       <input
-                        ref={addressInputRef}
+                        ref={addressRefCallback}
                         type="text"
                         required
                         defaultValue={yardSign.address}
