@@ -69,6 +69,37 @@ export async function POST(request: NextRequest) {
       ).catch(console.error);
 
       return NextResponse.json({ success: true });
+    } else if (formType === 'yardSign') {
+      const row = [
+        timestamp,
+        data.name || '',
+        data.phone || '',
+        data.address || '',
+        data.email || '',
+        'Pending',
+      ];
+
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: 'Yard Signs!A:F',
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [row],
+        },
+      });
+
+      // Send email notification (fire and forget)
+      sendEmailNotification(
+        `New Yard Sign Request: ${data.name}`,
+        `New yard sign request!\n\n` +
+          `Name: ${data.name}\n` +
+          `Address: ${data.address}\n` +
+          `Email: ${data.email}\n` +
+          (data.phone ? `Phone: ${data.phone}\n` : '') +
+          `\nView all requests: https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}`
+      ).catch(console.error);
+
+      return NextResponse.json({ success: true });
     } else if (formType === 'contact') {
       const row = [
         timestamp,

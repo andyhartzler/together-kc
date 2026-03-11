@@ -6,30 +6,6 @@ import { cn } from '@/lib/utils';
 
 const GOOGLE_API_KEY = 'AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I';
 
-// Extend window for Google Maps
-declare global {
-  interface Window {
-    google?: {
-      maps: {
-        Geocoder: new () => {
-          geocode: (
-            request: { address: string },
-            callback: (
-              results: Array<{
-                formatted_address: string;
-                address_components: Array<{
-                  long_name: string;
-                  types: string[];
-                }>;
-              }> | null,
-              status: string
-            ) => void
-          ) => void;
-        };
-      };
-    };
-  }
-}
 
 interface VoteEarlyCardProps {
   title: string;

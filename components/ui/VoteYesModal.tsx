@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { downloadCalendarEvent } from '@/lib/calendar';
+import { FORM_HANDLER_URL } from '@/lib/constants';
 import EndorsementForm from '@/components/forms/EndorsementForm';
 
 type County = 'Jackson' | 'Clay' | 'Platte' | 'Cass';
@@ -17,37 +18,13 @@ const COUNTY_URLS: Record<County, string> = {
 
 const GOOGLE_API_KEY = 'AIzaSyChXG4uzQaS5lYmEH9nWmRI3_YRLwaqV0I';
 
-// Extend window for Google Maps
-declare global {
-  interface Window {
-    google?: {
-      maps: {
-        Geocoder: new () => {
-          geocode: (
-            request: { address: string },
-            callback: (
-              results: Array<{
-                formatted_address: string;
-                address_components: Array<{
-                  long_name: string;
-                  types: string[];
-                }>;
-              }> | null,
-              status: string
-            ) => void
-          ) => void;
-        };
-      };
-    };
-  }
-}
 
 interface VoteYesModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type ModalView = 'main' | 'findPolling' | 'countyResult' | 'endorse';
+type ModalView = 'main' | 'findPolling' | 'countyResult' | 'endorse' | 'yardSign' | 'yardSignSuccess';
 
 const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
   const [view, setView] = useState<ModalView>('main');
@@ -58,7 +35,13 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
   const [lookupResult, setLookupResult] = useState<{ county: County; address: string } | null>(null);
   const [lookupError, setLookupError] = useState<string | null>(null);
   const [calendarDownloaded, setCalendarDownloaded] = useState(false);
+  const [yardSign, setYardSign] = useState({ name: '', address: '', email: '', phone: '' });
+  const [yardSignSubmitting, setYardSignSubmitting] = useState(false);
+  const [yardSignError, setYardSignError] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const addressInputRef = useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const autocompleteRef = useRef<any>(null);
 
   // Close on escape key
   useEffect(() => {
@@ -83,6 +66,9 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
     setLookupResult(null);
     setLookupError(null);
     setCalendarDownloaded(false);
+    setYardSign({ name: '', address: '', email: '', phone: '' });
+    setYardSignSubmitting(false);
+    setYardSignError(null);
   };
 
   const handleClose = () => {
@@ -94,6 +80,37 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
     downloadCalendarEvent();
     setCalendarDownloaded(true);
     setTimeout(() => setCalendarDownloaded(false), 2000);
+  };
+
+  const handleYardSignSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (yardSignSubmitting) return;
+
+    setYardSignSubmitting(true);
+    setYardSignError(null);
+
+    try {
+      const response = await fetch(FORM_HANDLER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formType: 'yardSign',
+          ...yardSign,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setView('yardSignSuccess');
+      } else {
+        setYardSignError(result.error || 'Failed to submit. Please try again.');
+      }
+    } catch {
+      setYardSignError('Failed to submit. Please try again.');
+    } finally {
+      setYardSignSubmitting(false);
+    }
   };
 
   // Load Google Maps script
@@ -115,13 +132,63 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
       }
 
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
       script.async = true;
       script.onload = () => resolve();
       script.onerror = () => reject(new Error('Failed to load Google Maps'));
       document.head.appendChild(script);
     });
   }, []);
+
+  // Initialize Google Places Autocomplete when yard sign view is active
+  useEffect(() => {
+    if (view !== 'yardSign' || !addressInputRef.current || autocompleteRef.current) return;
+
+    const initAutocomplete = async () => {
+      try {
+        await loadGoogleMaps();
+
+        if (!window.google?.maps?.places || !addressInputRef.current) return;
+
+        // Bias results to Kansas City, MO area
+        const kcBounds = new window.google.maps.LatLngBounds(
+          new window.google.maps.LatLng(38.85, -94.75), // SW corner
+          new window.google.maps.LatLng(39.35, -94.35)  // NE corner
+        );
+
+        const autocomplete = new window.google.maps.places.Autocomplete(
+          addressInputRef.current,
+          {
+            types: ['address'],
+            componentRestrictions: { country: 'us' },
+            bounds: kcBounds,
+            strictBounds: false,
+            fields: ['formatted_address', 'address_components'],
+          }
+        );
+
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.formatted_address) {
+            setYardSign((prev) => ({ ...prev, address: place.formatted_address! }));
+          }
+        });
+
+        autocompleteRef.current = autocomplete;
+      } catch {
+        // Silently fail - user can still type address manually
+      }
+    };
+
+    initAutocomplete();
+  }, [view, loadGoogleMaps]);
+
+  // Clean up autocomplete ref when leaving yard sign view
+  useEffect(() => {
+    if (view !== 'yardSign') {
+      autocompleteRef.current = null;
+    }
+  }, [view]);
 
   const lookupCounty = async () => {
     if (!addressInput.trim()) return;
@@ -331,6 +398,23 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                       </svg>
                     </button>
 
+                    {/* Get a Free Yard Sign */}
+                    <button
+                      onClick={() => setView('yardSign')}
+                      className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors group w-full text-left"
+                    >
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl">
+                        🪧
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className="font-semibold text-navy">Get a Free Yard Sign</h3>
+                        <p className="text-sm text-gray-600">Show your support in your neighborhood</p>
+                      </div>
+                      <svg className="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
                     {/* Add Endorsement */}
                     <button
                       onClick={() => setView('endorse')}
@@ -497,6 +581,112 @@ const VoteYesModal: React.FC<VoteYesModalProps> = ({ isOpen, onClose }) => {
                       className="block w-full mt-4 text-sm text-gray-500 hover:text-gray-700 transition-colors"
                     >
                       ← Choose a different county
+                    </button>
+                  </motion.div>
+                )}
+
+                {view === 'yardSign' && (
+                  <motion.div
+                    key="yardSign"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                  >
+                    <button
+                      onClick={() => setView('main')}
+                      className="flex items-center gap-1 text-sm text-gray-500 hover:text-navy mb-4 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      Back
+                    </button>
+
+                    <h3 className="text-lg font-bold text-navy mb-1 text-center">Get a Free Yard Sign</h3>
+                    <p className="text-sm text-gray-600 mb-4 text-center">
+                      Tell us where to deliver your &quot;Vote Yes&quot; yard sign.
+                    </p>
+
+                    <form onSubmit={handleYardSignSubmit} className="space-y-3">
+                      <input
+                        type="text"
+                        required
+                        value={yardSign.name}
+                        onChange={(e) => setYardSign({ ...yardSign, name: e.target.value })}
+                        placeholder="Your Name *"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
+                      />
+                      <input
+                        ref={addressInputRef}
+                        type="text"
+                        required
+                        value={yardSign.address}
+                        onChange={(e) => setYardSign({ ...yardSign, address: e.target.value })}
+                        placeholder="Delivery Address *"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
+                      />
+                      <input
+                        type="email"
+                        required
+                        value={yardSign.email}
+                        onChange={(e) => setYardSign({ ...yardSign, email: e.target.value })}
+                        placeholder="Email Address *"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
+                      />
+                      <input
+                        type="tel"
+                        value={yardSign.phone}
+                        onChange={(e) => setYardSign({ ...yardSign, phone: e.target.value })}
+                        placeholder="Phone Number (optional)"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-sm"
+                      />
+
+                      {yardSignError && (
+                        <p className="text-sm text-red-500 text-center">{yardSignError}</p>
+                      )}
+
+                      <button
+                        type="submit"
+                        disabled={yardSignSubmitting}
+                        className="w-full py-3 bg-coral text-white rounded-full font-semibold hover:bg-coral/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                      >
+                        {yardSignSubmitting ? 'Submitting...' : 'Request My Free Sign'}
+                      </button>
+
+                      <p className="text-xs text-gray-500 text-center">
+                        Available while supplies last. Kansas City addresses only.
+                      </p>
+                    </form>
+                  </motion.div>
+                )}
+
+                {view === 'yardSignSuccess' && (
+                  <motion.div
+                    key="yardSignSuccess"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="text-center"
+                  >
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', delay: 0.1 }}
+                      className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl text-white bg-green-500 shadow-lg"
+                    >
+                      🪧
+                    </motion.div>
+
+                    <h3 className="text-xl font-bold text-navy mb-2">Sign Requested!</h3>
+                    <p className="text-gray-600 mb-6">
+                      We&apos;ll get a &quot;Vote Yes&quot; yard sign to you soon. Thanks for showing your support!
+                    </p>
+
+                    <button
+                      onClick={handleClose}
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold bg-coral shadow-lg hover:shadow-xl hover:bg-coral/90 transition-all"
+                    >
+                      Done
                     </button>
                   </motion.div>
                 )}

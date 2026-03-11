@@ -19,29 +19,6 @@ const COUNTY_URLS: Record<County, string> = {
   Cass: 'https://casscounty.com/2355/Absentee-Information',
 };
 
-declare global {
-  interface Window {
-    google?: {
-      maps: {
-        Geocoder: new () => {
-          geocode: (
-            request: { address: string },
-            callback: (
-              results: Array<{
-                formatted_address: string;
-                address_components: Array<{
-                  long_name: string;
-                  types: string[];
-                }>;
-              }> | null,
-              status: string
-            ) => void
-          ) => void;
-        };
-      };
-    };
-  }
-}
 
 const SOCIAL_LINKS = [
   { name: 'Facebook', href: 'https://www.facebook.com/TogetherKC/', icon: '/images/social/facebook.png' },

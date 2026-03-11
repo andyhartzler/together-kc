@@ -258,3 +258,8 @@ html {
   pointer-events: none;
   z-index: 1;
 }
+
+/* Google Places Autocomplete dropdown above modals */
+.pac-container {
+  z-index: 10000 !important;
+}
