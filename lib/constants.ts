@@ -121,6 +121,7 @@ export const ENDORSERS = {
     { name: 'South KC Alliance', fullName: 'South Kansas City Alliance', logo: '/images/endorsers/South KC Alliance.PNG', website: 'https://southkcalliance.org' },
     { name: 'United We', fullName: 'United We', logo: '/images/endorsers/United We.png', website: 'https://www.united-we.org' },
     { name: 'Hispanic Chamber of Commerce', fullName: 'Hispanic Chamber of Commerce of Greater Kansas City', logo: '/images/endorsers/Hispanic Chamber.png', website: 'https://www.hccgkc.com' },
+    { name: 'KC Regional Association of REALTORS', fullName: 'Kansas City Regional Association of REALTORS\u00AE', logo: '/images/endorsers/KC Realtors Association.PNG', website: 'https://kcrar.com' },
   ],
   cityOfficials: [
     { name: 'Quinton Lucas', title: 'Mayor', district: '', photo: '/images/council/mayor-q.png' },
