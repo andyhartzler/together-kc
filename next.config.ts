@@ -108,15 +108,10 @@ const nextConfig: NextConfig = {
         destination: '/endorsements',
         permanent: true,
       },
-      // Vote redirect to home
-      {
-        source: '/vote',
-        destination: '/',
-        permanent: true,
-      },
+      // Vote-yes variant redirects to /vote
       {
         source: '/vote-yes',
-        destination: '/',
+        destination: '/vote',
         permanent: true,
       },
     ];
