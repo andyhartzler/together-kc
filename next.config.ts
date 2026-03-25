@@ -114,6 +114,16 @@ const nextConfig: NextConfig = {
         destination: '/vote',
         permanent: true,
       },
+      {
+        source: '/vote-early',
+        destination: '/vote',
+        permanent: true,
+      },
+      {
+        source: '/find-polling',
+        destination: '/vote',
+        permanent: true,
+      },
     ];
   },
 };

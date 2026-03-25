@@ -1,18 +1,18 @@
 import type { Metadata } from 'next';
-import ModalLandingPage from '@/components/ui/ModalLandingPage';
+import VotePage from './VotePage';
 
 export const metadata: Metadata = {
-  title: 'Vote YES | Together KC',
+  title: 'Where Do I Vote? | Together KC',
   description:
-    'Vote YES to renew the Kansas City earnings tax on April 7, 2026. The 1% e-tax generates $373 million annually, funding 47% of city services.',
+    'Find your voting location for the April 7, 2026 Kansas City earnings tax election. Early voting locations, Election Day polling places, directions, and hours.',
   openGraph: {
-    title: 'Vote YES | Together KC',
+    title: 'Where Do I Vote? | Together KC',
     description:
-      'Vote YES to renew the KC earnings tax on April 7, 2026. Fund fire, police, EMS, roads, and trash collection.',
+      'Find early voting and Election Day locations in Kansas City. Vote YES to renew the earnings tax.',
     url: 'https://together-kc.com/vote',
   },
 };
 
-export default function VotePage() {
-  return <ModalLandingPage view="main" />;
+export default function Page() {
+  return <VotePage />;
 }
