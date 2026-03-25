@@ -112,12 +112,14 @@ export async function initAutocomplete(
   );
 
   const ac = new window.google.maps.places.Autocomplete(input, {
-    types: ['address'],
+    types: ['geocode'],
     componentRestrictions: { country: 'us' },
     bounds,
     strictBounds: true,
     fields: ['formatted_address', 'address_components', 'geometry'],
   });
+  // Force re-bind bounds after creation (some API versions ignore constructor bounds)
+  ac.setBounds(bounds);
 
   ac.addListener('place_changed', () => {
     const place = ac.getPlace();
