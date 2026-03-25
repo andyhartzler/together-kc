@@ -2,12 +2,13 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import { getVotingMode, getDistanceMiles, type VotingMode, type County, COUNTY_CENTERS } from '@/lib/voting-utils';
 import { type GeocodeResult, initAutocomplete, geocodeAddress, findPlaceCoordinates } from '@/lib/geocoding';
-import { EARLY_VOTING_LOCATIONS } from '@/lib/polling-data';
+import { EARLY_VOTING_LOCATIONS, COUNTY_ELECTION_BOARDS } from '@/lib/polling-data';
 import { JACKSON_COUNTY_LOCATIONS } from '@/lib/election-day-data';
-import { PLATTE_COUNTY_LOCATIONS } from '@/lib/platte-county-data';
+import { PLATTE_COUNTY_LOCATIONS, findPlattePollingPlace, PLATTE_ARCGIS_URL } from '@/lib/platte-county-data';
+import { CLAY_COUNTY_LOCATIONS, findClayPollingPlace, CLAY_ARCGIS_URL } from '@/lib/clay-county-data';
 import { useAppleMap } from '@/hooks/useAppleMap';
 import { useUserLocation } from '@/hooks/useUserLocation';
 import { downloadElectionDayEvent } from '@/lib/calendar';
@@ -16,7 +17,6 @@ import VotingModeToggle from './components/VotingModeToggle';
 import LocationEntry from './components/LocationEntry';
 import LocationCard from './components/LocationCard';
 import AssignedLocationCard from './components/AssignedLocationCard';
-import CountyExternalCard from './components/CountyExternalCard';
 import VoterInfo from './components/VoterInfo';
 
 interface PrecinctInfo {
@@ -84,40 +84,100 @@ export default function VotePage() {
 
   const userLoc = useUserLocation();
 
-  // Call KCEB ArcGIS directly from browser (CORS enabled, skips Vercel cold start)
-  const lookupPrecinct = useCallback(async (lat: number, lng: number) => {
+  // Unified precinct lookup for ALL counties
+  const lookupPrecinct = useCallback(async (lat: number, lng: number, forCounty: County) => {
     setPrecinctLoading(true);
     try {
-      const params = new URLSearchParams({
-        geometry: `${lng},${lat}`,
-        geometryType: 'esriGeometryPoint',
-        spatialRel: 'esriSpatialRelIntersects',
-        outFields: 'Name,Precinct,Home_Poll_Name,Home_Poll_Address,Sample',
-        f: 'json',
-        returnGeometry: 'false',
-        inSR: '4326',
-      });
-      const res = await fetch(
-        `https://services3.arcgis.com/Ayu3EsYWkD5ZwKLW/arcgis/rest/services/Precincts_2023_view/FeatureServer/22/query?${params}`
-      );
-      const data = await res.json();
-      if (data.features?.length > 0) {
-        const attrs = data.features[0].attributes;
-        // Parse address HTML
-        let pollAddress = attrs.Home_Poll_Address || '';
-        pollAddress = pollAddress.replace(/<[^>]+>/g, '').trim();
-        // Parse sample ballot HTML -> local PDF path
-        let sampleBallot: string | null = null;
-        const sampleMatch = (attrs.Sample || '').match(/href="([^"]+)"/);
-        if (sampleMatch) {
-          const filename = sampleMatch[1].split('/').pop();
-          sampleBallot = `/ballots/${filename}`;
+      if (forCounty === 'Jackson') {
+        // KCEB ArcGIS lookup
+        const params = new URLSearchParams({
+          geometry: `${lng},${lat}`,
+          geometryType: 'esriGeometryPoint',
+          spatialRel: 'esriSpatialRelIntersects',
+          outFields: 'Name,Precinct,Home_Poll_Name,Home_Poll_Address,Sample',
+          f: 'json',
+          returnGeometry: 'false',
+          inSR: '4326',
+        });
+        const res = await fetch(
+          `https://services3.arcgis.com/Ayu3EsYWkD5ZwKLW/arcgis/rest/services/Precincts_2023_view/FeatureServer/22/query?${params}`
+        );
+        const data = await res.json();
+        if (data.features?.length > 0) {
+          const attrs = data.features[0].attributes;
+          let pollAddress = attrs.Home_Poll_Address || '';
+          pollAddress = pollAddress.replace(/<[^>]+>/g, '').trim();
+          let sampleBallot: string | null = null;
+          const sampleMatch = (attrs.Sample || '').match(/href="([^"]+)"/);
+          if (sampleMatch) {
+            const filename = sampleMatch[1].split('/').pop();
+            sampleBallot = `/ballots/${filename}`;
+          }
+          setPrecinctInfo({
+            precinct: attrs.Name,
+            pollingPlace: attrs.Home_Poll_Name,
+            pollingAddress: pollAddress,
+            sampleBallot,
+          });
         }
+      } else if (forCounty === 'Platte') {
+        const params = new URLSearchParams({
+          geometry: `${lng},${lat}`,
+          geometryType: 'esriGeometryPoint',
+          inSR: '4326',
+          spatialRel: 'esriSpatialRelIntersects',
+          outFields: 'VOTINGPNAM',
+          returnGeometry: 'false',
+          f: 'json',
+        });
+        const res = await fetch(`${PLATTE_ARCGIS_URL}?${params}`);
+        const data = await res.json();
+        if (data.features?.length > 0) {
+          const precinctName = data.features[0].attributes.VOTINGPNAM;
+          const site = findPlattePollingPlace(precinctName);
+          if (site) {
+            setPrecinctInfo({
+              precinct: precinctName,
+              pollingPlace: site.name,
+              pollingAddress: `${site.address}, ${site.city}, MO ${site.zip}`,
+              sampleBallot: null,
+            });
+          }
+        }
+      } else if (forCounty === 'Clay') {
+        const params = new URLSearchParams({
+          geometry: `${lng},${lat}`,
+          geometryType: 'esriGeometryPoint',
+          spatialRel: 'esriSpatialRelIntersects',
+          outFields: 'precinct,subprecinct,BallotStyleNumber',
+          f: 'json',
+          returnGeometry: 'false',
+          inSR: '4326',
+        });
+        const res = await fetch(`${CLAY_ARCGIS_URL}?${params}`);
+        const data = await res.json();
+        if (data.features?.length > 0) {
+          const attrs = data.features[0].attributes;
+          const site = findClayPollingPlace(attrs.precinct);
+          if (site) {
+            const ballotStyle = attrs.BallotStyleNumber;
+            const styleNum = String(ballotStyle).padStart(3, '0');
+            setPrecinctInfo({
+              precinct: attrs.precinct,
+              pollingPlace: site.name,
+              pollingAddress: `${site.address}, ${site.city}, MO ${site.zip}`,
+              sampleBallot: `/ballots/clay/style-${styleNum}.pdf`,
+            });
+          }
+        }
+      } else if (forCounty === 'Cass') {
+        // Cass County doesn't have ArcGIS boundary data
+        // Show inline contact info
         setPrecinctInfo({
-          precinct: attrs.Name,
-          pollingPlace: attrs.Home_Poll_Name,
-          pollingAddress: pollAddress,
-          sampleBallot,
+          precinct: 'Cass County',
+          pollingPlace: 'Cass County Clerk - Election Office',
+          pollingAddress: '102 E Wall St, Harrisonville, MO 64701',
+          sampleBallot: '/ballots/cass/sample-ballot.pdf',
         });
       }
     } catch { /* non-critical */ }
@@ -137,8 +197,8 @@ export default function VotePage() {
     }
     setPrecinctInfo(null);
 
-    if (result.county === 'Jackson' && result.isInKC) {
-      lookupPrecinct(result.lat, result.lng);
+    if (result.county && result.isInKC) {
+      lookupPrecinct(result.lat, result.lng, result.county);
     }
   }, [lookupPrecinct]);
 
@@ -154,27 +214,28 @@ export default function VotePage() {
     setTimeout(() => handleLocationFound(userLoc.location!), 0);
   }
 
-  // Init autocomplete for election day address input
+  // Init autocomplete for election day address input - works for ALL counties
   useEffect(() => {
     if (!electionDayInputRef.current || electionDayAcRef.current) return;
-    if (!(mode === 'election-day' && county === 'Jackson' && !precinctInfo)) return;
+    if (!(mode === 'election-day' && county && !precinctInfo)) return;
     electionDayAcRef.current = true;
+    const currentCounty = county;
     initAutocomplete(electionDayInputRef.current, (result) => {
       setElectionDayAddress(result.formattedAddress);
       setUserCoords({ lat: result.lat, lng: result.lng });
-      lookupPrecinct(result.lat, result.lng);
+      lookupPrecinct(result.lat, result.lng, currentCounty);
     }).catch(() => {});
   }, [mode, county, precinctInfo, lookupPrecinct]);
 
   const handleElectionDaySearch = useCallback(async () => {
-    if (!electionDayAddress.trim()) return;
+    if (!electionDayAddress.trim() || !county) return;
     setElectionDaySearching(true);
     setElectionDayError(null);
     try {
       const result = await geocodeAddress(electionDayAddress.trim());
       if (result && result.lat && result.lng) {
         setUserCoords({ lat: result.lat, lng: result.lng });
-        lookupPrecinct(result.lat, result.lng);
+        lookupPrecinct(result.lat, result.lng, county);
       } else {
         setElectionDayError("Couldn't find that address. Please check and try again.");
       }
@@ -183,18 +244,7 @@ export default function VotePage() {
     } finally {
       setElectionDaySearching(false);
     }
-  }, [electionDayAddress, lookupPrecinct]);
-
-  const handleChangeCounty = useCallback(() => {
-    setCounty(null);
-    setUserCoords(null);
-    setPrecinctInfo(null);
-    setSelectedId(null);
-    setElectionDayAddress('');
-    setElectionDayError(null);
-    setShowAllElectionDay(false);
-    electionDayAcRef.current = false;
-  }, []);
+  }, [electionDayAddress, lookupPrecinct, county]);
 
   const handleModeChange = useCallback((newMode: VotingMode) => {
     setMode(newMode);
@@ -225,27 +275,53 @@ export default function VotePage() {
     return locs;
   }, [userCoords]);
 
-  const showElectionDayJackson = mode === 'election-day' && county === 'Jackson';
-  const showElectionDayPlatte = mode === 'election-day' && county === 'Platte';
-  const showElectionDayExternal = mode === 'election-day' && county && county !== 'Jackson' && county !== 'Platte';
+  const showElectionDay = mode === 'election-day' && !!county;
   const showEarly = mode === 'early';
 
-  // Platte County election day locations for map pins
+  // Platte County election day locations for map pins + list
   const platteElectionDayLocations = useMemo(() => {
     return PLATTE_COUNTY_LOCATIONS.map((loc) => ({
-      ...loc,
-      county: 'Platte' as const,
+      id: loc.id,
+      name: loc.name,
+      address: loc.address,
+      city: loc.city,
+      state: loc.state,
+      zip: loc.zip,
+      lat: loc.lat,
+      lng: loc.lng,
+      county: 'Platte' as County,
+      precincts: [] as number[],
+    }));
+  }, []);
+
+  // Clay County election day locations for map pins + list
+  const clayElectionDayLocations = useMemo(() => {
+    return CLAY_COUNTY_LOCATIONS.map((loc) => ({
+      id: loc.id,
+      name: loc.name,
+      address: loc.address,
+      city: loc.city,
+      state: 'MO',
+      zip: loc.zip,
+      lat: loc.lat,
+      lng: loc.lng,
+      county: 'Clay' as County,
+      precincts: [] as number[],
     }));
   }, []);
 
   // Determine which locations to show for map pins
   const visibleLocations = useMemo(() => {
     if (showEarly) return earlyLocations;
-    if (showElectionDayJackson && showAllElectionDay) return electionDayLocations;
-    if (showElectionDayPlatte) return platteElectionDayLocations;
-    // Don't show all 53 pins by default on election day
+    if (showElectionDay) {
+      if (county === 'Jackson' && showAllElectionDay) return electionDayLocations;
+      if (county === 'Platte') return platteElectionDayLocations;
+      if (county === 'Clay') return clayElectionDayLocations;
+      // Cass has 1 location or just the assigned pin
+      return [];
+    }
     return [];
-  }, [showEarly, showElectionDayJackson, showElectionDayPlatte, showAllElectionDay, earlyLocations, electionDayLocations, platteElectionDayLocations]);
+  }, [showEarly, showElectionDay, county, showAllElectionDay, earlyLocations, electionDayLocations, platteElectionDayLocations, clayElectionDayLocations]);
 
   // Geocode the assigned polling place address for map pin
   const [assignedPin, setAssignedPin] = useState<{
@@ -270,7 +346,7 @@ export default function VotePage() {
             title: precinctInfo.pollingPlace,
             subtitle: precinctInfo.pollingAddress,
             color: '#22c55e',
-            glyphText: '★',
+            glyphText: '\u2605',
           });
         }
       } catch { /* silent */ }
@@ -341,6 +417,29 @@ export default function VotePage() {
     setCounty('Jackson');
     setShowAllElectionDay(true);
   }, []);
+
+  // Get the "view all" location count for the current county
+  const allLocationsCount = useMemo(() => {
+    if (county === 'Jackson') return electionDayLocations.length;
+    if (county === 'Platte') return platteElectionDayLocations.length;
+    if (county === 'Clay') return clayElectionDayLocations.length;
+    return 0;
+  }, [county, electionDayLocations.length, platteElectionDayLocations.length, clayElectionDayLocations.length]);
+
+  // Get the "view all" locations list for the current county
+  const allLocationsList = useMemo(() => {
+    if (county === 'Jackson') return electionDayLocations;
+    if (county === 'Platte') return platteElectionDayLocations;
+    if (county === 'Clay') return clayElectionDayLocations;
+    return [];
+  }, [county, electionDayLocations, platteElectionDayLocations, clayElectionDayLocations]);
+
+  // County-specific helper text for the address prompt
+  const countyAddressPromptText = useMemo(() => {
+    if (county === 'Jackson') return 'On Election Day, you can vote at any KC polling location.';
+    if (county === 'Cass') return 'Cass County voters must vote at their assigned precinct polling place.';
+    return `${county} County voters must vote at their assigned precinct polling place on Election Day.`;
+  }, [county]);
 
   // Step 1: No county selected - show county selection
   if (!county) {
@@ -413,6 +512,9 @@ export default function VotePage() {
                   setPrecinctInfo(null);
                   setSelectedId(null);
                   setShowAllElectionDay(false);
+                  setElectionDayAddress('');
+                  setElectionDayError(null);
+                  electionDayAcRef.current = false;
                 }}
                 className="appearance-none px-4 py-2 pr-8 rounded-full bg-coral/20 border border-coral/30 text-coral text-sm font-bold cursor-pointer hover:bg-coral/30 transition-all outline-none"
               >
@@ -502,7 +604,7 @@ export default function VotePage() {
                   className="w-full flex items-center gap-3 p-4 rounded-xl bg-sky/10 border border-sky/20 hover:bg-sky/15 transition-all text-left"
                 >
                   <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center shrink-0 text-lg">
-                    {calendarAdded ? '✓' : '📅'}
+                    {calendarAdded ? '\u2713' : '\ud83d\udcc5'}
                   </div>
                   <div>
                     <h4 className="text-white font-semibold text-sm">
@@ -513,7 +615,8 @@ export default function VotePage() {
                 </button>
               )}
 
-              {showElectionDayJackson && (
+              {/* UNIFIED ELECTION DAY FLOW - same for ALL counties */}
+              {showElectionDay && (
                 <>
                   {/* Step A: No precinct found yet - prompt for address */}
                   {!precinctInfo && !precinctLoading && (
@@ -558,7 +661,7 @@ export default function VotePage() {
                       )}
 
                       <p className="text-white/30 text-xs text-center">
-                        On Election Day, you can vote at any KC polling location.
+                        {countyAddressPromptText}
                       </p>
                     </div>
                   )}
@@ -571,24 +674,44 @@ export default function VotePage() {
                   {/* Step C: Precinct found - show assigned + option to see all */}
                   {precinctInfo && (
                     <>
+                      {/* Cass County special note */}
+                      {county === 'Cass' && (
+                        <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 flex items-start gap-2.5">
+                          <svg className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div className="text-amber-200/80 text-sm">
+                            <p>Cass County voters must vote at their assigned precinct. Contact the Cass County Clerk for your specific polling place assignment.</p>
+                            <a href={`tel:${COUNTY_ELECTION_BOARDS.Cass.phone.replace(/\D/g, '')}`} className="text-amber-300 font-semibold hover:underline">{COUNTY_ELECTION_BOARDS.Cass.phone}</a>
+                          </div>
+                        </div>
+                      )}
+
                       <AssignedLocationCard info={precinctInfo} isLoading={false} />
 
-                      <button
-                        onClick={() => setShowAllElectionDay(!showAllElectionDay)}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white/50 text-sm font-medium hover:bg-white/10 hover:text-white/70 transition-all"
-                      >
-                        <svg className={`w-4 h-4 transition-transform ${showAllElectionDay ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                        {showAllElectionDay ? 'Hide other locations' : `View all ${electionDayLocations.length} KC polling locations`}
-                      </button>
+                      {/* View all locations toggle (for counties with multiple polling sites) */}
+                      {allLocationsCount > 0 && (
+                        <button
+                          onClick={() => setShowAllElectionDay(!showAllElectionDay)}
+                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white/50 text-sm font-medium hover:bg-white/10 hover:text-white/70 transition-all"
+                        >
+                          <svg className={`w-4 h-4 transition-transform ${showAllElectionDay ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                          {showAllElectionDay
+                            ? 'Hide other locations'
+                            : `View all ${allLocationsCount} ${county === 'Jackson' ? 'KC' : county + ' County'} polling locations`}
+                        </button>
+                      )}
 
-                      {showAllElectionDay && (
+                      {showAllElectionDay && allLocationsList.length > 0 && (
                         <div className="space-y-3">
                           <p className="text-white/40 text-xs">
-                            You can also vote at any of these locations.
+                            {county === 'Jackson'
+                              ? 'You can also vote at any of these locations.'
+                              : `All ${county} County polling locations:`}
                           </p>
-                          {electionDayLocations.map((loc) => (
+                          {allLocationsList.map((loc) => (
                             <LocationCard
                               key={loc.id}
                               location={loc}
@@ -604,10 +727,6 @@ export default function VotePage() {
                     </>
                   )}
                 </>
-              )}
-
-              {showElectionDayExternal && county && (
-                <CountyExternalCard county={county} />
               )}
             </div>
           </div>
