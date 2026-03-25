@@ -53,6 +53,7 @@ export default function VotePage() {
   const [precinctInfo, setPrecinctInfo] = useState<PrecinctInfo | null>(null);
   const [precinctLoading, setPrecinctLoading] = useState(false);
   const [showMobileMap, setShowMobileMap] = useState(false);
+  const [showCountyDropdown, setShowCountyDropdown] = useState(false);
   const [electionDayAddress, setElectionDayAddress] = useState('');
   const [electionDaySearching, setElectionDaySearching] = useState(false);
   const [electionDayError, setElectionDayError] = useState<string | null>(null);
@@ -94,6 +95,14 @@ export default function VotePage() {
     window.addEventListener('pageshow', handlePageShow);
     return () => window.removeEventListener('pageshow', handlePageShow);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Close county dropdown when clicking outside
+  useEffect(() => {
+    if (!showCountyDropdown) return;
+    const close = () => setShowCountyDropdown(false);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, [showCountyDropdown]);
 
   const userLoc = useUserLocation();
 
@@ -547,31 +556,57 @@ export default function VotePage() {
             <VotingModeToggle mode={mode} onChange={handleModeChange} />
           </div>
           <div className={`flex items-center gap-2 flex-shrink-0 ${mode === 'election-day' ? 'w-full sm:w-auto justify-center sm:justify-end' : ''}`}>
-            {/* County selector dropdown */}
+            {/* County selector */}
             <div className="relative">
-              <select
-                value={county}
-                onChange={(e) => {
-                  const val = e.target.value as County;
-                  setCounty(val);
-                  setUserCoords(null);
-                  setPrecinctInfo(null);
-                  setSelectedId(null);
-                  setShowAllElectionDay(false);
-                  setElectionDayAddress('');
-                  setElectionDayError(null);
-                  electionDayAcRef.current = false;
-                }}
-                className="appearance-none cursor-pointer px-5 py-2.5 pr-9 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/15 transition-all outline-none"
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowCountyDropdown(!showCountyDropdown); }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/15 transition-all"
               >
-                <option value="Jackson" className="bg-navy text-white">Jackson County</option>
-                <option value="Clay" className="bg-navy text-white">Clay County</option>
-                <option value="Platte" className="bg-navy text-white">Platte County</option>
-                <option value="Cass" className="bg-navy text-white">Cass County</option>
-              </select>
-              <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+                {county} County
+                <svg className={`w-4 h-4 text-white/50 transition-transform ${showCountyDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <AnimatePresence>
+                {showCountyDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full mt-2 left-0 z-50 min-w-[180px] rounded-xl bg-navy/95 backdrop-blur-xl border border-white/15 shadow-2xl overflow-hidden"
+                  >
+                    {(['Jackson', 'Clay', 'Platte', 'Cass'] as County[]).map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => {
+                          setCounty(c);
+                          setUserCoords(null);
+                          setPrecinctInfo(null);
+                          setSelectedId(null);
+                          setShowAllElectionDay(false);
+                          setElectionDayAddress('');
+                          setElectionDayError(null);
+                          electionDayAcRef.current = false;
+                          setShowCountyDropdown(false);
+                        }}
+                        className={`w-full text-left px-5 py-3 text-sm font-medium transition-colors ${
+                          c === county
+                            ? 'text-coral bg-coral/10'
+                            : 'text-white/80 hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        {c} County
+                        {c === county && (
+                          <svg className="inline w-4 h-4 ml-2 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Near Me button - only for early voting */}
