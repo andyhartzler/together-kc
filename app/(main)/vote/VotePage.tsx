@@ -609,8 +609,8 @@ export default function VotePage() {
               </AnimatePresence>
             </div>
 
-            {/* Near Me button - only for early voting */}
-            {showEarly && (
+            {/* Near Me button - only for Jackson County early voting (others have 1 location) */}
+            {showEarly && county === 'Jackson' && (
               <button
                 onClick={handleNearMe}
                 disabled={userLoc.isLocating}
@@ -630,8 +630,8 @@ export default function VotePage() {
               </button>
             )}
 
-            {/* Mobile map toggle - only for early voting */}
-            {showEarly && (
+            {/* Mobile map toggle - only for Jackson County early voting */}
+            {showEarly && county === 'Jackson' && (
               <button
                 onClick={() => setShowMobileMap(!showMobileMap)}
                 className="md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-white/60 text-xs font-medium hover:bg-white/20 transition-all"
