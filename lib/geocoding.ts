@@ -1,7 +1,7 @@
 import type { County } from './voting-utils';
 
 const GOOGLE_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || 'AIzaSyA0tnMaQcXi8fn5azv72QOxF0UmsYY7d8k';
-const KC_BOUNDS = { sw: { lat: 38.8, lng: -94.8 }, ne: { lat: 39.4, lng: -94.3 } };
+const KC_BOUNDS = { sw: { lat: 38.55, lng: -94.9 }, ne: { lat: 39.45, lng: -94.2 } };
 
 let loadPromise: Promise<void> | null = null;
 
@@ -115,7 +115,7 @@ export async function initAutocomplete(
     types: ['address'],
     componentRestrictions: { country: 'us' },
     bounds,
-    strictBounds: false,
+    strictBounds: true,
     fields: ['formatted_address', 'address_components', 'geometry'],
   });
 
