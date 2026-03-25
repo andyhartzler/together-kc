@@ -374,7 +374,12 @@ export default function VotePage() {
               {mode === 'election-day' && (
                 <button
                   onClick={() => {
-                    downloadCalendarEvent();
+                    downloadCalendarEvent({
+                      location: precinctInfo ? `${precinctInfo.pollingPlace}, ${precinctInfo.pollingAddress}` : undefined,
+                      title: precinctInfo
+                        ? `Vote at ${precinctInfo.pollingPlace} - KC Earnings Tax`
+                        : 'Vote YES for Kansas City Earnings Tax Renewal',
+                    });
                     setCalendarAdded(true);
                     setTimeout(() => setCalendarAdded(false), 3000);
                   }}
@@ -511,7 +516,7 @@ export default function VotePage() {
         </div>
       </div>
 
-      <VoterInfo />
+      <VoterInfo county={county} />
     </div>
   );
 }

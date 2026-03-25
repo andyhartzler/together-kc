@@ -182,33 +182,31 @@ export function useAppleMap(options: UseAppleMapOptions) {
     }
   }, [isLoaded, pins, onPinSelect]);
 
-  // When mobile map toggles to visible, re-fit to pins
+  // Effect to handle mobile map toggle
   useEffect(() => {
-    if (!showMobileMap || !isLoaded || !mapInstanceRef.current) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mapkit = (window as any).mapkit;
-    if (!mapkit) return;
-
-    const map = mapInstanceRef.current;
-    const annotations = annotationsRef.current;
-
-    // Force a resize so the map knows its container dimensions
-    setTimeout(() => {
-      if (annotations.length > 1) {
-        map.showItems(annotations, {
-          animate: true,
-          padding: new mapkit.Padding(30, 30, 30, 30),
-          minimumSpan: new mapkit.CoordinateSpan(0.02, 0.02),
-        });
-      } else if (annotations.length === 1) {
-        map.setCenterAnimated(annotations[0].coordinate);
-        map.setCameraDistanceAnimated(8000);
-      } else if (center) {
-        map.setCenterAnimated(new mapkit.Coordinate(center.lat, center.lng));
-        map.setCameraDistanceAnimated(zoom);
-      }
-    }, 100);
-  }, [showMobileMap]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (!isLoaded || !mapInstanceRef.current) return;
+    // Trigger resize event so MapKit recalculates viewport
+    window.dispatchEvent(new Event('resize'));
+    // Then re-fit to pins after two animation frames (ensures layout is complete)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapkit = (window as any).mapkit;
+        const map = mapInstanceRef.current;
+        if (!mapkit || !map) return;
+        if (annotationsRef.current.length > 1) {
+          map.showItems(annotationsRef.current, {
+            animate: true,
+            padding: new mapkit.Padding(30, 30, 30, 30),
+            minimumSpan: new mapkit.CoordinateSpan(0.02, 0.02),
+          });
+        } else if (annotationsRef.current.length === 1) {
+          map.setCenterAnimated(annotationsRef.current[0].coordinate);
+          map.setCameraDistanceAnimated(8000);
+        }
+      });
+    });
+  }, [isLoaded, showMobileMap]);
 
   const centerOn = useCallback((lat: number, lng: number, distance?: number) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

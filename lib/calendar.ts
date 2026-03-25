@@ -1,7 +1,15 @@
 // Generate ICS calendar file content
-export function generateCalendarEvent(): string {
-  const eventTitle = 'Vote YES for Kansas City Earnings Tax Renewal';
-  const eventDescription = `Don't forget to vote!
+
+interface CalendarEventOptions {
+  location?: string;
+  title?: string;
+  description?: string;
+}
+
+export function generateCalendarEvent(options?: CalendarEventOptions): string {
+  const eventTitle = options?.title || 'Vote YES for Kansas City Earnings Tax Renewal';
+  const location = options?.location || 'Kansas City, MO';
+  const eventDescription = options?.description || `Don't forget to vote!
 
 Check your registration: https://voteroutreach.sos.mo.gov/portal/
 
@@ -44,7 +52,7 @@ DTSTART:${startDate}
 DTEND:${endDate}
 SUMMARY:${escapeICS(eventTitle)}
 DESCRIPTION:${escapeICS(eventDescription)}
-LOCATION:Kansas City, MO
+LOCATION:${escapeICS(location)}
 BEGIN:VALARM
 TRIGGER:-P5D
 ACTION:DISPLAY
@@ -66,14 +74,80 @@ END:VCALENDAR`;
   return icsContent;
 }
 
-export function downloadCalendarEvent() {
-  const icsContent = generateCalendarEvent();
+export function downloadCalendarEvent(options?: CalendarEventOptions) {
+  const icsContent = generateCalendarEvent(options);
   const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement('a');
   link.href = url;
   link.download = 'vote-yes-kc-april-7-2026.ics';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+export function generateEarlyVoteEvent(
+  date: string, // YYYY-MM-DD
+  time: string, // HH:MM (24h)
+  locationName: string,
+  locationAddress: string
+): string {
+  const [year, month, day] = date.split('-').map(Number);
+  const [hour, minute] = time.split(':').map(Number);
+
+  // CDT is UTC-5
+  const startUtcH = hour + 5;
+  const startDate = `${year}${String(month).padStart(2, '0')}${String(day).padStart(2, '0')}T${String(startUtcH).padStart(2, '0')}${String(minute).padStart(2, '0')}00Z`;
+  // 15 min event
+  const endMin = minute + 15;
+  const endH = startUtcH + Math.floor(endMin / 60);
+  const endM = endMin % 60;
+  const endDate = `${year}${String(month).padStart(2, '0')}${String(day).padStart(2, '0')}T${String(endH).padStart(2, '0')}${String(endM).padStart(2, '0')}00Z`;
+
+  // Morning reminder at 8 AM CDT = 13:00 UTC
+  const morningDate = `${year}${String(month).padStart(2, '0')}${String(day).padStart(2, '0')}T130000Z`;
+
+  const uid = `vote-early-plan-${Date.now()}@together-kc.com`;
+  const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+  const escapeICS = (text: string) => text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+
+  return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Together KC//Vote Early Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${now}
+DTSTART:${startDate}
+DTEND:${endDate}
+SUMMARY:${escapeICS(`Vote Early at ${locationName}`)}
+DESCRIPTION:${escapeICS(`Time to vote early!\n\nLocation: ${locationName}\n${locationAddress}\n\nRemember to bring a valid photo ID.\n\nVote YES to renew the KC earnings tax!`)}
+LOCATION:${escapeICS(`${locationName}, ${locationAddress}`)}
+BEGIN:VALARM
+TRIGGER;VALUE=DATE-TIME:${morningDate}
+ACTION:DISPLAY
+DESCRIPTION:Voting today at ${escapeICS(locationName)}!
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Voting in 1 hour at ${escapeICS(locationName)}!
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+}
+
+export function downloadEarlyVoteEvent(date: string, time: string, locationName: string, locationAddress: string) {
+  const ics = generateEarlyVoteEvent(date, time, locationName, locationAddress);
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `vote-early-${date}.ics`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
