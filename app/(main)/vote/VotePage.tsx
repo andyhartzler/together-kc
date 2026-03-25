@@ -552,35 +552,39 @@ export default function VotePage() {
               </svg>
             </div>
 
-            {/* Near Me button */}
-            <button
-              onClick={handleNearMe}
-              disabled={userLoc.isLocating}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-white/60 text-xs font-medium hover:bg-white/20 transition-all disabled:opacity-50"
-            >
-              {userLoc.isLocating ? (
-                <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              ) : (
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                </svg>
-              )}
-              Near Me
-            </button>
+            {/* Near Me button - only for early voting */}
+            {showEarly && (
+              <button
+                onClick={handleNearMe}
+                disabled={userLoc.isLocating}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-white/60 text-xs font-medium hover:bg-white/20 transition-all disabled:opacity-50"
+              >
+                {userLoc.isLocating ? (
+                  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                ) : (
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  </svg>
+                )}
+                Near Me
+              </button>
+            )}
 
-            {/* Mobile map toggle */}
-            <button
-              onClick={() => setShowMobileMap(!showMobileMap)}
-              className="md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-white/60 text-xs font-medium hover:bg-white/20 transition-all"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-              </svg>
-              {showMobileMap ? 'List' : 'Map'}
-            </button>
+            {/* Mobile map toggle - only for early voting */}
+            {showEarly && (
+              <button
+                onClick={() => setShowMobileMap(!showMobileMap)}
+                className="md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-white/60 text-xs font-medium hover:bg-white/20 transition-all"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                {showMobileMap ? 'List' : 'Map'}
+              </button>
+            )}
           </div>
         </div>
 
@@ -712,6 +716,12 @@ export default function VotePage() {
                       )}
 
                       <AssignedLocationCard info={precinctInfo} isLoading={false} />
+
+                      {precinctInfo && (
+                        <p className="text-white/60 text-sm text-center py-2">
+                          Polls open 6:00 AM - 7:00 PM on April 7
+                        </p>
+                      )}
 
                       {/* View all locations toggle (for counties with multiple polling sites) */}
                       {allLocationsCount > 0 && (

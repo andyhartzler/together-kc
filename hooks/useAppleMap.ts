@@ -180,6 +180,11 @@ export function useAppleMap(options: UseAppleMapOptions) {
       map.setCenterAnimated(newAnnotations[0].coordinate);
       map.setCameraDistanceAnimated(8000);
     }
+
+    // Force MapKit to re-render tiles at correct resolution
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 300);
   }, [isLoaded, pins, onPinSelect]);
 
   // Effect to handle mobile map toggle
