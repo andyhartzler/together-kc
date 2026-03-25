@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QRCodeSVG } from 'qrcode.react';
 
 interface Props {
   address: string;
@@ -13,11 +12,57 @@ interface Props {
 export default function SendToPhone({ address, locationName }: Props) {
   const [showChoice, setShowChoice] = useState(false);
   const [mapType, setMapType] = useState<'apple' | 'google' | null>(null);
+  const qrRef = useRef<HTMLDivElement>(null);
 
   const encoded = encodeURIComponent(address);
   const appleUrl = `https://maps.apple.com/?daddr=${encoded}`;
   const googleUrl = `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
   const qrUrl = mapType === 'apple' ? appleUrl : googleUrl;
+
+  // Generate styled QR code when mapType is selected
+  useEffect(() => {
+    if (!mapType || !qrRef.current) return;
+
+    // Dynamic import to avoid SSR issues
+    import('qr-code-styling').then(({ default: QRCodeStyling }) => {
+      if (!qrRef.current) return;
+      qrRef.current.innerHTML = '';
+
+      const qr = new QRCodeStyling({
+        width: 280,
+        height: 280,
+        type: 'svg',
+        data: qrUrl,
+        image: '/images/qr-logo.png',
+        dotsOptions: {
+          color: '#1e3a5f',
+          type: 'dots',
+        },
+        cornersSquareOptions: {
+          color: '#1e3a5f',
+          type: 'extra-rounded',
+        },
+        cornersDotOptions: {
+          color: '#e53935',
+          type: 'dot',
+        },
+        backgroundOptions: {
+          color: '#ffffff',
+        },
+        imageOptions: {
+          crossOrigin: 'anonymous',
+          imageSize: 0.35,
+          margin: 6,
+          hideBackgroundDots: true,
+        },
+        qrOptions: {
+          errorCorrectionLevel: 'H',
+        },
+      });
+
+      qr.append(qrRef.current);
+    });
+  }, [mapType, qrUrl]);
 
   const handleClose = () => {
     setMapType(null);
@@ -82,12 +127,12 @@ export default function SendToPhone({ address, locationName }: Props) {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative bg-white rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl"
+              className="relative bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl"
             >
               {/* Close button */}
               <button
                 onClick={handleClose}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -95,7 +140,7 @@ export default function SendToPhone({ address, locationName }: Props) {
               </button>
 
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2.5 mb-2">
+                <div className="flex items-center justify-center gap-2.5 mb-3">
                   <Image
                     src={mapType === 'apple' ? '/images/apple-maps-icon.png' : '/images/google-maps-icon.png'}
                     alt={mapType === 'apple' ? 'Apple Maps' : 'Google Maps'}
@@ -107,30 +152,17 @@ export default function SendToPhone({ address, locationName }: Props) {
                     {mapType === 'apple' ? 'Apple Maps' : 'Google Maps'}
                   </h3>
                 </div>
-                <p className="text-gray-500 text-sm mb-5">
-                  Scan with your phone to open directions to
+                <p className="text-gray-500 text-sm mb-1">
+                  Scan to get directions to
                 </p>
-                <p className="text-gray-800 font-semibold text-sm mb-6">{locationName}</p>
+                <p className="text-gray-800 font-semibold text-sm mb-5">{locationName}</p>
 
-                {/* QR Code */}
-                <div className="inline-flex p-4 bg-white rounded-xl border border-gray-100 shadow-inner">
-                  <QRCodeSVG
-                    value={qrUrl}
-                    size={200}
-                    level="H"
-                    fgColor="#1e3a5f"
-                    bgColor="white"
-                    includeMargin={false}
-                    imageSettings={{
-                      src: '/images/qr-logo.png',
-                      height: 44,
-                      width: 44,
-                      excavate: true,
-                    }}
-                  />
+                {/* Styled QR Code */}
+                <div className="flex justify-center">
+                  <div ref={qrRef} className="inline-block rounded-2xl overflow-hidden" />
                 </div>
 
-                <p className="text-gray-400 text-xs mt-4">
+                <p className="text-gray-400 text-xs mt-5">
                   Point your phone camera at the QR code
                 </p>
               </div>
