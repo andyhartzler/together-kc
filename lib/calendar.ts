@@ -106,13 +106,29 @@ export function generateEarlyVoteEvent(
   const endM = endMin % 60;
   const endDate = `${year}${String(month).padStart(2, '0')}${String(day).padStart(2, '0')}T${String(endH).padStart(2, '0')}${String(endM).padStart(2, '0')}00Z`;
 
-  // Morning reminder at 8 AM CDT = 13:00 UTC
-  const morningDate = `${year}${String(month).padStart(2, '0')}${String(day).padStart(2, '0')}T130000Z`;
+  // Check if 12 hours before has already passed
+  const eventTime = new Date(`${date}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`);
+  const twelveHoursBefore = new Date(eventTime.getTime() - 12 * 60 * 60 * 1000);
+  const include12hReminder = twelveHoursBefore > new Date();
 
   const uid = `vote-early-plan-${Date.now()}@together-kc.com`;
   const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
   const escapeICS = (text: string) => text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+
+  const alarms: string[] = [];
+  if (include12hReminder) {
+    alarms.push(`BEGIN:VALARM
+TRIGGER:-PT12H
+ACTION:DISPLAY
+DESCRIPTION:Voting in 12 hours at ${escapeICS(locationName)}!
+END:VALARM`);
+  }
+  alarms.push(`BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Voting in 1 hour at ${escapeICS(locationName)}!
+END:VALARM`);
 
   return `BEGIN:VCALENDAR
 VERSION:2.0
@@ -127,16 +143,7 @@ DTEND:${endDate}
 SUMMARY:${escapeICS(`Vote Early at ${locationName}`)}
 DESCRIPTION:${escapeICS(`Time to vote early!\n\nLocation: ${locationName}\n${locationAddress}\n\nRemember to bring a valid photo ID.\n\nVote YES to renew the KC earnings tax!`)}
 LOCATION:${escapeICS(`${locationName}, ${locationAddress}`)}
-BEGIN:VALARM
-TRIGGER;VALUE=DATE-TIME:${morningDate}
-ACTION:DISPLAY
-DESCRIPTION:Voting today at ${escapeICS(locationName)}!
-END:VALARM
-BEGIN:VALARM
-TRIGGER:-PT1H
-ACTION:DISPLAY
-DESCRIPTION:Voting in 1 hour at ${escapeICS(locationName)}!
-END:VALARM
+${alarms.join('\n')}
 END:VEVENT
 END:VCALENDAR`;
 }
