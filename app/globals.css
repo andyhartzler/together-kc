@@ -263,3 +263,12 @@ html {
 .pac-container {
   z-index: 10000 !important;
 }
+
+/* Hide scrollbar for horizontal pill containers */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
