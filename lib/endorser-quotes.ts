@@ -21,7 +21,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Lisa Krigsten",
     title: "Chair",
-    organization: "Civic Council of\nGreater Kansas City",
+    organization: "Civic Council of Greater Kansas City",
     quote: "Without Kansas City, Missouri, there is no Kansas City region. We are standing in the heart of what makes this region great.",
     imageSrc: "/images/endorsers/lisa-krigsten.png",
     imageScale: 1.25,
@@ -30,7 +30,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Lisa Krigsten",
     title: "Chair",
-    organization: "Civic Council of\nGreater Kansas City",
+    organization: "Civic Council of Greater Kansas City",
     quote: "Kansas City works when we invest in it, and the earnings tax is the investment that is needed for us to go forth and continue to grow.",
     imageSrc: "/images/endorsers/lisa-krigsten.png",
     imageScale: 1.25,
@@ -64,8 +64,8 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "Fraternal Order of Police\nLodge 99",
     quote: "If you support the police department, if you support law enforcement, I need you to vote. I'm not talking about Republican and I'm not talking about Democrat. I'm talking about Kansas City.",
     imageSrc: "/images/endorsers/brad-lemon.png",
-    imageScale: 1.0,
-    imageOffsetY: -4,
+    imageScale: 1.15,
+    imageOffsetY: -2,
   },
   {
     name: "Brad Lemon",
@@ -73,15 +73,15 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "Fraternal Order of Police\nLodge 99",
     quote: "We have a fully funded police department. We've increased the number of people we're hiring. Please allow us to continue to do the work we're doing to protect this city.",
     imageSrc: "/images/endorsers/brad-lemon.png",
-    imageScale: 1.0,
-    imageOffsetY: -4,
+    imageScale: 1.15,
+    imageOffsetY: -2,
   },
 
   // 5. Dan Heizman (M) — IAFF Local 42 President
   {
     name: "Dan Heizman",
     title: "President",
-    organization: "International Association of\nFire Fighters, Local 42",
+    organization: "International Association of Fire Fighters\nLocal 42",
     quote: "We love working in this community. We love working for this city. Please get out there on April 7th. Vote yes. Support your firefighters. Support your city.",
     imageSrc: "/images/endorsers/dan-heizman.png",
     imageScale: 1.1,
@@ -90,7 +90,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
   {
     name: "Dan Heizman",
     title: "President",
-    organization: "International Association of\nFire Fighters, Local 42",
+    organization: "International Association of Fire Fighters\nLocal 42",
     quote: "If we lose this tax, we're going to see massive job cuts, and the level of service we're able to give to the citizens of this city is going to go down dramatically.",
     imageSrc: "/images/endorsers/dan-heizman.png",
     imageScale: 1.1,
@@ -104,8 +104,8 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "Jackson County, Missouri",
     quote: "Without the earnings tax, everything we have built together begins to unravel.",
     imageSrc: "/images/endorsers/melesa-johnson.png",
-    imageScale: 1.3,
-    imageOffsetY: -6,
+    imageScale: 1.15,
+    imageOffsetY: -4,
   },
   {
     name: "Melesa Johnson",
@@ -113,8 +113,8 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     organization: "Jackson County, Missouri",
     quote: "Fewer officers means fewer investigations. Fewer investigations means fewer cases referred for charging, and that means offenders who should be held accountable will walk free longer.",
     imageSrc: "/images/endorsers/melesa-johnson.png",
-    imageScale: 1.3,
-    imageOffsetY: -6,
+    imageScale: 1.15,
+    imageOffsetY: -4,
   },
 
   // 7. Charlie Shields (M)
