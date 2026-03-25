@@ -342,25 +342,54 @@ export default function VotePage() {
   // Step 1: No county selected - show county selection
   if (!county) {
     return (
-      <div className="min-h-screen bg-navy">
-        <SmartBanner />
-        <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
-          <VotingModeToggle mode={mode} onChange={setMode} />
-          <LocationEntry
-            onCountySelect={handleCountySelect}
-            onLocationFound={handleLocationFound}
-            onExplore={handleExplore}
-            mode={mode}
-          />
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Animated gradient background - matches Hero */}
+        <div className="fixed inset-0 bg-gradient-to-br from-navy via-navy/95 to-sky/80" />
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-coral/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-1/4 -right-1/4 w-2/3 h-2/3 bg-sky/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/3 right-1/4 w-1/3 h-1/3 bg-golden/5 rounded-full blur-3xl" />
         </div>
-        <VoterInfo county={county} />
+        <div className="fixed inset-0 opacity-[0.02] pointer-events-none" style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)',
+          backgroundSize: '50px 50px',
+        }} />
+
+        {/* Content */}
+        <div className="relative z-10">
+          <SmartBanner />
+          <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
+            <VotingModeToggle mode={mode} onChange={setMode} />
+            <LocationEntry
+              onCountySelect={handleCountySelect}
+              onLocationFound={handleLocationFound}
+              onExplore={handleExplore}
+              mode={mode}
+            />
+          </div>
+          <VoterInfo county={county} />
+        </div>
       </div>
     );
   }
 
   // Step 2: County selected - show locations + map
   return (
-    <div className="min-h-screen bg-navy">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated gradient background - matches Hero */}
+      <div className="fixed inset-0 bg-gradient-to-br from-navy via-navy/95 to-sky/80" />
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-coral/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/4 -right-1/4 w-2/3 h-2/3 bg-sky/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-1/3 h-1/3 bg-golden/5 rounded-full blur-3xl" />
+      </div>
+      <div className="fixed inset-0 opacity-[0.02] pointer-events-none" style={{
+        backgroundImage: 'linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)',
+        backgroundSize: '50px 50px',
+      }} />
+
+      {/* Content */}
+      <div className="relative z-10">
       <SmartBanner />
 
       {/* Controls bar */}
@@ -593,6 +622,7 @@ export default function VotePage() {
       </div>
 
       <VoterInfo county={county} />
+      </div>
     </div>
   );
 }
