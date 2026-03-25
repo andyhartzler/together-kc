@@ -289,6 +289,13 @@ export default function VotePage() {
     showMobileMap,
   });
 
+  // When assigned location is found, zoom map to it
+  useEffect(() => {
+    if (assignedPin && mapLoaded) {
+      centerOn(assignedPin.lat, assignedPin.lng, 2000);
+    }
+  }, [assignedPin, mapLoaded, centerOn]);
+
   const handleCardSelect = useCallback((id: string) => {
     setSelectedId((prev) => prev === id ? null : id);
     const loc = visibleLocations.find((l) => l.id === id);
