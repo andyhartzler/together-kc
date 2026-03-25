@@ -298,36 +298,40 @@ export default function VotePage() {
   const showElectionDay = mode === 'election-day' && !!county;
   const showEarly = mode === 'early';
 
-  // Platte County election day locations for map pins + list
+  // Platte County election day locations for map pins + list (KC-only for map overview)
   const platteElectionDayLocations = useMemo(() => {
-    return PLATTE_COUNTY_LOCATIONS.map((loc) => ({
-      id: loc.id,
-      name: loc.name,
-      address: loc.address,
-      city: loc.city,
-      state: loc.state,
-      zip: loc.zip,
-      lat: loc.lat,
-      lng: loc.lng,
-      county: 'Platte' as County,
-      precincts: [] as number[],
-    }));
+    return PLATTE_COUNTY_LOCATIONS
+      .filter((loc) => loc.isKC !== false)
+      .map((loc) => ({
+        id: loc.id,
+        name: loc.name,
+        address: loc.address,
+        city: loc.city,
+        state: loc.state,
+        zip: loc.zip,
+        lat: loc.lat,
+        lng: loc.lng,
+        county: 'Platte' as County,
+        precincts: [] as number[],
+      }));
   }, []);
 
-  // Clay County election day locations for map pins + list
+  // Clay County election day locations for map pins + list (KC-only for map overview)
   const clayElectionDayLocations = useMemo(() => {
-    return CLAY_COUNTY_LOCATIONS.map((loc) => ({
-      id: loc.id,
-      name: loc.name,
-      address: loc.address,
-      city: loc.city,
-      state: 'MO',
-      zip: loc.zip,
-      lat: loc.lat,
-      lng: loc.lng,
-      county: 'Clay' as County,
-      precincts: [] as number[],
-    }));
+    return CLAY_COUNTY_LOCATIONS
+      .filter((loc) => loc.isKC !== false)
+      .map((loc) => ({
+        id: loc.id,
+        name: loc.name,
+        address: loc.address,
+        city: loc.city,
+        state: 'MO',
+        zip: loc.zip,
+        lat: loc.lat,
+        lng: loc.lng,
+        county: 'Clay' as County,
+        precincts: [] as number[],
+      }));
   }, []);
 
   // Determine which locations to show for map pins
@@ -456,7 +460,7 @@ export default function VotePage() {
 
   // County-specific helper text for the address prompt
   const countyAddressPromptText = useMemo(() => {
-    if (county === 'Jackson') return 'On Election Day, you can vote at any KC polling location.';
+    if (county === 'Jackson') return 'Enter your address to find your assigned polling place.';
     if (county === 'Cass') return 'Cass County voters must vote at their assigned precinct polling place.';
     return `${county} County voters must vote at their assigned precinct polling place on Election Day.`;
   }, [county]);
@@ -728,7 +732,7 @@ export default function VotePage() {
                         <div className="space-y-3">
                           <p className="text-white/40 text-xs">
                             {county === 'Jackson'
-                              ? 'You can also vote at any of these locations.'
+                              ? 'Other polling locations in Kansas City.'
                               : `All ${county} County polling locations:`}
                           </p>
                           {allLocationsList.map((loc) => (

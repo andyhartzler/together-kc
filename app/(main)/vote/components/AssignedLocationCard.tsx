@@ -65,9 +65,6 @@ export default function AssignedLocationCard({ info, isLoading }: Props) {
           </button>
         )}
       </div>
-      <p className="text-green-300/60 text-[10px] mt-3 leading-relaxed">
-        You can also vote at any other KC polling location on Election Day.
-      </p>
       {info.sampleBallot && (
         <BallotViewer
           isOpen={showBallot}
