@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -47,28 +48,17 @@ export default function SendToPhone({ address, locationName }: Props) {
             <div className="mt-2 flex gap-2">
               <button
                 onClick={() => setMapType('apple')}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl bg-white/[0.05] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all"
+                className="flex-1 flex items-center justify-center gap-3 px-3 py-3 rounded-xl bg-white/[0.05] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all"
               >
-                {/* Apple Maps icon */}
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                  <rect width="24" height="24" rx="5.4" fill="#2D2D2D"/>
-                  <path d="M12 3.5C8.41 3.5 5.5 6.41 5.5 10c0 5.25 6.5 10.5 6.5 10.5s6.5-5.25 6.5-10.5c0-3.59-2.91-6.5-6.5-6.5zm0 8.83c-1.29 0-2.33-1.04-2.33-2.33S10.71 7.67 12 7.67s2.33 1.04 2.33 2.33S13.29 12.33 12 12.33z" fill="white"/>
-                </svg>
-                <span className="text-white/70 text-xs font-medium">Apple Maps</span>
+                <Image src="/images/apple-maps-icon.png" alt="Apple Maps" width={28} height={28} className="w-7 h-7 rounded-md" />
+                <span className="text-white/70 text-sm font-medium">Apple Maps</span>
               </button>
               <button
                 onClick={() => setMapType('google')}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl bg-white/[0.05] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all"
+                className="flex-1 flex items-center justify-center gap-3 px-3 py-3 rounded-xl bg-white/[0.05] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all"
               >
-                {/* Google Maps icon */}
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 2.02.68 3.88 1.81 5.38L12 9V2z" fill="#34A853"/>
-                  <path d="M5 9c0 2.02.68 3.88 1.81 5.38L12 9H5z" fill="#FBBC04"/>
-                  <path d="M12 2v7l5.19 5.38A6.965 6.965 0 0019 9c0-3.87-3.13-7-7-7z" fill="#EA4335"/>
-                  <circle cx="12" cy="9" r="2.5" fill="white"/>
-                </svg>
-                <span className="text-white/70 text-xs font-medium">Google Maps</span>
+                <Image src="/images/google-maps-icon.png" alt="Google Maps" width={28} height={28} className="w-7 h-7 rounded-md" />
+                <span className="text-white/70 text-sm font-medium">Google Maps</span>
               </button>
             </div>
           </motion.div>
@@ -105,19 +95,14 @@ export default function SendToPhone({ address, locationName }: Props) {
               </button>
 
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  {mapType === 'apple' ? (
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                      <rect width="24" height="24" rx="5.4" fill="#2D2D2D"/>
-                      <path d="M12 3.5C8.41 3.5 5.5 6.41 5.5 10c0 5.25 6.5 10.5 6.5 10.5s6.5-5.25 6.5-10.5c0-3.59-2.91-6.5-6.5-6.5zm0 8.83c-1.29 0-2.33-1.04-2.33-2.33S10.71 7.67 12 7.67s2.33 1.04 2.33 2.33S13.29 12.33 12 12.33z" fill="white"/>
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/>
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 2.02.68 3.88 1.81 5.38L12 9V2z" fill="#34A853"/>
-                      <circle cx="12" cy="9" r="2.5" fill="white"/>
-                    </svg>
-                  )}
+                <div className="flex items-center justify-center gap-2.5 mb-2">
+                  <Image
+                    src={mapType === 'apple' ? '/images/apple-maps-icon.png' : '/images/google-maps-icon.png'}
+                    alt={mapType === 'apple' ? 'Apple Maps' : 'Google Maps'}
+                    width={32}
+                    height={32}
+                    className="w-8 h-8 rounded-lg"
+                  />
                   <h3 className="text-gray-900 font-bold text-lg">
                     {mapType === 'apple' ? 'Apple Maps' : 'Google Maps'}
                   </h3>
