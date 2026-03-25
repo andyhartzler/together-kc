@@ -100,7 +100,15 @@ export default function Navigation() {
               })}
               {/* Vote YES Button - hidden on home page until scrolled */}
               <button
-                onClick={() => router.push('/vote')}
+                onClick={() => {
+                  if (pathname.startsWith('/vote')) {
+                    // Already on vote page - reset to county selection
+                    router.push('/vote');
+                    window.location.href = '/vote';
+                  } else {
+                    router.push('/vote');
+                  }
+                }}
                 className={cn(
                   "ml-2 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transition-all duration-300 hover:scale-105 hover:bg-coral/90 shadow-lg",
                   pathname === '/' && !isScrolled
@@ -207,7 +215,11 @@ export default function Navigation() {
                     <button
                       onClick={() => {
                         setIsMobileMenuOpen(false);
-                        router.push('/vote');
+                        if (pathname.startsWith('/vote')) {
+                          window.location.href = '/vote';
+                        } else {
+                          router.push('/vote');
+                        }
                       }}
                       className="w-full px-6 py-4 text-lg text-white font-semibold bg-gradient-to-r from-coral to-coral/90 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-coral/30 border border-white/20"
                       style={{

@@ -60,14 +60,25 @@ export default function VotePage() {
   const electionDayInputRef = useRef<HTMLInputElement>(null);
   const electionDayAcRef = useRef(false);
 
-  // Sync state to URL params
+  // Sync state to URL params - push on county change (for back button), replace on mode change
+  const prevCountyRef = useRef<County | null>(initialCounty);
   useEffect(() => {
     const params = new URLSearchParams();
     if (county) params.set('county', county.toLowerCase());
     if (mode !== getVotingMode()) params.set('mode', mode);
     const search = params.toString();
     const newUrl = search ? `/vote?${search}` : '/vote';
-    router.replace(newUrl, { scroll: false });
+
+    const countyChanged = county !== prevCountyRef.current;
+    prevCountyRef.current = county;
+
+    if (countyChanged && county !== null) {
+      // County selected = forward navigation, push so back button works
+      router.push(newUrl, { scroll: false });
+    } else {
+      // Mode toggle or county cleared = replace (don't add history entries)
+      router.replace(newUrl, { scroll: false });
+    }
   }, [county, mode, router]);
 
   const userLoc = useUserLocation();
