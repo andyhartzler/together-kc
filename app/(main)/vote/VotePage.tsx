@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getVotingMode, getDistanceMiles, type VotingMode, type County, COUNTY_CENTERS } from '@/lib/voting-utils';
-import { type GeocodeResult } from '@/lib/geocoding';
+import { type GeocodeResult, initAutocomplete, geocodeAddress } from '@/lib/geocoding';
 import { EARLY_VOTING_LOCATIONS } from '@/lib/polling-data';
 import { JACKSON_COUNTY_LOCATIONS } from '@/lib/election-day-data';
 import { useAppleMap } from '@/hooks/useAppleMap';
@@ -31,6 +31,12 @@ export default function VotePage() {
   const [precinctInfo, setPrecinctInfo] = useState<PrecinctInfo | null>(null);
   const [precinctLoading, setPrecinctLoading] = useState(false);
   const [showMobileMap, setShowMobileMap] = useState(false);
+  const [electionDayAddress, setElectionDayAddress] = useState('');
+  const [electionDaySearching, setElectionDaySearching] = useState(false);
+  const [electionDayError, setElectionDayError] = useState<string | null>(null);
+  const [showAllElectionDay, setShowAllElectionDay] = useState(false);
+  const electionDayInputRef = useRef<HTMLInputElement>(null);
+  const electionDayAcRef = useRef(false);
 
   const userLoc = useUserLocation();
 
@@ -81,11 +87,46 @@ export default function VotePage() {
     setTimeout(() => handleLocationFound(userLoc.location!), 0);
   }
 
+  // Init autocomplete for election day address input
+  useEffect(() => {
+    if (!electionDayInputRef.current || electionDayAcRef.current) return;
+    if (!(mode === 'election-day' && county === 'Jackson' && !precinctInfo)) return;
+    electionDayAcRef.current = true;
+    initAutocomplete(electionDayInputRef.current, (result) => {
+      setElectionDayAddress(result.formattedAddress);
+      setUserCoords({ lat: result.lat, lng: result.lng });
+      lookupPrecinct(result.lat, result.lng);
+    }).catch(() => {});
+  }, [mode, county, precinctInfo, lookupPrecinct]);
+
+  const handleElectionDaySearch = useCallback(async () => {
+    if (!electionDayAddress.trim()) return;
+    setElectionDaySearching(true);
+    setElectionDayError(null);
+    try {
+      const result = await geocodeAddress(electionDayAddress.trim());
+      if (result && result.lat && result.lng) {
+        setUserCoords({ lat: result.lat, lng: result.lng });
+        lookupPrecinct(result.lat, result.lng);
+      } else {
+        setElectionDayError("Couldn't find that address. Please check and try again.");
+      }
+    } catch {
+      setElectionDayError('Something went wrong. Please try again.');
+    } finally {
+      setElectionDaySearching(false);
+    }
+  }, [electionDayAddress, lookupPrecinct]);
+
   const handleChangeCounty = useCallback(() => {
     setCounty(null);
     setUserCoords(null);
     setPrecinctInfo(null);
     setSelectedId(null);
+    setElectionDayAddress('');
+    setElectionDayError(null);
+    setShowAllElectionDay(false);
+    electionDayAcRef.current = false;
   }, []);
 
   // Filter early voting locations by county
@@ -118,9 +159,10 @@ export default function VotePage() {
   // Determine which locations to show for map pins
   const visibleLocations = useMemo(() => {
     if (showEarly) return earlyLocations;
-    if (showElectionDayJackson) return electionDayLocations;
+    if (showElectionDayJackson && showAllElectionDay) return electionDayLocations;
+    // Don't show all 53 pins by default on election day
     return [];
-  }, [showEarly, showElectionDayJackson, earlyLocations, electionDayLocations]);
+  }, [showEarly, showElectionDayJackson, showAllElectionDay, earlyLocations, electionDayLocations]);
 
   // Map pins from visible locations
   const mapPins = useMemo(() => {
@@ -273,33 +315,94 @@ export default function VotePage() {
 
               {showElectionDayJackson && (
                 <>
-                  {(precinctLoading || precinctInfo) && (
-                    <AssignedLocationCard info={precinctInfo} isLoading={precinctLoading} />
-                  )}
+                  {/* Step A: No precinct found yet - prompt for address */}
+                  {!precinctInfo && !precinctLoading && (
+                    <div className="rounded-2xl bg-white/5 border border-white/10 p-5 space-y-4">
+                      <div className="text-center">
+                        <div className="w-14 h-14 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-3">
+                          <svg className="w-7 h-7 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-white font-bold text-lg mb-1">Find Your Assigned Polling Place</h3>
+                        <p className="text-white/50 text-sm">Enter your home address to find your designated Election Day polling location.</p>
+                      </div>
 
-                  {precinctInfo && (
-                    <div className="flex items-center gap-3 py-2">
-                      <div className="flex-1 h-px bg-white/10" />
-                      <span className="text-white/30 text-xs">Or vote at any KC location</span>
-                      <div className="flex-1 h-px bg-white/10" />
+                      <div className="flex gap-2">
+                        <input
+                          ref={electionDayInputRef}
+                          type="text"
+                          value={electionDayAddress}
+                          onChange={(e) => setElectionDayAddress(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleElectionDaySearch()}
+                          placeholder="Enter your home address"
+                          className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/30 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-base min-h-[48px]"
+                        />
+                        <button
+                          onClick={handleElectionDaySearch}
+                          disabled={electionDaySearching || !electionDayAddress.trim()}
+                          className="px-5 rounded-xl bg-coral text-white font-semibold hover:bg-coral/90 disabled:opacity-40 transition-all min-h-[48px]"
+                        >
+                          {electionDaySearching ? (
+                            <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                            </svg>
+                          ) : 'Find'}
+                        </button>
+                      </div>
+
+                      {electionDayError && (
+                        <p className="text-red-400 text-sm text-center">{electionDayError}</p>
+                      )}
+
+                      <p className="text-white/30 text-xs text-center">
+                        Jackson County voters can vote at any KC location using a ballot marking device, but your assigned location offers a paper ballot.
+                      </p>
                     </div>
                   )}
 
-                  <p className="text-white/50 text-sm">
-                    {electionDayLocations.length} Election Day polling locations in Kansas City.
-                  </p>
+                  {/* Step B: Loading precinct */}
+                  {precinctLoading && (
+                    <AssignedLocationCard info={null} isLoading />
+                  )}
 
-                  {electionDayLocations.map((loc) => (
-                    <LocationCard
-                      key={loc.id}
-                      location={loc}
-                      userLat={userCoords?.lat}
-                      userLng={userCoords?.lng}
-                      isEarlyVoting={false}
-                      isSelected={selectedId === loc.id}
-                      onSelect={handleCardSelect}
-                    />
-                  ))}
+                  {/* Step C: Precinct found - show assigned + option to see all */}
+                  {precinctInfo && (
+                    <>
+                      <AssignedLocationCard info={precinctInfo} isLoading={false} />
+
+                      <button
+                        onClick={() => setShowAllElectionDay(!showAllElectionDay)}
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white/50 text-sm font-medium hover:bg-white/10 hover:text-white/70 transition-all"
+                      >
+                        <svg className={`w-4 h-4 transition-transform ${showAllElectionDay ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                        {showAllElectionDay ? 'Hide other locations' : `View all ${electionDayLocations.length} KC polling locations`}
+                      </button>
+
+                      {showAllElectionDay && (
+                        <div className="space-y-3">
+                          <p className="text-white/40 text-xs">
+                            You can also vote at any of these locations using a ballot marking device.
+                          </p>
+                          {electionDayLocations.map((loc) => (
+                            <LocationCard
+                              key={loc.id}
+                              location={loc}
+                              userLat={userCoords?.lat}
+                              userLng={userCoords?.lng}
+                              isEarlyVoting={false}
+                              isSelected={selectedId === loc.id}
+                              onSelect={handleCardSelect}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </>
               )}
 

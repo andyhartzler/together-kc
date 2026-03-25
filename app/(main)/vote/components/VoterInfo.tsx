@@ -9,7 +9,7 @@ export default function VoterInfo() {
 
   return (
     <div className="border-t border-white/10 bg-navy">
-      <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-2xl mx-auto px-4 pt-8 pb-20 space-y-6">
         <button
           onClick={() => setIdExpanded(!idExpanded)}
           className="w-full flex items-center justify-between rounded-xl bg-golden/10 border border-golden/20 px-4 py-3.5 min-h-[48px]"
