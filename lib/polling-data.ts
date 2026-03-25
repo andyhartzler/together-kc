@@ -42,8 +42,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64130',
     county: 'Jackson',
-    lat: 39.033447,
-    lng: -94.533215,
+    lat: 39.0340263,
+    lng: -94.5334411,
     isElectionBoard: true,
     hours: [
       {
@@ -84,8 +84,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64133',
     county: 'Jackson',
-    lat: 39.037057,
-    lng: -94.462708,
+    lat: 39.0368734,
+    lng: -94.4629826,
     hours: [
       {
         label: 'Weekdays',
@@ -115,8 +115,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64106',
     county: 'Jackson',
-    lat: 39.111574,
-    lng: -94.568624,
+    lat: 39.1113925,
+    lng: -94.5687153,
     hours: [
       {
         label: 'Weekdays',
@@ -148,7 +148,7 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     zip: '64132',
     county: 'Jackson',
     lat: 38.984099,
-    lng: -94.566154,
+    lng: -94.5661537,
     hours: [
       {
         label: 'Weekdays',
@@ -179,8 +179,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64128',
     county: 'Jackson',
-    lat: 39.064853,
-    lng: -94.552530,
+    lat: 39.0647657,
+    lng: -94.5523316,
     hours: [
       {
         label: 'Weekdays',
@@ -210,8 +210,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64113',
     county: 'Jackson',
-    lat: 39.027850,
-    lng: -94.583697,
+    lat: 39.0277082,
+    lng: -94.5840435,
     hours: [
       {
         label: 'Weekdays',
@@ -241,8 +241,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64134',
     county: 'Jackson',
-    lat: 38.921642,
-    lng: -94.525294,
+    lat: 38.9217232,
+    lng: -94.5255603,
     hours: [
       {
         label: 'Weekdays',
@@ -274,8 +274,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64068',
     county: 'Clay',
-    lat: 39.248489,
-    lng: -94.421611,
+    lat: 39.2484968,
+    lng: -94.4216175,
     isElectionBoard: true,
     hours: [
       {
@@ -300,8 +300,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64079',
     county: 'Platte',
-    lat: 39.371475,
-    lng: -94.780117,
+    lat: 39.3499953,
+    lng: -94.7601388,
     isElectionBoard: true,
     hours: [
       {
@@ -335,8 +335,8 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     state: 'MO',
     zip: '64701',
     county: 'Cass',
-    lat: 38.654500,
-    lng: -94.348364,
+    lat: 38.6544446,
+    lng: -94.3482519,
     isElectionBoard: true,
     hours: [
       {

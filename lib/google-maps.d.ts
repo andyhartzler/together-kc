@@ -25,6 +25,22 @@ declare global {
           ) => void;
         };
         places: {
+          PlacesService: new (el: HTMLElement) => {
+            findPlaceFromQuery: (
+              request: { query: string; fields: string[] },
+              callback: (
+                results: Array<{
+                  geometry?: {
+                    location: {
+                      lat: () => number;
+                      lng: () => number;
+                    };
+                  };
+                }> | null,
+                status: string
+              ) => void
+            ) => void;
+          };
           Autocomplete: new (
             input: HTMLInputElement,
             opts?: {

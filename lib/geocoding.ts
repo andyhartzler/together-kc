@@ -100,6 +100,44 @@ export async function detectCountyFromCoords(lat: number, lng: number): Promise<
   });
 }
 
+/** Find exact building coordinates using Places JS library (client-side) */
+export async function findPlaceCoordinates(
+  name: string,
+  address: string
+): Promise<{ lat: number; lng: number } | null> {
+  await loadGoogleMaps();
+  if (!window.google?.maps?.places) {
+    // Fallback to geocoding
+    const r = await geocodeAddress(`${name}, ${address}`);
+    return r ? { lat: r.lat, lng: r.lng } : null;
+  }
+
+  return new Promise((resolve) => {
+    // Create a hidden map element for PlacesService (required)
+    const service = new window.google!.maps.places.PlacesService(
+      document.createElement('div')
+    );
+    const query = `${name}, ${address}`;
+
+    service.findPlaceFromQuery(
+      { query, fields: ['geometry'] },
+      (results, status) => {
+        if (status === 'OK' && results?.length && results[0].geometry) {
+          resolve({
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng(),
+          });
+        } else {
+          // Fallback to geocoding
+          geocodeAddress(`${name}, ${address}`).then(r =>
+            resolve(r ? { lat: r.lat, lng: r.lng } : null)
+          );
+        }
+      }
+    );
+  });
+}
+
 export async function initAutocomplete(
   input: HTMLInputElement,
   onPlaceSelected: (result: GeocodeResult) => void

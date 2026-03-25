@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getVotingMode, getDistanceMiles, type VotingMode, type County, COUNTY_CENTERS } from '@/lib/voting-utils';
-import { type GeocodeResult, initAutocomplete, geocodeAddress } from '@/lib/geocoding';
+import { type GeocodeResult, initAutocomplete, geocodeAddress, findPlaceCoordinates } from '@/lib/geocoding';
 import { EARLY_VOTING_LOCATIONS } from '@/lib/polling-data';
 import { JACKSON_COUNTY_LOCATIONS } from '@/lib/election-day-data';
 import { useAppleMap } from '@/hooks/useAppleMap';
@@ -240,12 +240,16 @@ export default function VotePage() {
 
     (async () => {
       try {
-        const result = await geocodeAddress(precinctInfo.pollingAddress);
-        if (result) {
+        // Use Places API for exact building location (more accurate than geocoding)
+        const coords = await findPlaceCoordinates(
+          precinctInfo.pollingPlace,
+          precinctInfo.pollingAddress
+        );
+        if (coords) {
           setAssignedPin({
             id: 'assigned',
-            lat: result.lat,
-            lng: result.lng,
+            lat: coords.lat,
+            lng: coords.lng,
             title: precinctInfo.pollingPlace,
             subtitle: precinctInfo.pollingAddress,
             color: '#22c55e',
