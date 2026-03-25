@@ -82,6 +82,19 @@ export default function VotePage() {
     }
   }, [county, mode, router]);
 
+  // Handle bfcache restoration - reset state when page is restored from back-forward cache
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        // Page was restored from bfcache - reset state
+        setCounty(initialCounty);
+        setPrecinctInfo(null);
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const userLoc = useUserLocation();
 
   // Unified precinct lookup for ALL counties
@@ -270,6 +283,15 @@ export default function VotePage() {
     setMode(newMode);
     setShowMobileMap(false);
     setSelectedId(null);
+    if (newMode === 'election-day') {
+      // Don't carry over county from early voting - prompt for address
+      setCounty(null);
+      setUserCoords(null);
+      setPrecinctInfo(null);
+      setElectionDayAddress('');
+      setElectionDayError(null);
+      electionDayAcRef.current = false;
+    }
   }, []);
 
   // Filter early voting locations by county
@@ -524,7 +546,7 @@ export default function VotePage() {
           <div className="flex-1 w-full sm:w-auto">
             <VotingModeToggle mode={mode} onChange={handleModeChange} />
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className={`flex items-center gap-2 flex-shrink-0 ${mode === 'election-day' ? 'w-full sm:w-auto justify-center sm:justify-end' : ''}`}>
             {/* County selector dropdown */}
             <div className="relative">
               <select
@@ -540,14 +562,14 @@ export default function VotePage() {
                   setElectionDayError(null);
                   electionDayAcRef.current = false;
                 }}
-                className="appearance-none px-4 py-2 pr-8 rounded-full bg-coral/20 border border-coral/30 text-coral text-sm font-bold cursor-pointer hover:bg-coral/30 transition-all outline-none"
+                className="appearance-none cursor-pointer px-5 py-2.5 pr-9 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/15 transition-all outline-none"
               >
                 <option value="Jackson" className="bg-navy text-white">Jackson County</option>
                 <option value="Clay" className="bg-navy text-white">Clay County</option>
                 <option value="Platte" className="bg-navy text-white">Platte County</option>
                 <option value="Cass" className="bg-navy text-white">Cass County</option>
               </select>
-              <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-coral pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>
@@ -622,26 +644,6 @@ export default function VotePage() {
               )}
 
               {/* Calendar reminder - shown on election day after address is entered */}
-              {mode === 'election-day' && precinctInfo && (
-                <button
-                  onClick={() => {
-                    downloadElectionDayEvent(precinctInfo.pollingPlace, precinctInfo.pollingAddress);
-                    setCalendarAdded(true);
-                    setTimeout(() => setCalendarAdded(false), 3000);
-                  }}
-                  className="w-full flex items-center gap-3 p-4 rounded-xl bg-sky/10 border border-sky/20 hover:bg-sky/15 transition-all text-left"
-                >
-                  <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center shrink-0 text-lg">
-                    {calendarAdded ? '\u2713' : '\ud83d\udcc5'}
-                  </div>
-                  <div>
-                    <h4 className="text-white font-semibold text-sm">
-                      {calendarAdded ? 'Added to Calendar!' : 'Remind Me to Vote'}
-                    </h4>
-                    <p className="text-white/40 text-xs">Add Election Day at {precinctInfo.pollingPlace} to your calendar</p>
-                  </div>
-                </button>
-              )}
 
               {/* UNIFIED ELECTION DAY FLOW - same for ALL counties */}
               {showElectionDay && (
@@ -718,9 +720,31 @@ export default function VotePage() {
                       <AssignedLocationCard info={precinctInfo} isLoading={false} />
 
                       {precinctInfo && (
-                        <p className="text-white/60 text-sm text-center py-2">
-                          Polls open 6:00 AM - 7:00 PM on April 7
-                        </p>
+                        <div className="rounded-xl bg-white/[0.04] border border-white/10 p-4 text-center">
+                          <p className="text-white font-bold text-base">Polls open 6:00 AM - 7:00 PM</p>
+                          <p className="text-white/50 text-xs mt-1">Tuesday, April 7, 2026</p>
+                        </div>
+                      )}
+
+                      {precinctInfo && (
+                        <button
+                          onClick={() => {
+                            downloadElectionDayEvent(precinctInfo.pollingPlace, precinctInfo.pollingAddress);
+                            setCalendarAdded(true);
+                            setTimeout(() => setCalendarAdded(false), 3000);
+                          }}
+                          className="w-full flex items-center gap-3 p-4 rounded-xl bg-sky/10 border border-sky/20 hover:bg-sky/15 transition-all text-left"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center shrink-0 text-lg">
+                            {calendarAdded ? '\u2713' : '\ud83d\udcc5'}
+                          </div>
+                          <div>
+                            <h4 className="text-white font-semibold text-sm">
+                              {calendarAdded ? 'Added to Calendar!' : 'Remind Me to Vote'}
+                            </h4>
+                            <p className="text-white/40 text-xs">Add Election Day at {precinctInfo.pollingPlace} to your calendar</p>
+                          </div>
+                        </button>
                       )}
 
                       {/* View all locations toggle (for counties with multiple polling sites) */}
@@ -766,8 +790,8 @@ export default function VotePage() {
           </div>
 
           {/* Right column - Apple Maps (desktop always, mobile toggle) */}
-          <div className={`flex-1 min-h-[400px] md:min-h-[calc(100vh-200px)] ${showMobileMap ? 'block' : 'hidden md:block'}`}>
-            <div className="relative w-full h-full min-h-[400px] md:min-h-[calc(100vh-200px)] rounded-xl overflow-hidden border border-white/10">
+          <div className={`flex-1 min-h-[250px] md:min-h-[calc(100vh-200px)] ${(showMobileMap || (assignedPin && mode === 'election-day')) ? 'block' : 'hidden md:block'}`}>
+            <div className="relative w-full h-full min-h-[250px] md:min-h-[calc(100vh-200px)] rounded-xl overflow-hidden border border-white/10">
               <div ref={mapRef} className="absolute inset-0" />
               {!mapLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center bg-navy/80">

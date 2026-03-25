@@ -221,7 +221,7 @@ export function useAppleMap(options: UseAppleMapOptions) {
     const coord = new mapkit.Coordinate(lat, lng);
     if (distance) {
       // Single animated region change (smooth zoom + pan in one motion)
-      const spanDeg = distance / 111000;
+      const spanDeg = distance / 500000; // Much tighter zoom
       const region = new mapkit.CoordinateRegion(coord, new mapkit.CoordinateSpan(spanDeg, spanDeg));
       map.setRegionAnimated(region);
     } else {

@@ -128,6 +128,7 @@ export default function Hero() {
         >
           <Link
             href="/vote"
+            prefetch={false}
             className="group relative z-0 flex cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap border border-white/10 px-8 py-4 text-lg text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px hover:scale-105 shadow-lg"
           >
             Vote YES
