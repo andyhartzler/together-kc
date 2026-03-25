@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-
+import { motion, AnimatePresence } from 'framer-motion';
 import { getVotingMode, getDistanceMiles, type VotingMode, type County, COUNTY_CENTERS } from '@/lib/voting-utils';
 import { type GeocodeResult, initAutocomplete, geocodeAddress, findPlaceCoordinates } from '@/lib/geocoding';
 import { EARLY_VOTING_LOCATIONS, COUNTY_ELECTION_BOARDS } from '@/lib/polling-data';
