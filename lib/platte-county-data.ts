@@ -46,3 +46,29 @@ export const PLATTE_COUNTY_LOCATIONS: PlatteCountyLocation[] = [
   { id: 'pc-28', name: 'Seven Bridges Clubhouse', address: '17800 NW Seven Bridges Rd', city: 'Platte City', state: 'MO', zip: '64079', lat: 39.3269108, lng: -94.7863907, precincts: ["Seven Bridges"] },
   { id: 'pc-29', name: 'Oasis Clubhouse', address: '6040 N Nevada Ave', city: 'Parkville', state: 'MO', zip: '64152', lat: 39.204697, lng: -94.7473285, precincts: ["Parkville West"] },
 ];
+
+// ArcGIS precinct name normalization
+const ARCGIS_NAME_MAP: Record<string, string> = {
+  'Riveside': 'Riverside',
+  'Prairie Point': 'Prairie Pt',
+  'Par4': 'Par 4',
+  'MidContinent': 'Mid Continent',
+  'SouthEast': 'Southeast',
+  'Farley Stillings': 'Farley',
+};
+
+/** Given an ArcGIS precinct name (e.g. "Park Hill 36"), find the polling site */
+export function findPlattePollingPlace(arcgisPrecinctName: string): PlatteCountyLocation | null {
+  const baseName = arcgisPrecinctName.replace(/\s*\d+$/, '').trim();
+  const normalized = ARCGIS_NAME_MAP[baseName] || baseName;
+
+  return PLATTE_COUNTY_LOCATIONS.find(loc =>
+    loc.precincts.some(p =>
+      p.toLowerCase() === normalized.toLowerCase() ||
+      p.toLowerCase() === baseName.toLowerCase()
+    )
+  ) || null;
+}
+
+/** Platte County ArcGIS precinct boundary service URL */
+export const PLATTE_ARCGIS_URL = 'https://services.arcgis.com/KP64F8Xif9MkUwD4/arcgis/rest/services/Voting_Precincts/FeatureServer/0/query';
