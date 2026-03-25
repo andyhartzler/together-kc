@@ -1,43 +1,123 @@
 import { EndorserQuote } from "@/components/ui/EndorserCardStack";
 
-// Ordered list: Mayor first, Bridgette second, then alternating M/F as much as possible.
+// Ordered list: Press conference speakers first (in speech order), then remaining endorsers.
 // Each person has exactly 2 quotes shown consecutively.
 const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
-  // 1. Quinton Lucas (Mayor)
+  // 1. Quinton Lucas (Mayor) — opened the press conference
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "This tax has funded our city since 1963. It covers nearly half our city services, from fire rescue to street repairs to trash pickup. Vote yes to keep Kansas City working.",
+    quote: "A yes on the earnings tax is a yes for public safety, a yes for public works improvements, a yes for our employees' housing development, and a yes for Kansas City.",
     imageSrc: "/images/council/mayor-q.png",
   },
   {
     name: "Quinton Lucas",
     title: "Mayor of Kansas City",
-    quote: "Kansas City is where the region comes to work, to play, to celebrate. The earnings tax lets us provide services to everyone who uses our roads and relies on our first responders, not just residents.",
+    quote: "This is not a new cost, a new expense on Kansas City taxpayers. It continues to allow us to deliver the core basic services we need, with half of those funds coming from non-Kansas Citians.",
     imageSrc: "/images/council/mayor-q.png",
   },
 
-  // 2. Bridgette Williams (F)
+  // 2. Lisa Krigsten (F) — Civic Council Chair
+  {
+    name: "Lisa Krigsten",
+    title: "Chair",
+    organization: "Civic Council of\nGreater Kansas City",
+    quote: "Without Kansas City, Missouri, there is no Kansas City region. We are standing in the heart of what makes this region great.",
+    imageSrc: "/images/endorsers/lisa-krigsten.png",
+    imageScale: 1.25,
+    imageOffsetY: 4,
+  },
+  {
+    name: "Lisa Krigsten",
+    title: "Chair",
+    organization: "Civic Council of\nGreater Kansas City",
+    quote: "Kansas City works when we invest in it, and the earnings tax is the investment that is needed for us to go forth and continue to grow.",
+    imageSrc: "/images/endorsers/lisa-krigsten.png",
+    imageScale: 1.25,
+    imageOffsetY: 4,
+  },
+
+  // 3. Bridgette Williams (F) — Heavy Constructors
   {
     name: "Bridgette Williams",
-    title: "Executive Director",
+    title: "Executive Director & CEO",
     organization: "Heavy Constructors Association\nof Greater Kansas City",
-    quote: "If you care about getting back to work, your children getting to school, your trash getting picked up, your snow being removed, and your streets maintained, vote yes on April 7th.",
+    quote: "Behind the earnings tax is real people. If you want your trash picked up, your potholes filled, your roads repaired, vote for the earnings tax. Without the earnings tax, those jobs disappear.",
     imageSrc: "/images/endorsers/bridgette-williams.png",
     imageScale: 1.25,
     imageOffsetY: 4,
   },
   {
     name: "Bridgette Williams",
-    title: "Executive Director",
+    title: "Executive Director & CEO",
     organization: "Heavy Constructors Association\nof Greater Kansas City",
-    quote: "Kansas City's ability to remain competitive depends on renewing the earnings tax. It is an investment that is critical for our future. Kansas City's ability to repair and upgrade its aging infrastructure is at stake.",
+    quote: "The earnings tax is the one tax that people pay that don't live in Kansas City. You have people from all over the region and from other states paying because they work here.",
     imageSrc: "/images/endorsers/bridgette-williams.png",
     imageScale: 1.25,
     imageOffsetY: 4,
   },
 
-  // 3. Charlie Shields (M)
+  // 4. Brad Lemon (M) — FOP President
+  {
+    name: "Brad Lemon",
+    title: "President",
+    organization: "Fraternal Order of Police\nLodge 99",
+    quote: "If you support the police department, if you support law enforcement, I need you to vote. I'm not talking about Republican and I'm not talking about Democrat. I'm talking about Kansas City.",
+    imageSrc: "/images/endorsers/brad-lemon.png",
+    imageScale: 1.25,
+    imageOffsetY: 4,
+  },
+  {
+    name: "Brad Lemon",
+    title: "President",
+    organization: "Fraternal Order of Police\nLodge 99",
+    quote: "We have a fully funded police department. We've increased the number of people we're hiring. Please allow us to continue to do the work we're doing to protect this city.",
+    imageSrc: "/images/endorsers/brad-lemon.png",
+    imageScale: 1.25,
+    imageOffsetY: 4,
+  },
+
+  // 5. Dan Heizman (M) — IAFF Local 42 President
+  {
+    name: "Dan Heizman",
+    title: "President",
+    organization: "International Association of\nFire Fighters, Local 42",
+    quote: "We love working in this community. We love working for this city. Please get out there on April 7th. Vote yes. Support your firefighters. Support your city.",
+    imageSrc: "/images/endorsers/dan-heizman.png",
+    imageScale: 1.25,
+    imageOffsetY: 4,
+  },
+  {
+    name: "Dan Heizman",
+    title: "President",
+    organization: "International Association of\nFire Fighters, Local 42",
+    quote: "If we lose this tax, we're going to see massive job cuts, and the level of service we're able to give to the citizens of this city is going to go down dramatically.",
+    imageSrc: "/images/endorsers/dan-heizman.png",
+    imageScale: 1.25,
+    imageOffsetY: 4,
+  },
+
+  // 6. Melesa Johnson (F) — Jackson County Prosecutor
+  {
+    name: "Melesa Johnson",
+    title: "Prosecutor",
+    organization: "Jackson County, Missouri",
+    quote: "Without the earnings tax, everything we have built together begins to unravel.",
+    imageSrc: "/images/endorsers/melesa-johnson.png",
+    imageScale: 1.25,
+    imageOffsetY: 4,
+  },
+  {
+    name: "Melesa Johnson",
+    title: "Prosecutor",
+    organization: "Jackson County, Missouri",
+    quote: "Fewer officers means fewer investigations. Fewer investigations means fewer cases referred for charging, and that means offenders who should be held accountable will walk free longer.",
+    imageSrc: "/images/endorsers/melesa-johnson.png",
+    imageScale: 1.25,
+    imageOffsetY: 4,
+  },
+
+  // 7. Charlie Shields (M)
   {
     name: "Charlie Shields",
     title: "President & CEO",
