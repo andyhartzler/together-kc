@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import VotePage from './VotePage';
 
 export const metadata: Metadata = {
@@ -14,5 +15,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <VotePage />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-navy" />}>
+      <VotePage />
+    </Suspense>
+  );
 }

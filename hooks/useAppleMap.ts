@@ -131,11 +131,12 @@ export function useAppleMap(options: UseAppleMapOptions) {
     if (newAnnotations.length > 1) {
       map.showItems(newAnnotations, {
         animate: true,
-        padding: new mapkit.Padding(60, 60, 60, 60),
+        padding: new mapkit.Padding(30, 30, 30, 30),
+        minimumSpan: new mapkit.CoordinateSpan(0.02, 0.02),
       });
     } else if (newAnnotations.length === 1) {
       map.setCenterAnimated(newAnnotations[0].coordinate);
-      map.setCameraDistanceAnimated(15000);
+      map.setCameraDistanceAnimated(8000);
     }
   }, [isLoaded, pins, onPinSelect]);
 

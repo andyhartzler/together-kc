@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getVotingMode, getDistanceMiles, type VotingMode, type County, COUNTY_CENTERS } from '@/lib/voting-utils';
 import { type GeocodeResult, initAutocomplete, geocodeAddress } from '@/lib/geocoding';
@@ -25,9 +26,28 @@ interface PrecinctInfo {
 }
 
 export default function VotePage() {
-  const [mode, setMode] = useState<VotingMode>(getVotingMode);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Read initial state from URL
+  const urlCounty = searchParams.get('county');
+  const urlMode = searchParams.get('mode');
+
+  const [mode, setMode] = useState<VotingMode>(() => {
+    if (urlMode === 'election-day') return 'election-day';
+    if (urlMode === 'early') return 'early';
+    return getVotingMode();
+  });
+
+  const initialCounty = (() => {
+    if (!urlCounty) return null;
+    const normalized = urlCounty.charAt(0).toUpperCase() + urlCounty.slice(1).toLowerCase();
+    if (['Jackson', 'Clay', 'Platte', 'Cass'].includes(normalized)) return normalized as County;
+    return null;
+  })();
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [county, setCounty] = useState<County | null>(null);
+  const [county, setCounty] = useState<County | null>(initialCounty);
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [precinctInfo, setPrecinctInfo] = useState<PrecinctInfo | null>(null);
   const [precinctLoading, setPrecinctLoading] = useState(false);
@@ -39,6 +59,16 @@ export default function VotePage() {
   const [calendarAdded, setCalendarAdded] = useState(false);
   const electionDayInputRef = useRef<HTMLInputElement>(null);
   const electionDayAcRef = useRef(false);
+
+  // Sync state to URL params
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (county) params.set('county', county.toLowerCase());
+    if (mode !== getVotingMode()) params.set('mode', mode);
+    const search = params.toString();
+    const newUrl = search ? `/vote?${search}` : '/vote';
+    router.replace(newUrl, { scroll: false });
+  }, [county, mode, router]);
 
   const userLoc = useUserLocation();
 
