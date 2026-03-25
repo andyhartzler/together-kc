@@ -64,10 +64,11 @@ export default function BallotViewer({ isOpen, onClose, pdfUrl, title, subtitle 
 
         {/* PDF container - white background for the document */}
         <div className="flex-1 bg-white overflow-auto min-h-[60vh]">
-          <embed
-            src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-            type="application/pdf"
+          <iframe
+            src={`${pdfUrl}#toolbar=0`}
             className="w-full h-full min-h-[60vh]"
+            title={title}
+            style={{ border: 'none' }}
           />
         </div>
       </motion.div>

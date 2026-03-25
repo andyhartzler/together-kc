@@ -38,7 +38,7 @@ export const CLAY_COUNTY_LOCATIONS: ClayCountyLocation[] = [
   { id: 'cc-22', name: 'Birmingham Community Church', address: '421 Spratley St', city: 'Kansas City', zip: '64161', lat: 39.1658975, lng: -94.4498564, precincts: ['21 Chouteau 22'] },
   { id: 'cc-23', name: 'Immanuel Presbyterian Church', address: '3800 NE Parvin Rd', city: 'Kansas City', zip: '64117', lat: 39.1634911, lng: -94.5344415, precincts: ['21 Gallatin 23'] },
   { id: 'cc-24', name: 'Bethel United Church of Christ', address: '4900 NE Parvin Rd', city: 'Kansas City', zip: '64117', lat: 39.1678529, lng: -94.5227614, precincts: ['21 Gallatin 24'] },
-  { id: 'cc-25', name: 'Gashland United Methodist Church', address: '7715 N Oak Trfwy', city: 'Kansas City', zip: '64118', lat: 39.2347771, lng: -94.5756807, precincts: ['21Gallatin 25'] },
+  { id: 'cc-25', name: 'Gashland United Methodist Church', address: '7715 N Oak Trfwy', city: 'Kansas City', zip: '64118', lat: 39.2347771, lng: -94.5756807, precincts: ['21 Gallatin 25'] },
   { id: 'cc-27', name: 'New Life Church', address: '10500 N Central St', city: 'Kansas City', zip: '64155', lat: 39.2834394, lng: -94.583801, precincts: ['21 Chouteau 27', '21 Platte 1'] },
   { id: 'cc-28', name: 'The Venue North', address: '232 NE Barry Road', city: 'Kansas City', zip: '64155', lat: 39.246788, lng: -94.5780071, precincts: ['21 Chouteau 28'] },
   { id: 'cc-32', name: 'North Star United Methodist Church', address: '11250 N Eastern Rd', city: 'Kansas City', zip: '64156', lat: 39.2975903, lng: -94.492636, precincts: ['21 Platte 2'] },
@@ -107,7 +107,7 @@ const ARCGIS_21_PREFIX_MAP: Record<string, string> = {
   '21-20': '21 Gallatin 20',
   '21-23': '21 Gallatin 23',
   '21-24': '21 Gallatin 24',
-  '21-25': '21Gallatin 25',
+  '21-25': '21 Gallatin 25',
   '21-29': '21 Gallatin 29',
 };
 

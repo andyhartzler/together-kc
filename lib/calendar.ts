@@ -21,11 +21,11 @@ Find your polling location by county:
 - Platte County: https://www.plattecountymovotes.gov
 - Cass County: https://casscounty.com/2355/Absentee-Information`;
 
-  // April 7, 2026 - CDT (UTC-5)
-  // 6:00 AM CDT = 11:00 UTC
-  // 7:00 PM CDT = 00:00 UTC (April 8)
-  const startDate = '20260407T110000Z';
-  const endDate = '20260408T000000Z';
+  // April 7, 2026 - CDT (UTC-6)
+  // 6:00 AM CDT = 12:00 UTC
+  // 7:00 PM CDT = 01:00 UTC (April 8)
+  const startDate = '20260407T120000Z';
+  const endDate = '20260408T010000Z';
 
   // Generate a unique ID
   const uid = `vote-yes-kc-${Date.now()}@together-kc.com`;
@@ -97,8 +97,8 @@ export function generateEarlyVoteEvent(
   const [year, month, day] = date.split('-').map(Number);
   const [hour, minute] = time.split(':').map(Number);
 
-  // CDT is UTC-5
-  const startUtcH = hour + 5;
+  // CDT is UTC-6
+  const startUtcH = hour + 6;
   const startDate = `${year}${String(month).padStart(2, '0')}${String(day).padStart(2, '0')}T${String(startUtcH).padStart(2, '0')}${String(minute).padStart(2, '0')}00Z`;
   // 15 min event
   const endMin = minute + 15;
@@ -165,9 +165,9 @@ export function generateElectionDayEvent(
   pollingPlace: string,
   pollingAddress: string
 ): string {
-  // April 7, 2026, 6:00 AM - 7:00 PM CDT (UTC-5)
-  const startDate = '20260407T110000Z'; // 6 AM CDT
-  const endDate = '20260408T000000Z';   // 7 PM CDT
+  // April 7, 2026, 6:00 AM - 7:00 PM CDT (UTC-6)
+  const startDate = '20260407T120000Z'; // 6 AM CDT
+  const endDate = '20260408T010000Z';   // 7 PM CDT
 
   const uid = `election-day-${Date.now()}@together-kc.com`;
   const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';

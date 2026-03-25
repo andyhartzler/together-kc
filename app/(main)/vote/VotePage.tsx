@@ -119,6 +119,8 @@ export default function VotePage() {
             pollingAddress: pollAddress,
             sampleBallot,
           });
+        } else {
+          setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
         }
       } else if (forCounty === 'Platte') {
         const params = new URLSearchParams({
@@ -142,7 +144,11 @@ export default function VotePage() {
               pollingAddress: `${site.address}, ${site.city}, MO ${site.zip}`,
               sampleBallot: null,
             });
+          } else {
+            setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
           }
+        } else {
+          setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
         }
       } else if (forCounty === 'Clay') {
         const params = new URLSearchParams({
@@ -168,7 +174,11 @@ export default function VotePage() {
               pollingAddress: `${site.address}, ${site.city}, MO ${site.zip}`,
               sampleBallot: `/ballots/clay/style-${styleNum}.pdf`,
             });
+          } else {
+            setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
           }
+        } else {
+          setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
         }
       } else if (forCounty === 'Cass') {
         // Cass County doesn't have ArcGIS boundary data
@@ -207,12 +217,18 @@ export default function VotePage() {
   }, [userLoc]);
 
   // When geolocation resolves, apply it
-  const lastLocRef = useMemo(() => ({ applied: null as GeocodeResult | null }), []);
-  if (userLoc.location && userLoc.location !== lastLocRef.applied) {
-    lastLocRef.applied = userLoc.location;
-    // Schedule state update after render
-    setTimeout(() => handleLocationFound(userLoc.location!), 0);
-  }
+  useEffect(() => {
+    if (userLoc.location) {
+      handleLocationFound(userLoc.location);
+    }
+  }, [userLoc.location, handleLocationFound]);
+
+  // Reset autocomplete ref when precinctInfo is cleared (e.g. county change)
+  useEffect(() => {
+    if (precinctInfo === null) {
+      electionDayAcRef.current = false;
+    }
+  }, [precinctInfo]);
 
   // Init autocomplete for election day address input - works for ALL counties
   useEffect(() => {
@@ -234,8 +250,12 @@ export default function VotePage() {
     try {
       const result = await geocodeAddress(electionDayAddress.trim());
       if (result && result.lat && result.lng) {
-        setUserCoords({ lat: result.lat, lng: result.lng });
-        lookupPrecinct(result.lat, result.lng, county);
+        if (!result.isInKC) {
+          setElectionDayError("That address doesn't appear to be in Kansas City. Please check your address.");
+        } else {
+          setUserCoords({ lat: result.lat, lng: result.lng });
+          lookupPrecinct(result.lat, result.lng, county);
+        }
       } else {
         setElectionDayError("Couldn't find that address. Please check and try again.");
       }

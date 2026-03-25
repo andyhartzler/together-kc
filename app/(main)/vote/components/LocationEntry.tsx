@@ -36,12 +36,13 @@ export default function LocationEntry({ onCountySelect, onLocationFound, onExplo
 
   // Init autocomplete for election day address input
   useEffect(() => {
-    if (mode !== 'election-day' || !electionDayInputRef.current || edAcInitRef.current) return;
+    if (mode !== 'election-day' || !electionDayInputRef.current) return;
     edAcInitRef.current = true;
     initAutocomplete(electionDayInputRef.current, (result) => {
       setAddressInput(result.formattedAddress);
       onLocationFound(result);
     }).catch(() => {});
+    return () => { edAcInitRef.current = false; };
   }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleManualSearch = async () => {

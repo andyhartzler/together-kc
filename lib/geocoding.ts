@@ -1,8 +1,8 @@
 import type { County } from './voting-utils';
 
 const GOOGLE_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || 'AIzaSyA0tnMaQcXi8fn5azv72QOxF0UmsYY7d8k';
-// Tight bounds around Kansas City proper (excludes Independence, OP, Liberty center)
-const KC_BOUNDS = { sw: { lat: 38.88, lng: -94.72 }, ne: { lat: 39.32, lng: -94.44 } };
+// Bounds covering all 4 KC counties (Jackson, Clay, Platte, Cass) including northern Platte County
+const KC_BOUNDS = { sw: { lat: 38.55, lng: -94.95 }, ne: { lat: 39.55, lng: -94.2 } };
 
 let loadPromise: Promise<void> | null = null;
 
