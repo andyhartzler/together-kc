@@ -65,7 +65,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     quote: "If you support the police department, if you support law enforcement, I need you to vote. I'm not talking about Republican and I'm not talking about Democrat. I'm talking about Kansas City.",
     imageSrc: "/images/endorsers/brad-lemon.png",
     imageScale: 1.0,
-    imageOffsetY: 0,
+    imageOffsetY: 3,
   },
   {
     name: "Brad Lemon",
@@ -74,7 +74,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     quote: "We have a fully funded police department. We've increased the number of people we're hiring. Please allow us to continue to do the work we're doing to protect this city.",
     imageSrc: "/images/endorsers/brad-lemon.png",
     imageScale: 1.0,
-    imageOffsetY: 0,
+    imageOffsetY: 3,
   },
 
   // 5. Dan Heizman (M) — IAFF Local 42 President
@@ -105,7 +105,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     quote: "Without the earnings tax, everything we have built together begins to unravel.",
     imageSrc: "/images/endorsers/melesa-johnson.png",
     imageScale: 1.0,
-    imageOffsetY: 0,
+    imageOffsetY: 3,
   },
   {
     name: "Melesa Johnson",
@@ -114,7 +114,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     quote: "Fewer officers means fewer investigations. Fewer investigations means fewer cases referred for charging, and that means offenders who should be held accountable will walk free longer.",
     imageSrc: "/images/endorsers/melesa-johnson.png",
     imageScale: 1.0,
-    imageOffsetY: 0,
+    imageOffsetY: 3,
   },
 
   // 7. Charlie Shields (M)
