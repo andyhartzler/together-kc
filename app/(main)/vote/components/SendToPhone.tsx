@@ -50,14 +50,14 @@ export default function SendToPhone({ address, locationName }: Props) {
                 onClick={() => setMapType('apple')}
                 className="flex-1 flex items-center justify-center gap-3 px-3 py-3 rounded-xl bg-white/[0.05] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all"
               >
-                <Image src="/images/apple-maps-icon.png" alt="Apple Maps" width={28} height={28} className="w-7 h-7 rounded-md" />
+                <Image src="/images/apple-maps-icon.png" alt="Apple Maps" width={28} height={28} className="w-7 h-7 rounded-md" priority />
                 <span className="text-white/70 text-sm font-medium">Apple Maps</span>
               </button>
               <button
                 onClick={() => setMapType('google')}
                 className="flex-1 flex items-center justify-center gap-3 px-3 py-3 rounded-xl bg-white/[0.05] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all"
               >
-                <Image src="/images/google-maps-icon.png" alt="Google Maps" width={28} height={28} className="w-7 h-7 rounded-md" />
+                <Image src="/images/google-maps-icon.png" alt="Google Maps" width={28} height={28} className="w-7 h-7 rounded-md" priority />
                 <span className="text-white/70 text-sm font-medium">Google Maps</span>
               </button>
             </div>
