@@ -13,6 +13,12 @@ declare global {
                   short_name: string;
                   types: string[];
                 }>;
+                geometry: {
+                  location: {
+                    lat: () => number;
+                    lng: () => number;
+                  };
+                };
               }> | null,
               status: string
             ) => void
@@ -37,6 +43,12 @@ declare global {
                 short_name: string;
                 types: string[];
               }>;
+              geometry?: {
+                location: {
+                  lat: () => number;
+                  lng: () => number;
+                };
+              };
             };
             setBounds: (bounds: unknown) => void;
           };
