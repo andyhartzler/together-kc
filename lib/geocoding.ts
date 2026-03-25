@@ -1,6 +1,6 @@
 import type { County } from './voting-utils';
 
-const GOOGLE_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || '';
+const GOOGLE_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || 'AIzaSyA0tnMaQcXi8fn5azv72QOxF0UmsYY7d8k';
 const KC_BOUNDS = { sw: { lat: 38.8, lng: -94.8 }, ne: { lat: 39.4, lng: -94.3 } };
 
 let loadPromise: Promise<void> | null = null;
