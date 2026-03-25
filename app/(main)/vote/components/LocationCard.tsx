@@ -109,9 +109,9 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
                 Get Directions
               </a>
 
-              {/* Inline map */}
+              {/* Inline map - mobile only (desktop has the sidebar map) */}
               {loc.lat !== 0 && (
-                <div className="rounded-lg overflow-hidden h-[180px] bg-navy/50 border border-white/10 relative">
+                <div className="md:hidden rounded-lg overflow-hidden h-[180px] bg-navy/50 border border-white/10 relative">
                   <div ref={inlineMapRef} className="absolute inset-0" />
                   {!inlineMapLoaded && (
                     <div className="absolute inset-0 flex items-center justify-center">
