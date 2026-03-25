@@ -26,8 +26,8 @@ export default function VoterInfo({ county }: Props) {
         {/* Mobile: Check Registration first, then What to Bring, then county contact */}
         {/* Desktop: 3-column horizontal layout */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* Check Registration - first on mobile (order-first), third on desktop (md:order-3) */}
-          <div className="rounded-2xl bg-white/[0.04] border border-sky/20 p-6 flex flex-col relative overflow-hidden order-first md:order-3">
+          {/* Check Registration - second on mobile (order-2), third on desktop (md:order-3) */}
+          <div className="rounded-2xl bg-white/[0.04] border border-sky/20 p-6 flex flex-col relative overflow-hidden order-2 md:order-3">
             <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-sky to-sky/30" />
             <div className="pl-3 flex flex-col flex-1">
               <h3 className="text-white font-bold text-base mb-3">Check Registration</h3>
@@ -50,8 +50,8 @@ export default function VoterInfo({ county }: Props) {
             </div>
           </div>
 
-          {/* What to Bring - second on mobile (order-2), first on desktop (md:order-1) */}
-          <div className="rounded-2xl bg-white/[0.04] border border-golden/20 p-6 relative overflow-hidden order-2 md:order-1">
+          {/* What to Bring - first on mobile (order-first), first on desktop (md:order-1) */}
+          <div className="rounded-2xl bg-white/[0.04] border border-golden/20 p-6 relative overflow-hidden order-first md:order-1">
             <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-golden to-golden/30" />
             <h3 className="text-golden font-bold text-base mb-4 pl-3">What to Bring</h3>
             <div className="space-y-3 pl-3">
