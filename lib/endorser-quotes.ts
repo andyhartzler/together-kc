@@ -51,7 +51,7 @@ const ORDERED_QUOTES: Omit<EndorserQuote, 'id'>[] = [
     name: "Charlie Shields",
     title: "President & CEO",
     organization: "University Health",
-    quote: "If you were in an accident in this city, you're gonna come to University Health by ambulance\u2014that's supported by the earnings tax. You're gonna travel on those roads\u2014that's supported by the earnings tax. It's that important.",
+    quote: "If you were in an accident in this city, you're gonna come to University Health by ambulance, that's supported by the earnings tax. You're gonna travel on those roads, that's supported by the earnings tax. It's that important.",
     imageSrc: "/images/endorsers/charlie-shields.png",
     imageScale: 1.27,
     imageOffsetY: 4,
