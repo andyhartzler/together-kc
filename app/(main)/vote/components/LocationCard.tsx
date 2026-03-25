@@ -350,7 +350,7 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
               )}
 
               {isCass && isEarlyVoting && <p className="text-amber-400 text-[11px] font-medium">Closes at 4:30 PM (earlier than other locations)</p>}
-              {isKCEB && isEarlyVoting && <p className="text-golden/70 text-[11px]">Paper ballots available here</p>}
+
 
               {'precincts' in loc && loc.precincts.length > 0 && (
                 <p className="text-white/40 text-xs">

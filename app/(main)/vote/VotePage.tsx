@@ -301,13 +301,10 @@ export default function VotePage() {
   }, [county, userCoords, assignedPin]);
 
   const mapZoom = useMemo(() => {
-    // Zoom in tight when showing assigned location
-    if (assignedPin && !showAllElectionDay) return 3000;
-    if (showElectionDayJackson) return 120000;
-    if (showElectionDayPlatte) return 80000;
-    if (county === 'Jackson') return 80000;
-    return 50000;
-  }, [county, showElectionDayJackson, showElectionDayPlatte, assignedPin, showAllElectionDay]);
+    if (assignedPin && !showAllElectionDay) return 2000;
+    // These are fallbacks - showItems() auto-fits when pins load
+    return 40000;
+  }, [assignedPin, showAllElectionDay]);
 
   const { mapRef, isLoaded: mapLoaded, centerOn } = useAppleMap({
     center: mapCenter,
@@ -399,15 +396,28 @@ export default function VotePage() {
             <VotingModeToggle mode={mode} onChange={setMode} />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* County badge + Change County */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-coral/20 border border-coral/30">
-              <span className="text-coral text-xs font-bold">{county} County</span>
-              <button
-                onClick={handleChangeCounty}
-                className="text-coral/60 hover:text-coral transition-colors text-xs font-medium"
+            {/* County selector dropdown */}
+            <div className="relative">
+              <select
+                value={county}
+                onChange={(e) => {
+                  const val = e.target.value as County;
+                  setCounty(val);
+                  setUserCoords(null);
+                  setPrecinctInfo(null);
+                  setSelectedId(null);
+                  setShowAllElectionDay(false);
+                }}
+                className="appearance-none px-4 py-2 pr-8 rounded-full bg-coral/20 border border-coral/30 text-coral text-sm font-bold cursor-pointer hover:bg-coral/30 transition-all outline-none"
               >
-                Change
-              </button>
+                <option value="Jackson" className="bg-navy text-white">Jackson County</option>
+                <option value="Clay" className="bg-navy text-white">Clay County</option>
+                <option value="Platte" className="bg-navy text-white">Platte County</option>
+                <option value="Cass" className="bg-navy text-white">Cass County</option>
+              </select>
+              <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-coral pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
 
             {/* Near Me button */}
@@ -547,7 +557,7 @@ export default function VotePage() {
                       )}
 
                       <p className="text-white/30 text-xs text-center">
-                        On Election Day, you can vote at any KC polling location. Your assigned location is the only place you can get a paper ballot.
+                        On Election Day, you can vote at any KC polling location.
                       </p>
                     </div>
                   )}
@@ -575,7 +585,7 @@ export default function VotePage() {
                       {showAllElectionDay && (
                         <div className="space-y-3">
                           <p className="text-white/40 text-xs">
-                            You can also vote at any of these locations using a ballot marking device.
+                            You can also vote at any of these locations.
                           </p>
                           {electionDayLocations.map((loc) => (
                             <LocationCard

@@ -65,7 +65,7 @@ export default function AssignedLocationCard({ info, isLoading }: Props) {
         )}
       </div>
       <p className="text-green-300/60 text-[10px] mt-3 leading-relaxed">
-        This is the only location where you can vote with a paper ballot. You may also vote at any other KC polling location using a ballot marking device.
+        You can also vote at any other KC polling location on Election Day.
       </p>
       {showBallot && info.sampleBallot && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col" onClick={() => setShowBallot(false)}>

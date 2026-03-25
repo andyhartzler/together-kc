@@ -74,7 +74,7 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
         daysOfWeek: [1],
       },
     ],
-    notes: 'Only location using pre-printed paper ballots. All other locations use Ballot Marking Devices only.',
+    
   },
   {
     id: 'jc-fellowship',
@@ -462,7 +462,7 @@ export const ELECTION_DAY_INFO = {
     close: '7:00 PM',
   },
   notes: 'On Election Day, voters must go to their assigned polling place based on their home address.',
-  jacksonCountyNote: 'Jackson County voters can vote at ANY KC polling location on Election Day using a ballot marking device. For a paper ballot, go to your assigned location.',
+  jacksonCountyNote: 'Jackson County voters can vote at ANY KC polling location on Election Day.',
   lookupUrls: {
     jackson: 'https://www.kceb.org',
     clay: 'https://cceb.maps.arcgis.com/apps/instant/lookup/index.html?appid=0fcebdd0259945a9aded62759f77c311',
