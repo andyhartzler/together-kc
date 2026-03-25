@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const SOCIAL_LINKS = [
   { name: 'Facebook', href: 'https://www.facebook.com/TogetherKC/', icon: '/images/social/facebook.png' },
@@ -12,8 +13,11 @@ const SOCIAL_LINKS = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
+  const isVotePage = pathname === '/vote' || pathname.startsWith('/vote?');
+
   return (
-    <footer className="bg-navy relative -mt-px">
+    <footer className={`${isVotePage ? 'bg-transparent' : 'bg-navy'} relative -mt-px`}>
       {/* Centered Footer Image - sits on the border line */}
       <div className="flex justify-center px-4">
         <div className="-mt-12 relative z-10">
