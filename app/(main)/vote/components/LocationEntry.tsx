@@ -190,63 +190,64 @@ export default function LocationEntry({ onCountySelect, onLocationFound, onExplo
             className="group relative p-5 rounded-xl overflow-hidden bg-navy border-2 border-white/10 hover:border-coral hover:bg-coral transition-all duration-200 min-h-[64px] flex items-center justify-center gap-2"
           >
             <span className="text-white font-bold whitespace-nowrap text-base">{name} County</span>
-            <svg className="w-4 h-4 text-white/30 group-hover:text-white/70 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7v10" />
-            </svg>
           </button>
         ))}
       </div>
 
-      {/* Not sure which county? - always visible */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="text-white/50 text-sm font-medium">Not sure which county?</span>
-          <div className="flex-1 h-px bg-white/10" />
-        </div>
-
-        <p className="text-white/40 text-sm text-center">Enter your address or zip code and we&apos;ll find it for you.</p>
-        <div className="flex gap-2">
-          <input
-            ref={inputRef}
-            type="text"
-            value={addressInput}
-            onChange={(e) => setAddressInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleManualSearch()}
-            placeholder="Address or zip code"
-            className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/30 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-base min-h-[48px]"
-          />
-          <button
-            onClick={handleManualSearch}
-            disabled={isSearching || !addressInput.trim()}
-            className="px-5 rounded-xl bg-coral/80 text-white font-semibold hover:bg-coral disabled:opacity-40 transition-all min-h-[48px]"
-          >
-            {isSearching ? (
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            ) : 'Find'}
-          </button>
-        </div>
-        {searchError && (
-          <p className="text-red-400 text-sm text-center">{searchError}</p>
-        )}
-      </div>
-
-      {/* Voter registration link */}
-      <div className="text-center">
-        <a
-          href="https://voteroutreach.sos.mo.gov/portal/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-white/40 text-xs hover:text-white/60 transition-colors"
+      {/* Not sure which county? - collapsible */}
+      <div>
+        <button
+          onClick={() => setShowAddressLookup(!showAddressLookup)}
+          className="w-full flex items-center justify-center gap-2 py-2 text-white/50 text-sm font-medium hover:text-white/70 transition-colors"
         >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          <div className="flex-1 h-px bg-white/10" />
+          <span className="shrink-0">Not sure which county?</span>
+          <svg className={`w-3.5 h-3.5 shrink-0 transition-transform ${showAddressLookup ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          Check your voter registration
-        </a>
+          <div className="flex-1 h-px bg-white/10" />
+        </button>
+
+        <AnimatePresence>
+          {showAddressLookup && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="pt-3 space-y-2">
+                <p className="text-white/40 text-sm text-center">Enter your address or zip code and we&apos;ll find it for you.</p>
+                <div className="flex gap-2">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={addressInput}
+                    onChange={(e) => setAddressInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleManualSearch()}
+                    placeholder="Address or zip code"
+                    className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/30 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none text-base min-h-[48px]"
+                  />
+                  <button
+                    onClick={handleManualSearch}
+                    disabled={isSearching || !addressInput.trim()}
+                    className="px-5 rounded-xl bg-coral/80 text-white font-semibold hover:bg-coral disabled:opacity-40 transition-all min-h-[48px]"
+                  >
+                    {isSearching ? (
+                      <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                    ) : 'Find'}
+                  </button>
+                </div>
+                {searchError && (
+                  <p className="text-red-400 text-sm text-center">{searchError}</p>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
