@@ -274,7 +274,7 @@ export default function VotePage() {
 
   const mapZoom = useMemo(() => {
     // Zoom in tight when showing assigned location
-    if (assignedPin && !showAllElectionDay) return 8000;
+    if (assignedPin && !showAllElectionDay) return 3000;
     if (showElectionDayJackson) return 120000;
     if (county === 'Jackson') return 80000;
     return 50000;
@@ -297,6 +297,12 @@ export default function VotePage() {
     }
   }, [visibleLocations, centerOn]);
 
+  // "Just exploring" - show Jackson County with all locations
+  const handleExplore = useCallback(() => {
+    setCounty('Jackson');
+    setShowAllElectionDay(true);
+  }, []);
+
   // Step 1: No county selected - show county selection
   if (!county) {
     return (
@@ -307,6 +313,7 @@ export default function VotePage() {
           <LocationEntry
             onCountySelect={handleCountySelect}
             onLocationFound={handleLocationFound}
+            onExplore={handleExplore}
             mode={mode}
           />
         </div>
