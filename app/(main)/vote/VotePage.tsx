@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { getVotingMode, getDistanceMiles, type VotingMode, type County } from '@/lib/voting-utils';
+import { useState, useMemo, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getVotingMode, getDistanceMiles, type VotingMode, type County, COUNTY_CENTERS } from '@/lib/voting-utils';
 import { type GeocodeResult } from '@/lib/geocoding';
 import { EARLY_VOTING_LOCATIONS } from '@/lib/polling-data';
 import { JACKSON_COUNTY_LOCATIONS } from '@/lib/election-day-data';
+import { useAppleMap } from '@/hooks/useAppleMap';
 import { useUserLocation } from '@/hooks/useUserLocation';
 import SmartBanner from './components/SmartBanner';
 import VotingModeToggle from './components/VotingModeToggle';
@@ -27,9 +28,9 @@ export default function VotePage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [county, setCounty] = useState<County | null>(null);
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [isOutsideKC, setIsOutsideKC] = useState(false);
   const [precinctInfo, setPrecinctInfo] = useState<PrecinctInfo | null>(null);
   const [precinctLoading, setPrecinctLoading] = useState(false);
+  const [showMobileMap, setShowMobileMap] = useState(false);
 
   const userLoc = useUserLocation();
 
@@ -50,10 +51,17 @@ export default function VotePage() {
     setPrecinctLoading(false);
   }, []);
 
+  const handleCountySelect = useCallback((selected: County) => {
+    setCounty(selected);
+    setUserCoords(null);
+    setPrecinctInfo(null);
+  }, []);
+
   const handleLocationFound = useCallback((result: GeocodeResult) => {
     setUserCoords({ lat: result.lat, lng: result.lng });
-    setCounty(result.county);
-    setIsOutsideKC(!result.isInKC);
+    if (result.county) {
+      setCounty(result.county);
+    }
     setPrecinctInfo(null);
 
     if (result.county === 'Jackson' && result.isInKC) {
@@ -61,141 +69,264 @@ export default function VotePage() {
     }
   }, [lookupPrecinct]);
 
-  useEffect(() => {
-    if (userLoc.location) {
-      handleLocationFound(userLoc.location);
-    }
-  }, [userLoc.location, handleLocationFound]);
+  const handleNearMe = useCallback(() => {
+    userLoc.requestLocation();
+  }, [userLoc]);
 
+  // When geolocation resolves, apply it
+  const lastLocRef = useMemo(() => ({ applied: null as GeocodeResult | null }), []);
+  if (userLoc.location && userLoc.location !== lastLocRef.applied) {
+    lastLocRef.applied = userLoc.location;
+    // Schedule state update after render
+    setTimeout(() => handleLocationFound(userLoc.location!), 0);
+  }
+
+  const handleChangeCounty = useCallback(() => {
+    setCounty(null);
+    setUserCoords(null);
+    setPrecinctInfo(null);
+    setSelectedId(null);
+  }, []);
+
+  // Filter early voting locations by county
   const earlyLocations = useMemo(() => {
-    const locs = [...EARLY_VOTING_LOCATIONS];
+    if (!county) return [];
+    const locs = EARLY_VOTING_LOCATIONS.filter((l) => l.county === county);
     if (!userCoords) return locs;
-    return locs.sort((a, b) =>
+    return [...locs].sort((a, b) =>
       getDistanceMiles(userCoords.lat, userCoords.lng, a.lat, a.lng) -
       getDistanceMiles(userCoords.lat, userCoords.lng, b.lat, b.lng)
     );
-  }, [userCoords]);
+  }, [county, userCoords]);
 
+  // Election day: Jackson County shows all 53 locations
   const electionDayLocations = useMemo(() => {
     let locs = JACKSON_COUNTY_LOCATIONS.filter((l) => l.lat !== 0);
-
     if (userCoords) {
       locs = [...locs].sort((a, b) =>
         getDistanceMiles(userCoords.lat, userCoords.lng, a.lat, a.lng) -
         getDistanceMiles(userCoords.lat, userCoords.lng, b.lat, b.lng)
       );
     }
-
     return locs;
   }, [userCoords]);
 
-  const showElectionDayJackson = mode === 'election-day' && (county === 'Jackson' || isOutsideKC || !county);
-  const showElectionDayExternal = mode === 'election-day' && county && county !== 'Jackson' && !isOutsideKC;
+  const showElectionDayJackson = mode === 'election-day' && county === 'Jackson';
+  const showElectionDayExternal = mode === 'election-day' && county && county !== 'Jackson';
   const showEarly = mode === 'early';
 
+  // Determine which locations to show for map pins
+  const visibleLocations = useMemo(() => {
+    if (showEarly) return earlyLocations;
+    if (showElectionDayJackson) return electionDayLocations;
+    return [];
+  }, [showEarly, showElectionDayJackson, earlyLocations, electionDayLocations]);
+
+  // Map pins from visible locations
+  const mapPins = useMemo(() => {
+    return visibleLocations
+      .filter((l) => l.lat !== 0)
+      .map((loc) => ({
+        id: loc.id,
+        lat: loc.lat,
+        lng: loc.lng,
+        title: loc.name,
+        subtitle: `${loc.address}, ${loc.city}`,
+        color: '#E53935',
+        glyphText: 'ward' in loc && loc.ward ? `${loc.ward}` : undefined,
+      }));
+  }, [visibleLocations]);
+
+  // Map center based on county
+  const mapCenter = useMemo(() => {
+    if (userCoords) return userCoords;
+    if (county) return COUNTY_CENTERS[county];
+    return { lat: 39.0997, lng: -94.5786 };
+  }, [county, userCoords]);
+
+  const mapZoom = useMemo(() => {
+    if (showElectionDayJackson) return 120000;
+    if (county === 'Jackson') return 80000;
+    return 50000;
+  }, [county, showElectionDayJackson]);
+
+  const { mapRef, isLoaded: mapLoaded, centerOn } = useAppleMap({
+    center: mapCenter,
+    zoom: mapZoom,
+    pins: mapPins,
+    onPinSelect: (id) => setSelectedId(id),
+    enabled: !!county,
+  });
+
+  const handleCardSelect = useCallback((id: string) => {
+    setSelectedId(id);
+    const loc = visibleLocations.find((l) => l.id === id);
+    if (loc && loc.lat !== 0) {
+      centerOn(loc.lat, loc.lng, 10000);
+    }
+  }, [visibleLocations, centerOn]);
+
+  // Step 1: No county selected - show county selection
+  if (!county) {
+    return (
+      <div className="min-h-screen bg-navy">
+        <SmartBanner />
+        <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
+          <VotingModeToggle mode={mode} onChange={setMode} />
+          <LocationEntry
+            onCountySelect={handleCountySelect}
+            onLocationFound={handleLocationFound}
+          />
+        </div>
+        <VoterInfo />
+      </div>
+    );
+  }
+
+  // Step 2: County selected - show locations + map
   return (
     <div className="min-h-screen bg-navy">
       <SmartBanner />
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
-        <VotingModeToggle mode={mode} onChange={setMode} />
-        <LocationEntry
-          onLocationFound={handleLocationFound}
-          onUseMyLocation={userLoc.requestLocation}
-          isLocating={userLoc.isLocating}
-          locationError={userLoc.error}
-          isOutsideKC={isOutsideKC}
-        />
-      </div>
+      {/* Controls bar */}
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex-1 w-full sm:w-auto">
+            <VotingModeToggle mode={mode} onChange={setMode} />
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* County badge + Change County */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-coral/20 border border-coral/30">
+              <span className="text-coral text-xs font-bold">{county} County</span>
+              <button
+                onClick={handleChangeCounty}
+                className="text-coral/60 hover:text-coral transition-colors text-xs font-medium"
+              >
+                Change
+              </button>
+            </div>
 
-      {county && !isOutsideKC && (
-        <div className="max-w-2xl mx-auto px-4 pb-2">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-coral/20 border border-coral/30"
-          >
-            <span className="text-coral text-xs font-bold">{county} County</span>
+            {/* Near Me button */}
             <button
-              onClick={() => { setCounty(null); setUserCoords(null); setIsOutsideKC(false); setPrecinctInfo(null); }}
-              className="text-coral/60 hover:text-coral transition-colors"
+              onClick={handleNearMe}
+              disabled={userLoc.isLocating}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-white/60 text-xs font-medium hover:bg-white/20 transition-all disabled:opacity-50"
+            >
+              {userLoc.isLocating ? (
+                <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              ) : (
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+              )}
+              Near Me
+            </button>
+
+            {/* Mobile map toggle */}
+            <button
+              onClick={() => setShowMobileMap(!showMobileMap)}
+              className="md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-white/60 text-xs font-medium hover:bg-white/20 transition-all"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
+              {showMobileMap ? 'List' : 'Map'}
             </button>
-          </motion.div>
+          </div>
         </div>
-      )}
 
-      <div className="max-w-2xl mx-auto px-4 pb-6">
-        {showEarly && (
-          <div className="space-y-3">
-            {county && !isOutsideKC && (
-              <p className="text-white/50 text-sm">
-                {county === 'Jackson'
-                  ? 'Vote at any of these locations. No excuse needed.'
-                  : `${county} County has 1 early voting location.`}
-              </p>
-            )}
+        {userLoc.error && (
+          <p className="text-red-400 text-xs mt-2">{userLoc.error}</p>
+        )}
+      </div>
 
-            {earlyLocations.map((loc) => (
-              <LocationCard
-                key={loc.id}
-                location={loc}
-                userLat={userCoords?.lat}
-                userLng={userCoords?.lng}
-                isEarlyVoting
-                isSelected={selectedId === loc.id}
-                onSelect={setSelectedId}
-              />
-            ))}
+      {/* Desktop: two-column layout (list LEFT, map RIGHT) */}
+      {/* Mobile: list or map based on toggle */}
+      <div className="max-w-7xl mx-auto px-4 pb-6">
+        <div className="flex gap-4">
+          {/* Left column - location cards */}
+          <div className={`w-full md:w-[400px] md:flex-shrink-0 ${showMobileMap ? 'hidden md:block' : 'block'}`}>
+            <div className="md:max-h-[calc(100vh-200px)] md:overflow-y-auto md:pr-2 space-y-3 scrollbar-thin scrollbar-thumb-white/10">
+              {showEarly && (
+                <>
+                  <p className="text-white/50 text-sm">
+                    {county === 'Jackson'
+                      ? `${earlyLocations.length} early voting locations. Vote at any one.`
+                      : `${county} County has ${earlyLocations.length} early voting location.`}
+                  </p>
+                  {earlyLocations.map((loc) => (
+                    <LocationCard
+                      key={loc.id}
+                      location={loc}
+                      userLat={userCoords?.lat}
+                      userLng={userCoords?.lng}
+                      isEarlyVoting
+                      isSelected={selectedId === loc.id}
+                      onSelect={handleCardSelect}
+                    />
+                  ))}
+                </>
+              )}
+
+              {showElectionDayJackson && (
+                <>
+                  {(precinctLoading || precinctInfo) && (
+                    <AssignedLocationCard info={precinctInfo} isLoading={precinctLoading} />
+                  )}
+
+                  {precinctInfo && (
+                    <div className="flex items-center gap-3 py-2">
+                      <div className="flex-1 h-px bg-white/10" />
+                      <span className="text-white/30 text-xs">Or vote at any KC location</span>
+                      <div className="flex-1 h-px bg-white/10" />
+                    </div>
+                  )}
+
+                  <p className="text-white/50 text-sm">
+                    {electionDayLocations.length} Election Day polling locations in Kansas City.
+                  </p>
+
+                  {electionDayLocations.map((loc) => (
+                    <LocationCard
+                      key={loc.id}
+                      location={loc}
+                      userLat={userCoords?.lat}
+                      userLng={userCoords?.lng}
+                      isEarlyVoting={false}
+                      isSelected={selectedId === loc.id}
+                      onSelect={handleCardSelect}
+                    />
+                  ))}
+                </>
+              )}
+
+              {showElectionDayExternal && county && (
+                <CountyExternalCard county={county} />
+              )}
+            </div>
           </div>
-        )}
 
-        {showElectionDayJackson && (
-          <div className="space-y-3">
-            {(precinctLoading || precinctInfo) && county === 'Jackson' && (
-              <AssignedLocationCard info={precinctInfo} isLoading={precinctLoading} />
-            )}
-
-            {county === 'Jackson' && !precinctInfo && !precinctLoading && userCoords && (
-              <p className="text-white/50 text-sm">
-                You can vote at any of these {JACKSON_COUNTY_LOCATIONS.length} KC locations.
-              </p>
-            )}
-
-            {!county && !isOutsideKC && (
-              <p className="text-white/50 text-sm">
-                Enter your address to find your assigned polling place, or browse all {JACKSON_COUNTY_LOCATIONS.length} KC locations.
-              </p>
-            )}
-
-            {precinctInfo && (
-              <div className="flex items-center gap-3 py-2">
-                <div className="flex-1 h-px bg-white/10" />
-                <span className="text-white/30 text-xs">Or vote at any KC location</span>
-                <div className="flex-1 h-px bg-white/10" />
-              </div>
-            )}
-
-            {electionDayLocations.map((loc) => (
-              <LocationCard
-                key={loc.id}
-                location={loc}
-                userLat={userCoords?.lat}
-                userLng={userCoords?.lng}
-                isEarlyVoting={false}
-                isSelected={selectedId === loc.id}
-                onSelect={setSelectedId}
-              />
-            ))}
+          {/* Right column - Apple Maps (desktop always, mobile toggle) */}
+          <div className={`flex-1 min-h-[400px] md:min-h-[calc(100vh-200px)] ${showMobileMap ? 'block' : 'hidden md:block'}`}>
+            <div className="relative w-full h-full min-h-[400px] md:min-h-[calc(100vh-200px)] rounded-xl overflow-hidden border border-white/10">
+              <div ref={mapRef} className="absolute inset-0" />
+              {!mapLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-navy/80">
+                  <div className="text-center">
+                    <svg className="w-8 h-8 animate-spin text-white/30 mx-auto mb-2" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    <p className="text-white/40 text-sm">Loading map...</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        )}
-
-        {showElectionDayExternal && county && (
-          <CountyExternalCard county={county} />
-        )}
+        </div>
       </div>
 
       <VoterInfo />

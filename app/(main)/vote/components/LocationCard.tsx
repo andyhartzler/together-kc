@@ -55,6 +55,7 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
         isExpanded ? 'bg-coral/10 border-2 border-coral/40' : 'bg-white/5 border border-white/10 hover:bg-white/10'
       }`}
     >
+      {/* Always visible: status, name, address, distance */}
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-2">
           {status && (
@@ -80,27 +81,35 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
       <h3 className="text-white font-semibold text-sm">{loc.name}</h3>
       <p className="text-white/50 text-xs mt-0.5">{loc.address}, {loc.city}</p>
       {room && <p className="text-white/40 text-[11px]">{room}</p>}
-      {status?.todayHours && <p className="text-white/40 text-xs mt-1">Today: {status.todayHours.open} - {status.todayHours.close}</p>}
-      {isCass && isEarlyVoting && <p className="text-amber-400 text-[11px] mt-1 font-medium">Closes at 4:30 PM (earlier than other locations)</p>}
-      {isKCEB && isEarlyVoting && <p className="text-golden/70 text-[11px] mt-1">Paper ballots available here</p>}
 
-      <a
-        href={getDirectionsUrl(addr)}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={(e) => e.stopPropagation()}
-        className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:bg-coral/90 transition-colors min-h-[44px]"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+      {/* Expand indicator */}
+      <div className="flex items-center gap-1 mt-2">
+        <svg className={`w-3 h-3 text-white/30 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
-        Get Directions
-      </a>
+        <span className="text-white/30 text-[11px]">{isExpanded ? 'Less' : 'More info & directions'}</span>
+      </div>
 
+      {/* Expanded section: directions, map, hours, notes */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
             <div className="mt-3 pt-3 border-t border-white/10 space-y-3">
+              {/* Directions button - now inside expanded only */}
+              <a
+                href={getDirectionsUrl(addr)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:bg-coral/90 transition-colors min-h-[44px]"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                Get Directions
+              </a>
+
+              {/* Inline map */}
               {loc.lat !== 0 && (
                 <div className="rounded-lg overflow-hidden h-[180px] bg-navy/50 border border-white/10 relative">
                   <div ref={inlineMapRef} className="absolute inset-0" />
@@ -115,6 +124,12 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
                 </div>
               )}
 
+              {/* Today's hours */}
+              {status?.todayHours && (
+                <p className="text-white/40 text-xs">Today: {status.todayHours.open} - {status.todayHours.close}</p>
+              )}
+
+              {/* Full schedule */}
               {isEarlyVotingLoc(loc) && (
                 <div>
                   <p className="text-white/40 text-[10px] uppercase tracking-wider font-semibold mb-1">Hours</p>
@@ -126,6 +141,9 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
                   ))}
                 </div>
               )}
+
+              {isCass && isEarlyVoting && <p className="text-amber-400 text-[11px] font-medium">Closes at 4:30 PM (earlier than other locations)</p>}
+              {isKCEB && isEarlyVoting && <p className="text-golden/70 text-[11px]">Paper ballots available here</p>}
 
               {'precincts' in loc && loc.precincts.length > 0 && (
                 <p className="text-white/40 text-xs">

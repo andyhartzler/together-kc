@@ -1,19 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { VoteYesModal } from '@/components/ui/VoteYesModal';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   // Pages with dark hero backgrounds where we need white text
   const hasDarkHero = pathname === '/' || pathname === '/endorsements' || pathname === '/vote';
@@ -108,7 +107,7 @@ export default function Navigation() {
                   pointerEvents: (pathname === '/' && !isScrolled) ? 'none' : 'auto'
                 }}
                 transition={{ duration: 0.2 }}
-                onClick={() => setIsVoteModalOpen(true)}
+                onClick={() => router.push('/vote')}
                 className="ml-2 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transition-all duration-200 hover:scale-105 hover:bg-coral/90 shadow-lg"
               >
                 Vote YES
@@ -210,7 +209,7 @@ export default function Navigation() {
                     <button
                       onClick={() => {
                         setIsMobileMenuOpen(false);
-                        setIsVoteModalOpen(true);
+                        router.push('/vote');
                       }}
                       className="w-full px-6 py-4 text-lg text-white font-semibold bg-gradient-to-r from-coral to-coral/90 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-coral/30 border border-white/20"
                       style={{
@@ -227,8 +226,6 @@ export default function Navigation() {
         )}
       </AnimatePresence>
 
-      {/* Vote YES Modal */}
-      <VoteYesModal isOpen={isVoteModalOpen} onClose={() => setIsVoteModalOpen(false)} />
     </>
   );
 }
