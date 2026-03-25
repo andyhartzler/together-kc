@@ -8,6 +8,7 @@ import { EARLY_VOTING_LOCATIONS } from '@/lib/polling-data';
 import { JACKSON_COUNTY_LOCATIONS } from '@/lib/election-day-data';
 import { useAppleMap } from '@/hooks/useAppleMap';
 import { useUserLocation } from '@/hooks/useUserLocation';
+import { downloadCalendarEvent } from '@/lib/calendar';
 import SmartBanner from './components/SmartBanner';
 import VotingModeToggle from './components/VotingModeToggle';
 import LocationEntry from './components/LocationEntry';
@@ -35,6 +36,7 @@ export default function VotePage() {
   const [electionDaySearching, setElectionDaySearching] = useState(false);
   const [electionDayError, setElectionDayError] = useState<string | null>(null);
   const [showAllElectionDay, setShowAllElectionDay] = useState(false);
+  const [calendarAdded, setCalendarAdded] = useState(false);
   const electionDayInputRef = useRef<HTMLInputElement>(null);
   const electionDayAcRef = useRef(false);
 
@@ -311,6 +313,28 @@ export default function VotePage() {
                     />
                   ))}
                 </>
+              )}
+
+              {/* Calendar reminder - shown on election day for all counties */}
+              {mode === 'election-day' && (
+                <button
+                  onClick={() => {
+                    downloadCalendarEvent();
+                    setCalendarAdded(true);
+                    setTimeout(() => setCalendarAdded(false), 3000);
+                  }}
+                  className="w-full flex items-center gap-3 p-4 rounded-xl bg-sky/10 border border-sky/20 hover:bg-sky/15 transition-all text-left"
+                >
+                  <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center shrink-0 text-lg">
+                    {calendarAdded ? '✓' : '📅'}
+                  </div>
+                  <div>
+                    <h4 className="text-white font-semibold text-sm">
+                      {calendarAdded ? 'Added to Calendar!' : 'Remind Me to Vote'}
+                    </h4>
+                    <p className="text-white/40 text-xs">Add Election Day (April 7) to your calendar</p>
+                  </div>
+                </button>
               )}
 
               {showElectionDayJackson && (

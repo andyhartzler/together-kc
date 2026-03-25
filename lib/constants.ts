@@ -24,7 +24,6 @@ export const SITE_CONFIG = {
 
 export const NAV_LINKS = [
   { href: '/', label: 'Home' },
-  { href: '/vote', label: 'Vote' },
   { href: '/faqs', label: 'FAQs' },
   { href: '/endorsements', label: 'Endorsements' },
   { href: '/donate', label: 'Donate' },
