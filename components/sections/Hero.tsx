@@ -121,8 +121,8 @@ export default function Hero() {
 
         <motion.div
           variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { duration: 0.6, ease: 'easeOut' } },
+            hidden: { opacity: 0, pointerEvents: 'none' as const },
+            visible: { opacity: 1, pointerEvents: 'auto' as const, transition: { duration: 0.6, ease: 'easeOut' } },
           }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
