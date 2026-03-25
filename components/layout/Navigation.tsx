@@ -99,19 +99,17 @@ export default function Navigation() {
                 );
               })}
               {/* Vote YES Button - hidden on home page until scrolled */}
-              <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{
-                  opacity: (pathname === '/' && !isScrolled) ? 0 : 1,
-                  scale: (pathname === '/' && !isScrolled) ? 0.9 : 1,
-                  pointerEvents: (pathname === '/' && !isScrolled) ? 'none' : 'auto'
-                }}
-                transition={{ duration: 0.2 }}
+              <button
                 onClick={() => router.push('/vote')}
-                className="ml-2 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transition-all duration-200 hover:scale-105 hover:bg-coral/90 shadow-lg"
+                className={cn(
+                  "ml-2 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transition-all duration-300 hover:scale-105 hover:bg-coral/90 shadow-lg",
+                  pathname === '/' && !isScrolled
+                    ? 'opacity-0 scale-90 pointer-events-none'
+                    : 'opacity-100 scale-100'
+                )}
               >
                 Vote YES
-              </motion.button>
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
