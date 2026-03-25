@@ -10,12 +10,7 @@ interface Props {
   onLocationFound: (result: GeocodeResult) => void;
 }
 
-const COUNTIES: { name: County; description: string }[] = [
-  { name: 'Jackson', description: 'Downtown, Midtown, South KC, East KC' },
-  { name: 'Clay', description: 'Northland, Liberty, Gladstone' },
-  { name: 'Platte', description: 'KCI, Parkville, Platte City' },
-  { name: 'Cass', description: 'Belton, Raymore, Harrisonville' },
-];
+const COUNTIES: County[] = ['Jackson', 'Clay', 'Platte', 'Cass'];
 
 export default function LocationEntry({ onCountySelect, onLocationFound }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -60,23 +55,16 @@ export default function LocationEntry({ onCountySelect, onLocationFound }: Props
 
       {/* 2x2 County Grid */}
       <div className="grid grid-cols-2 gap-3">
-        {COUNTIES.map(({ name, description }) => (
+        {COUNTIES.map((name) => (
           <button
             key={name}
             onClick={() => onCountySelect(name)}
-            className="group relative p-4 rounded-xl overflow-hidden bg-navy border-2 border-white/10 hover:border-coral hover:bg-coral transition-all duration-200 text-left min-h-[80px]"
+            className="group relative p-5 rounded-xl overflow-hidden bg-navy border-2 border-white/10 hover:border-coral hover:bg-coral transition-all duration-200 min-h-[64px] flex items-center justify-center gap-2"
           >
-            <h3 className="text-white font-bold text-base group-hover:text-white">
-              {name}
-            </h3>
-            <p className="text-white/40 text-xs mt-0.5 group-hover:text-white/70">
-              {description}
-            </p>
-            <div className="absolute top-3 right-3 text-white/20 group-hover:text-white/60 transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
+            <span className="text-white font-semibold text-lg">{name} County</span>
+            <svg className="w-4 h-4 text-white/30 group-hover:text-white/70 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7v10" />
+            </svg>
           </button>
         ))}
       </div>

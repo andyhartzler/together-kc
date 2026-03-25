@@ -16,7 +16,7 @@ export default function SmartBanner() {
 
   if (ended) {
     return (
-      <div className="bg-gradient-to-br from-navy via-navy to-white/5 py-8 px-4 text-center border-b border-white/10">
+      <div className="bg-gradient-to-br from-navy via-navy to-white/5 pt-20 md:pt-24 pb-8 px-4 text-center border-b border-white/10">
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">The Election Has Ended</h1>
         <p className="text-white/60 text-base">Thank you for voting!</p>
       </div>
@@ -24,7 +24,7 @@ export default function SmartBanner() {
   }
 
   return (
-    <div className="relative bg-gradient-to-br from-navy via-navy to-coral/10 py-6 md:py-8 px-4 text-center border-b border-white/10">
+    <div className="relative bg-gradient-to-br from-navy via-navy to-coral/10 pt-20 md:pt-24 pb-6 md:pb-8 px-4 text-center border-b border-white/10">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto">
         {mode === 'early' && !earlyEnded && (
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-500/20 border border-green-500/40 text-green-300 text-sm font-medium mb-3">
