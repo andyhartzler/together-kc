@@ -4,7 +4,7 @@ declare global {
       maps: {
         Geocoder: new () => {
           geocode: (
-            request: { address: string },
+            request: { address: string } | { location: { lat: number; lng: number } },
             callback: (
               results: Array<{
                 formatted_address: string;

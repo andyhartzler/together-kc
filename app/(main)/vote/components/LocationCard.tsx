@@ -46,9 +46,12 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
   const { mapRef: inlineMapRef, isLoaded: inlineMapLoaded } = useInlineMap(loc.lat, loc.lng, isExpanded && loc.lat !== 0);
 
   return (
-    <button
+    <div
       onClick={() => { onSelect(loc.id); setExpanded(!expanded); }}
-      className={`w-full text-left rounded-xl p-4 transition-all ${
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(loc.id); setExpanded(!expanded); } }}
+      className={`w-full text-left rounded-xl p-4 transition-all cursor-pointer ${
         isExpanded ? 'bg-coral/10 border-2 border-coral/40' : 'bg-white/5 border border-white/10 hover:bg-white/10'
       }`}
     >
@@ -99,10 +102,10 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
             <div className="mt-3 pt-3 border-t border-white/10 space-y-3">
               {loc.lat !== 0 && (
-                <div className="rounded-lg overflow-hidden h-[180px] bg-navy/50 border border-white/10">
-                  <div ref={inlineMapRef} className="w-full h-full" />
+                <div className="rounded-lg overflow-hidden h-[180px] bg-navy/50 border border-white/10 relative">
+                  <div ref={inlineMapRef} className="absolute inset-0" />
                   {!inlineMapLoaded && (
-                    <div className="flex items-center justify-center h-full">
+                    <div className="absolute inset-0 flex items-center justify-center">
                       <svg className="w-5 h-5 animate-spin text-white/30" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -139,6 +142,6 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
           </motion.div>
         )}
       </AnimatePresence>
-    </button>
+    </div>
   );
 }

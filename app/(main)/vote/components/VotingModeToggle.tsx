@@ -15,6 +15,7 @@ export default function VotingModeToggle({ mode, onChange }: Props) {
         <button
           key={m}
           onClick={() => onChange(m)}
+          aria-pressed={mode === m}
           className="relative flex-1 py-2.5 px-4 text-sm font-semibold rounded-lg transition-colors"
         >
           {mode === m && (

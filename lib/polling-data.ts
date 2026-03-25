@@ -27,21 +27,6 @@ export interface ScheduleEntry {
   closed?: boolean; // if true, location is closed during this period
 }
 
-export interface ElectionDayLocation {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  room?: string;
-  county: 'Jackson' | 'Clay' | 'Platte' | 'Cass';
-  lat: number;
-  lng: number;
-  ward?: number;
-  precincts: number[];
-}
-
 // ============================================================
 // EARLY VOTING LOCATIONS
 // No-Excuse Absentee Voting: March 24 - April 6, 2026

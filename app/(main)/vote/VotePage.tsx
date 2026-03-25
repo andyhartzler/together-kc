@@ -33,24 +33,7 @@ export default function VotePage() {
 
   const userLoc = useUserLocation();
 
-  const handleLocationFound = useCallback((result: GeocodeResult) => {
-    setUserCoords({ lat: result.lat, lng: result.lng });
-    setCounty(result.county);
-    setIsOutsideKC(!result.isInKC);
-    setPrecinctInfo(null);
-
-    if (result.county === 'Jackson' && result.isInKC) {
-      lookupPrecinct(result.lat, result.lng);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (userLoc.location) {
-      handleLocationFound(userLoc.location);
-    }
-  }, [userLoc.location, handleLocationFound]);
-
-  const lookupPrecinct = async (lat: number, lng: number) => {
+  const lookupPrecinct = useCallback(async (lat: number, lng: number) => {
     setPrecinctLoading(true);
     try {
       const res = await fetch(`/api/precinct-lookup?lat=${lat}&lng=${lng}`);
@@ -65,26 +48,33 @@ export default function VotePage() {
       }
     } catch { /* non-critical */ }
     setPrecinctLoading(false);
-  };
+  }, []);
+
+  const handleLocationFound = useCallback((result: GeocodeResult) => {
+    setUserCoords({ lat: result.lat, lng: result.lng });
+    setCounty(result.county);
+    setIsOutsideKC(!result.isInKC);
+    setPrecinctInfo(null);
+
+    if (result.county === 'Jackson' && result.isInKC) {
+      lookupPrecinct(result.lat, result.lng);
+    }
+  }, [lookupPrecinct]);
+
+  useEffect(() => {
+    if (userLoc.location) {
+      handleLocationFound(userLoc.location);
+    }
+  }, [userLoc.location, handleLocationFound]);
 
   const earlyLocations = useMemo(() => {
-    let locs = [...EARLY_VOTING_LOCATIONS];
-
-    if (county && !isOutsideKC) {
-      const countyLocs = locs.filter((l) => l.county === county);
-      const otherLocs = locs.filter((l) => l.county !== county);
-      locs = [...countyLocs, ...otherLocs];
-    }
-
-    if (userCoords) {
-      locs = [...locs].sort((a, b) =>
-        getDistanceMiles(userCoords.lat, userCoords.lng, a.lat, a.lng) -
-        getDistanceMiles(userCoords.lat, userCoords.lng, b.lat, b.lng)
-      );
-    }
-
-    return locs;
-  }, [county, userCoords, isOutsideKC]);
+    const locs = [...EARLY_VOTING_LOCATIONS];
+    if (!userCoords) return locs;
+    return locs.sort((a, b) =>
+      getDistanceMiles(userCoords.lat, userCoords.lng, a.lat, a.lng) -
+      getDistanceMiles(userCoords.lat, userCoords.lng, b.lat, b.lng)
+    );
+  }, [userCoords]);
 
   const electionDayLocations = useMemo(() => {
     let locs = JACKSON_COUNTY_LOCATIONS.filter((l) => l.lat !== 0);

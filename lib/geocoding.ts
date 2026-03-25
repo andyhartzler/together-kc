@@ -79,7 +79,7 @@ export async function detectCountyFromCoords(lat: number, lng: number): Promise<
 
   return new Promise((resolve) => {
     geocoder.geocode(
-      { address: `${lat},${lng}` },
+      { location: { lat, lng } },
       (results, status) => {
         if (status !== 'OK' || !results?.length) {
           resolve({ lat, lng, county: null, formattedAddress: '', isInKC: false });

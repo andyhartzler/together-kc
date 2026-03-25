@@ -5,9 +5,25 @@ export type VotingMode = 'early' | 'election-day';
 
 const TZ = 'America/Chicago';
 
+/** @deprecated Use getCentralHoursMinutes() for time comparisons; this re-parse approach
+ *  can silently produce wrong results for users outside Central Time. Kept for backward compat. */
 export function getCentralTime(): Date {
   const str = new Date().toLocaleString('en-US', { timeZone: TZ });
   return new Date(str);
+}
+
+function getCentralHoursMinutes(): { hours: number; minutes: number } {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: TZ,
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+  });
+  const parts = formatter.formatToParts(new Date());
+  return {
+    hours: parseInt(parts.find((p) => p.type === 'hour')!.value),
+    minutes: parseInt(parts.find((p) => p.type === 'minute')!.value),
+  };
 }
 
 export function getCentralDateStr(): string {
@@ -32,9 +48,12 @@ export function hasElectionEnded(): boolean {
 }
 
 export function earlyVotingDaysLeft(): number {
-  const now = getCentralTime();
-  const end = new Date('2026-04-06T23:59:59');
-  return Math.max(0, Math.ceil((end.getTime() - now.getTime()) / 86400000));
+  const todayStr = getCentralDateStr();
+  const endStr = '2026-04-06';
+  if (todayStr > endStr) return 0;
+  const today = new Date(todayStr + 'T00:00:00');
+  const end = new Date(endStr + 'T00:00:00');
+  return Math.ceil((end.getTime() - today.getTime()) / 86400000) + 1;
 }
 
 function parseTime(timeStr: string): [number, number] {
@@ -58,9 +77,10 @@ export interface LocationStatus {
 }
 
 export function getLocationStatus(location: EarlyVotingLocation): LocationStatus {
-  const now = getCentralTime();
-  const currentDay = now.getDay();
   const todayStr = getCentralDateStr();
+  const dayFormatter = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short' });
+  const dayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  const currentDay = dayMap[dayFormatter.format(new Date())] ?? new Date().getDay();
 
   for (const schedule of location.hours) {
     if (schedule.closed) continue;
@@ -69,7 +89,8 @@ export function getLocationStatus(location: EarlyVotingLocation): LocationStatus
 
     const [openH, openM] = parseTime(schedule.open);
     const [closeH, closeM] = parseTime(schedule.close);
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const { hours: centralH, minutes: centralM } = getCentralHoursMinutes();
+    const currentMinutes = centralH * 60 + centralM;
     const openMinutes = openH * 60 + openM;
     const closeMinutes = closeH * 60 + closeM;
 
