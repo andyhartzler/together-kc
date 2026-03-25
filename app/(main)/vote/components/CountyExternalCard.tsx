@@ -8,6 +8,7 @@ import { COUNTY_LOOKUP_INFO } from '@/lib/election-day-data';
 import { findPlattePollingPlace, PLATTE_ARCGIS_URL, type PlatteCountyLocation } from '@/lib/platte-county-data';
 import { getDirectionsUrl } from '@/lib/voting-utils';
 import type { County } from '@/lib/voting-utils';
+import BallotViewer from './BallotViewer';
 
 interface ClayBallotResult {
   precinct: string;
@@ -302,22 +303,14 @@ export default function CountyExternalCard({ county }: Props) {
         <CountyContactCard board={board} />
 
         {/* Fullscreen ballot viewer */}
-        {showBallot && clayResult && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col" onClick={() => setShowBallot(false)}>
-            <div className="flex items-center justify-between p-4 bg-navy/90">
-              <h3 className="text-white font-semibold text-sm">
-                Sample Ballot - Precinct {clayResult.precinct}, Style {clayResult.ballotStyle}
-              </h3>
-              <button onClick={() => setShowBallot(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex-1" onClick={(e) => e.stopPropagation()}>
-              <iframe src={clayResult.ballotUrl} className="w-full h-full" title="Sample Ballot" />
-            </div>
-          </div>
+        {clayResult && (
+          <BallotViewer
+            isOpen={showBallot}
+            onClose={() => setShowBallot(false)}
+            pdfUrl={clayResult.ballotUrl}
+            title="Sample Ballot"
+            subtitle={`Precinct ${clayResult.precinct}, Style ${clayResult.ballotStyle}`}
+          />
         )}
       </div>
     );
@@ -451,21 +444,13 @@ export default function CountyExternalCard({ county }: Props) {
         <CountyContactCard board={board} />
 
         {/* Fullscreen PDF viewer */}
-        {showPdf && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col" onClick={() => setShowPdf(false)}>
-            <div className="flex items-center justify-between p-4 bg-navy/90">
-              <h3 className="text-white font-semibold text-sm">Platte County - Candidates &amp; Issues</h3>
-              <button onClick={() => setShowPdf(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex-1" onClick={(e) => e.stopPropagation()}>
-              <iframe src="/ballots/platte/candidates-and-questions.pdf" className="w-full h-full" title="Platte County Candidates and Issues" />
-            </div>
-          </div>
-        )}
+        <BallotViewer
+          isOpen={showPdf}
+          onClose={() => setShowPdf(false)}
+          pdfUrl="/ballots/platte/candidates-and-questions.pdf"
+          title="Candidates & Issues"
+          subtitle="Platte County - April 7, 2026"
+        />
       </div>
     );
   }
@@ -525,21 +510,13 @@ export default function CountyExternalCard({ county }: Props) {
         <CountyContactCard board={board} />
 
         {/* Fullscreen PDF viewer */}
-        {showPdf && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col" onClick={() => setShowPdf(false)}>
-            <div className="flex items-center justify-between p-4 bg-navy/90">
-              <h3 className="text-white font-semibold text-sm">Cass County - Sample Ballot</h3>
-              <button onClick={() => setShowPdf(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex-1" onClick={(e) => e.stopPropagation()}>
-              <iframe src="/ballots/cass/sample-ballot.pdf" className="w-full h-full" title="Cass County Sample Ballot" />
-            </div>
-          </div>
-        )}
+        <BallotViewer
+          isOpen={showPdf}
+          onClose={() => setShowPdf(false)}
+          pdfUrl="/ballots/cass/sample-ballot.pdf"
+          title="Sample Ballot"
+          subtitle="Cass County - April 7, 2026"
+        />
       </div>
     );
   }

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { getDirectionsUrl } from '@/lib/voting-utils';
+import BallotViewer from './BallotViewer';
 
 interface PrecinctInfo {
   precinct: string;
@@ -67,20 +68,14 @@ export default function AssignedLocationCard({ info, isLoading }: Props) {
       <p className="text-green-300/60 text-[10px] mt-3 leading-relaxed">
         You can also vote at any other KC polling location on Election Day.
       </p>
-      {showBallot && info.sampleBallot && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col" onClick={() => setShowBallot(false)}>
-          <div className="flex items-center justify-between p-4 bg-navy/90">
-            <h3 className="text-white font-semibold text-sm">Sample Ballot - {info.precinct}</h3>
-            <button onClick={() => setShowBallot(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <div className="flex-1" onClick={(e) => e.stopPropagation()}>
-            <iframe src={info.sampleBallot} className="w-full h-full" title="Sample Ballot" />
-          </div>
-        </div>
+      {info.sampleBallot && (
+        <BallotViewer
+          isOpen={showBallot}
+          onClose={() => setShowBallot(false)}
+          pdfUrl={info.sampleBallot}
+          title="Sample Ballot"
+          subtitle={info.precinct}
+        />
       )}
     </motion.div>
   );
