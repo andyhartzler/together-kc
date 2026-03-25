@@ -13,6 +13,7 @@ import {
 import { downloadEarlyVoteEvent } from '@/lib/calendar';
 import type { EarlyVotingLocation } from '@/lib/polling-data';
 import type { ElectionDayLocation } from '@/lib/election-day-data';
+import SendToPhone from './SendToPhone';
 
 type Location = EarlyVotingLocation | ElectionDayLocation;
 
@@ -355,6 +356,8 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
                 </svg>
                 Get Directions
               </a>
+
+              <SendToPhone address={addr} locationName={loc.name} />
 
               {/* Inline map - mobile only (desktop has the sidebar map) */}
               {loc.lat !== 0 && (
