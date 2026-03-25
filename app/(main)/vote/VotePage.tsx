@@ -7,6 +7,7 @@ import { getVotingMode, getDistanceMiles, type VotingMode, type County, COUNTY_C
 import { type GeocodeResult, initAutocomplete, geocodeAddress, findPlaceCoordinates } from '@/lib/geocoding';
 import { EARLY_VOTING_LOCATIONS } from '@/lib/polling-data';
 import { JACKSON_COUNTY_LOCATIONS } from '@/lib/election-day-data';
+import { PLATTE_COUNTY_LOCATIONS } from '@/lib/platte-county-data';
 import { useAppleMap } from '@/hooks/useAppleMap';
 import { useUserLocation } from '@/hooks/useUserLocation';
 import { downloadCalendarEvent } from '@/lib/calendar';
@@ -219,16 +220,26 @@ export default function VotePage() {
   }, [userCoords]);
 
   const showElectionDayJackson = mode === 'election-day' && county === 'Jackson';
+  const showElectionDayPlatte = mode === 'election-day' && county === 'Platte';
   const showElectionDayExternal = mode === 'election-day' && county && county !== 'Jackson';
   const showEarly = mode === 'early';
+
+  // Platte County election day locations for map pins
+  const platteElectionDayLocations = useMemo(() => {
+    return PLATTE_COUNTY_LOCATIONS.map((loc) => ({
+      ...loc,
+      county: 'Platte' as const,
+    }));
+  }, []);
 
   // Determine which locations to show for map pins
   const visibleLocations = useMemo(() => {
     if (showEarly) return earlyLocations;
     if (showElectionDayJackson && showAllElectionDay) return electionDayLocations;
+    if (showElectionDayPlatte) return platteElectionDayLocations;
     // Don't show all 53 pins by default on election day
     return [];
-  }, [showEarly, showElectionDayJackson, showAllElectionDay, earlyLocations, electionDayLocations]);
+  }, [showEarly, showElectionDayJackson, showElectionDayPlatte, showAllElectionDay, earlyLocations, electionDayLocations, platteElectionDayLocations]);
 
   // Geocode the assigned polling place address for map pin
   const [assignedPin, setAssignedPin] = useState<{
@@ -293,9 +304,10 @@ export default function VotePage() {
     // Zoom in tight when showing assigned location
     if (assignedPin && !showAllElectionDay) return 3000;
     if (showElectionDayJackson) return 120000;
+    if (showElectionDayPlatte) return 80000;
     if (county === 'Jackson') return 80000;
     return 50000;
-  }, [county, showElectionDayJackson, assignedPin, showAllElectionDay]);
+  }, [county, showElectionDayJackson, showElectionDayPlatte, assignedPin, showAllElectionDay]);
 
   const { mapRef, isLoaded: mapLoaded, centerOn } = useAppleMap({
     center: mapCenter,
