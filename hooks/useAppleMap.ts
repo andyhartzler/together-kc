@@ -128,7 +128,7 @@ export function useAppleMap(options: UseAppleMapOptions) {
           });
         } else if (annotations.length === 1) {
           map.setCenterAnimated(annotations[0].coordinate);
-          map.setCameraDistanceAnimated(8000);
+          map.setCameraDistanceAnimated(2000);
         }
       }
 
@@ -178,7 +178,7 @@ export function useAppleMap(options: UseAppleMapOptions) {
       });
     } else if (newAnnotations.length === 1) {
       map.setCenterAnimated(newAnnotations[0].coordinate);
-      map.setCameraDistanceAnimated(8000);
+      map.setCameraDistanceAnimated(2000);
     }
 
     // Force MapKit to re-render tiles at correct resolution
@@ -207,7 +207,7 @@ export function useAppleMap(options: UseAppleMapOptions) {
           });
         } else if (annotationsRef.current.length === 1) {
           map.setCenterAnimated(annotationsRef.current[0].coordinate);
-          map.setCameraDistanceAnimated(8000);
+          map.setCameraDistanceAnimated(2000);
         }
       });
     });
