@@ -29,9 +29,31 @@ export default function FindPollingPage() {
   const [isLooking, setIsLooking] = useState(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
   const [result, setResult] = useState<LookupResult | null>(null);
+  const [precinctInfo, setPrecinctInfo] = useState<{
+    precinct: string;
+    pollingPlace: string;
+    pollingAddress: string;
+    sampleBallot: string | null;
+  } | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<ElectionDayLocation | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [showAllLocations, setShowAllLocations] = useState(false);
+
+  // Look up precinct from KCEB ArcGIS when Jackson County is detected
+  const lookupPrecinct = async (lat: number, lng: number) => {
+    try {
+      const res = await fetch(`/api/precinct-lookup?lat=${lat}&lng=${lng}`);
+      const data = await res.json();
+      if (data.found) {
+        setPrecinctInfo({
+          precinct: data.precinct,
+          pollingPlace: data.pollingPlace,
+          pollingAddress: data.pollingAddress,
+          sampleBallot: data.sampleBallot,
+        });
+      }
+    } catch { /* silent - not critical */ }
+  };
 
   const mapRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,6 +141,7 @@ export default function FindPollingPage() {
           if (['Jackson', 'Clay', 'Platte', 'Cass'].includes(countyName)) {
             clearTimeout(timeout);
             setResult({ county: countyName as County, address: addr, lat, lng });
+            if (countyName === 'Jackson') lookupPrecinct(lat, lng);
             setStep('result');
             setIsLooking(false);
             return;
@@ -141,12 +164,15 @@ export default function FindPollingPage() {
           if (countyComp) {
             const name = countyComp.long_name.replace(' County', '');
             if (['Jackson', 'Clay', 'Platte', 'Cass'].includes(name)) {
+              const rLat = r.geometry.location.lat();
+              const rLng = r.geometry.location.lng();
               setResult({
                 county: name as County,
                 address: r.formatted_address,
-                lat: r.geometry.location.lat(),
-                lng: r.geometry.location.lng(),
+                lat: rLat,
+                lng: rLng,
               });
+              if (name === 'Jackson') lookupPrecinct(rLat, rLng);
               setStep('result');
             } else {
               setLookupError(`That address is in ${name} County, outside Kansas City.`);
@@ -259,6 +285,7 @@ export default function FindPollingPage() {
   const resetLookup = () => {
     setStep('address');
     setResult(null);
+    setPrecinctInfo(null);
     setSelectedLocation(null);
     setAddressInput('');
     setLookupError(null);
@@ -440,9 +467,63 @@ export default function FindPollingPage() {
                 {/* List */}
                 <div className="md:w-[380px] md:shrink-0 overflow-y-auto border-r border-white/10 order-2 md:order-1">
                   <div className="p-3">
+                    {/* Assigned Polling Place Card */}
+                    {precinctInfo && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mb-4 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 p-4"
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="w-6 h-6 rounded-full bg-green-500/30 flex items-center justify-center">
+                            <svg className="w-4 h-4 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </span>
+                          <span className="text-green-300 text-xs font-semibold uppercase tracking-wider">Your Assigned Location</span>
+                        </div>
+                        <h3 className="text-white font-bold text-base">{precinctInfo.pollingPlace}</h3>
+                        <p className="text-white/60 text-sm">{precinctInfo.pollingAddress}</p>
+                        <p className="text-white/40 text-xs mt-1">{precinctInfo.precinct}</p>
+                        <div className="flex gap-2 mt-3">
+                          <a
+                            href={(() => {
+                              const addr = encodeURIComponent(precinctInfo.pollingAddress);
+                              const isApple = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+                              return isApple ? `https://maps.apple.com/?daddr=${addr}` : `https://www.google.com/maps/dir/?api=1&destination=${addr}`;
+                            })()}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-green-500/30 text-green-200 text-xs font-semibold hover:bg-green-500/40 transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            </svg>
+                            Directions
+                          </a>
+                          {precinctInfo.sampleBallot && (
+                            <a
+                              href={precinctInfo.sampleBallot}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white/10 text-white/70 text-xs font-semibold hover:bg-white/20 transition-colors"
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              Sample Ballot
+                            </a>
+                          )}
+                        </div>
+                        <p className="text-green-300/60 text-[10px] mt-3 leading-relaxed">
+                          You can also vote at any other KC polling location using a ballot marking device.
+                        </p>
+                      </motion.div>
+                    )}
+
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-white font-semibold text-sm">
-                        {showAllLocations ? 'All 70' : 'Nearest 10'} Polling Locations
+                        {precinctInfo ? 'Other Nearby Locations' : (showAllLocations ? 'All' : 'Nearest 10') + ' Polling Locations'}
                       </h3>
                       <button
                         onClick={() => setShowAllLocations(!showAllLocations)}
