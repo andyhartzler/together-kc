@@ -160,3 +160,55 @@ export function downloadEarlyVoteEvent(date: string, time: string, locationName:
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+export function generateElectionDayEvent(
+  pollingPlace: string,
+  pollingAddress: string
+): string {
+  // April 7, 2026, 6:00 AM - 7:00 PM CDT (UTC-5)
+  const startDate = '20260407T110000Z'; // 6 AM CDT
+  const endDate = '20260408T000000Z';   // 7 PM CDT
+
+  const uid = `election-day-${Date.now()}@together-kc.com`;
+  const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const escapeICS = (text: string) => text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+
+  return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Together KC//Election Day//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${now}
+DTSTART:${startDate}
+DTEND:${endDate}
+SUMMARY:${escapeICS(`Vote at ${pollingPlace} - Election Day`)}
+DESCRIPTION:${escapeICS(`Election Day! Polls open 6:00 AM - 7:00 PM.\n\nYour polling place: ${pollingPlace}\n${pollingAddress}\n\nRemember to bring a valid photo ID.\n\nVote YES to renew the KC earnings tax!`)}
+LOCATION:${escapeICS(`${pollingPlace}, ${pollingAddress}`)}
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:${escapeICS(`Election Day tomorrow! Vote at ${pollingPlace}`)}
+END:VALARM
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:${escapeICS(`Polls are open! Vote at ${pollingPlace}`)}
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+}
+
+export function downloadElectionDayEvent(pollingPlace: string, pollingAddress: string) {
+  const ics = generateElectionDayEvent(pollingPlace, pollingAddress);
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'election-day-2026.ics';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}

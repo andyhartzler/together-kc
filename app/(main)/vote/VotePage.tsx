@@ -10,7 +10,7 @@ import { JACKSON_COUNTY_LOCATIONS } from '@/lib/election-day-data';
 import { PLATTE_COUNTY_LOCATIONS } from '@/lib/platte-county-data';
 import { useAppleMap } from '@/hooks/useAppleMap';
 import { useUserLocation } from '@/hooks/useUserLocation';
-import { downloadCalendarEvent } from '@/lib/calendar';
+import { downloadElectionDayEvent } from '@/lib/calendar';
 import SmartBanner from './components/SmartBanner';
 import VotingModeToggle from './components/VotingModeToggle';
 import LocationEntry from './components/LocationEntry';
@@ -196,6 +196,12 @@ export default function VotePage() {
     electionDayAcRef.current = false;
   }, []);
 
+  const handleModeChange = useCallback((newMode: VotingMode) => {
+    setMode(newMode);
+    setShowMobileMap(false);
+    setSelectedId(null);
+  }, []);
+
   // Filter early voting locations by county
   const earlyLocations = useMemo(() => {
     if (!county) return [];
@@ -221,7 +227,7 @@ export default function VotePage() {
 
   const showElectionDayJackson = mode === 'election-day' && county === 'Jackson';
   const showElectionDayPlatte = mode === 'election-day' && county === 'Platte';
-  const showElectionDayExternal = mode === 'election-day' && county && county !== 'Jackson';
+  const showElectionDayExternal = mode === 'election-day' && county && county !== 'Jackson' && county !== 'Platte';
   const showEarly = mode === 'early';
 
   // Platte County election day locations for map pins
@@ -356,7 +362,7 @@ export default function VotePage() {
         <div className="relative z-10">
           <SmartBanner />
           <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
-            <VotingModeToggle mode={mode} onChange={setMode} />
+            <VotingModeToggle mode={mode} onChange={handleModeChange} />
             <LocationEntry
               onCountySelect={handleCountySelect}
               onLocationFound={handleLocationFound}
@@ -393,7 +399,7 @@ export default function VotePage() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
           <div className="flex-1 w-full sm:w-auto">
-            <VotingModeToggle mode={mode} onChange={setMode} />
+            <VotingModeToggle mode={mode} onChange={handleModeChange} />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {/* County selector dropdown */}
@@ -485,16 +491,11 @@ export default function VotePage() {
                 </>
               )}
 
-              {/* Calendar reminder - shown on election day for all counties */}
-              {mode === 'election-day' && (
+              {/* Calendar reminder - shown on election day after address is entered */}
+              {mode === 'election-day' && precinctInfo && (
                 <button
                   onClick={() => {
-                    downloadCalendarEvent({
-                      location: precinctInfo ? `${precinctInfo.pollingPlace}, ${precinctInfo.pollingAddress}` : undefined,
-                      title: precinctInfo
-                        ? `Vote at ${precinctInfo.pollingPlace} - KC Earnings Tax`
-                        : 'Vote YES for Kansas City Earnings Tax Renewal',
-                    });
+                    downloadElectionDayEvent(precinctInfo.pollingPlace, precinctInfo.pollingAddress);
                     setCalendarAdded(true);
                     setTimeout(() => setCalendarAdded(false), 3000);
                   }}
@@ -507,7 +508,7 @@ export default function VotePage() {
                     <h4 className="text-white font-semibold text-sm">
                       {calendarAdded ? 'Added to Calendar!' : 'Remind Me to Vote'}
                     </h4>
-                    <p className="text-white/40 text-xs">Add Election Day (April 7) to your calendar</p>
+                    <p className="text-white/40 text-xs">Add Election Day at {precinctInfo.pollingPlace} to your calendar</p>
                   </div>
                 </button>
               )}
