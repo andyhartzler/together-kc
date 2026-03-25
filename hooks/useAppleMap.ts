@@ -212,8 +212,16 @@ export function useAppleMap(options: UseAppleMapOptions) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapkit = (window as any).mapkit;
     if (!mapkit || !mapInstanceRef.current) return;
-    mapInstanceRef.current.setCenterAnimated(new mapkit.Coordinate(lat, lng));
-    if (distance) mapInstanceRef.current.setCameraDistanceAnimated(distance);
+    const map = mapInstanceRef.current;
+    const coord = new mapkit.Coordinate(lat, lng);
+    if (distance) {
+      // Single animated region change (smooth zoom + pan in one motion)
+      const spanDeg = distance / 111000;
+      const region = new mapkit.CoordinateRegion(coord, new mapkit.CoordinateSpan(spanDeg, spanDeg));
+      map.setRegionAnimated(region);
+    } else {
+      map.setCenterAnimated(coord);
+    }
   }, []);
 
   useEffect(() => {

@@ -326,7 +326,7 @@ export default function VotePage() {
     setSelectedId((prev) => prev === id ? null : id);
     const loc = visibleLocations.find((l) => l.id === id);
     if (loc && loc.lat !== 0) {
-      centerOn(loc.lat, loc.lng, 10000);
+      centerOn(loc.lat, loc.lng, 2000);
     }
   }, [visibleLocations, centerOn]);
 
