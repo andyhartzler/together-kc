@@ -230,17 +230,30 @@ export default function VotePage() {
     return [];
   }, [showEarly, showElectionDayJackson, showAllElectionDay, earlyLocations, electionDayLocations]);
 
-  // Add assigned polling place as a map pin when found
-  const assignedPin = useMemo(() => {
-    if (!precinctInfo) return null;
-    // Find matching location in election day data by name
-    const match = JACKSON_COUNTY_LOCATIONS.find(
-      (l) => l.name === precinctInfo.pollingPlace || l.address.includes(precinctInfo.pollingAddress.split(',')[0])
-    );
-    if (match && match.lat !== 0) {
-      return { id: 'assigned', lat: match.lat, lng: match.lng, title: precinctInfo.pollingPlace, subtitle: precinctInfo.pollingAddress, color: '#22c55e', glyphText: '★' };
-    }
-    return null;
+  // Geocode the assigned polling place address for map pin
+  const [assignedPin, setAssignedPin] = useState<{
+    id: string; lat: number; lng: number; title: string; subtitle: string; color: string; glyphText: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!precinctInfo) { setAssignedPin(null); return; }
+
+    (async () => {
+      try {
+        const result = await geocodeAddress(precinctInfo.pollingAddress);
+        if (result) {
+          setAssignedPin({
+            id: 'assigned',
+            lat: result.lat,
+            lng: result.lng,
+            title: precinctInfo.pollingPlace,
+            subtitle: precinctInfo.pollingAddress,
+            color: '#22c55e',
+            glyphText: '★',
+          });
+        }
+      } catch { /* silent */ }
+    })();
   }, [precinctInfo]);
 
   // Map pins from visible locations + assigned polling place
