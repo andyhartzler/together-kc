@@ -219,9 +219,22 @@ export default function VotePage() {
     return [];
   }, [showEarly, showElectionDayJackson, showAllElectionDay, earlyLocations, electionDayLocations]);
 
-  // Map pins from visible locations
+  // Add assigned polling place as a map pin when found
+  const assignedPin = useMemo(() => {
+    if (!precinctInfo) return null;
+    // Find matching location in election day data by name
+    const match = JACKSON_COUNTY_LOCATIONS.find(
+      (l) => l.name === precinctInfo.pollingPlace || l.address.includes(precinctInfo.pollingAddress.split(',')[0])
+    );
+    if (match && match.lat !== 0) {
+      return { id: 'assigned', lat: match.lat, lng: match.lng, title: precinctInfo.pollingPlace, subtitle: precinctInfo.pollingAddress, color: '#22c55e', glyphText: '★' };
+    }
+    return null;
+  }, [precinctInfo]);
+
+  // Map pins from visible locations + assigned polling place
   const mapPins = useMemo(() => {
-    return visibleLocations
+    const pins = visibleLocations
       .filter((l) => l.lat !== 0)
       .map((loc) => ({
         id: loc.id,
@@ -232,20 +245,29 @@ export default function VotePage() {
         color: '#E53935',
         glyphText: 'ward' in loc && loc.ward ? `${loc.ward}` : undefined,
       }));
-  }, [visibleLocations]);
+    // Add assigned polling place pin (green, prominent)
+    if (assignedPin) {
+      pins.unshift(assignedPin);
+    }
+    return pins;
+  }, [visibleLocations, assignedPin]);
 
   // Map center based on county
   const mapCenter = useMemo(() => {
+    // Center on assigned polling place if found
+    if (assignedPin) return { lat: assignedPin.lat, lng: assignedPin.lng };
     if (userCoords) return userCoords;
     if (county) return COUNTY_CENTERS[county];
     return { lat: 39.0997, lng: -94.5786 };
-  }, [county, userCoords]);
+  }, [county, userCoords, assignedPin]);
 
   const mapZoom = useMemo(() => {
+    // Zoom in tight when showing assigned location
+    if (assignedPin && !showAllElectionDay) return 8000;
     if (showElectionDayJackson) return 120000;
     if (county === 'Jackson') return 80000;
     return 50000;
-  }, [county, showElectionDayJackson]);
+  }, [county, showElectionDayJackson, assignedPin, showAllElectionDay]);
 
   const { mapRef, isLoaded: mapLoaded, centerOn } = useAppleMap({
     center: mapCenter,
