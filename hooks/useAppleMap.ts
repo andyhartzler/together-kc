@@ -126,6 +126,17 @@ export function useAppleMap(options: UseAppleMapOptions) {
 
     map.addAnnotations(newAnnotations);
     annotationsRef.current = newAnnotations;
+
+    // Auto-fit map to show all pins with padding
+    if (newAnnotations.length > 1) {
+      map.showItems(newAnnotations, {
+        animate: true,
+        padding: new mapkit.Padding(60, 60, 60, 60),
+      });
+    } else if (newAnnotations.length === 1) {
+      map.setCenterAnimated(newAnnotations[0].coordinate);
+      map.setCameraDistanceAnimated(15000);
+    }
   }, [isLoaded, pins, onPinSelect]);
 
   const centerOn = useCallback((lat: number, lng: number, distance?: number) => {
