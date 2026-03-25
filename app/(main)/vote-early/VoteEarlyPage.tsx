@@ -558,10 +558,16 @@ export default function VoteEarlyPage() {
           <h2 className="text-2xl font-bold text-white mb-2 text-center">
             Election Day - {ELECTION_DAY_INFO.dateFormatted}
           </h2>
-          <p className="text-white/60 text-center mb-8 max-w-2xl mx-auto">
+          <p className="text-white/60 text-center mb-3 max-w-2xl mx-auto">
             On Election Day, you must vote at your assigned polling place based on your home address.
             Polls are open {ELECTION_DAY_INFO.hours.open} - {ELECTION_DAY_INFO.hours.close}.
           </p>
+          <div className="max-w-2xl mx-auto mb-8 rounded-lg bg-sky/10 border border-sky/20 px-4 py-3 text-center">
+            <p className="text-sky text-sm">
+              <strong>Jackson County voters:</strong> You can vote at any KC polling location on Election Day
+              using a ballot marking device. For a paper ballot, go to your assigned location.
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {(Object.entries(COUNTY_ELECTION_BOARDS) as [string, typeof COUNTY_ELECTION_BOARDS[keyof typeof COUNTY_ELECTION_BOARDS]][]).map(([county, info]) => (
@@ -613,11 +619,34 @@ export default function VoteEarlyPage() {
               </svg>
               What to Bring
             </h3>
-            <p className="text-white/60 text-sm">
-              Missouri requires a valid photo ID to vote. Acceptable forms include a Missouri driver&apos;s license or non-driver ID,
-              U.S. passport, or military ID. If you do not have a photo ID, you may cast a provisional ballot or use other approved forms.
-              Contact your county election board for details.
+            <p className="text-white/60 text-sm mb-3">
+              Missouri requires a <strong className="text-white/80">valid government-issued photo ID</strong> to vote. Acceptable forms include:
             </p>
+            <ul className="text-white/60 text-sm space-y-1 mb-3 ml-4 list-disc">
+              <li>Missouri driver&apos;s license or non-driver ID</li>
+              <li>U.S. passport</li>
+              <li>U.S. military ID</li>
+              <li>Other government-issued photo ID</li>
+            </ul>
+            <p className="text-white/50 text-xs">
+              If you do not have a photo ID, you may cast a provisional ballot by providing your name, address, date of birth,
+              and last 4 digits of your SSN. Contact your county election board for details.
+            </p>
+          </div>
+
+          {/* SOS Voter Lookup */}
+          <div className="mt-4 text-center">
+            <a
+              href="https://voteroutreach.sos.mo.gov/portal/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/70 text-sm font-medium hover:bg-white/10 hover:text-white transition-all"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Check Your Voter Registration (MO Secretary of State)
+            </a>
           </div>
         </div>
       </div>

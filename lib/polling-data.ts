@@ -309,14 +309,14 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
   // ---- PLATTE COUNTY ----
   {
     id: 'pc-election-board',
-    name: 'Platte County Election Board',
-    address: '415 Third St',
+    name: 'Platte County Board of Elections',
+    address: '2600 NW Prairie View Rd',
     city: 'Platte City',
     state: 'MO',
     zip: '64079',
     county: 'Platte',
-    lat: 39.3688,
-    lng: -94.7823,
+    lat: 39.3553,
+    lng: -94.7716,
     isElectionBoard: true,
     hours: [
       {
@@ -328,21 +328,30 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
         close: '5:00 PM',
         daysOfWeek: [1, 2, 3, 4, 5],
       },
+      {
+        label: 'Saturday',
+        dates: 'April 4',
+        startDate: '2026-04-04',
+        endDate: '2026-04-04',
+        open: '8:00 AM',
+        close: '12:00 PM',
+        daysOfWeek: [6],
+      },
     ],
-    notes: 'Only early voting location for Platte County residents. Located in Platte City.',
+    notes: 'Only early voting location for Platte County residents. About 20 min north of the Northland/KCI area.',
   },
 
   // ---- CASS COUNTY ----
   {
     id: 'cass-election-board',
-    name: 'Cass County Election Board',
-    address: '2733 Cantrell Rd',
+    name: 'Cass County Clerk - Election Office',
+    address: '102 E. Wall St',
     city: 'Harrisonville',
     state: 'MO',
     zip: '64701',
     county: 'Cass',
-    lat: 38.6531,
-    lng: -94.3469,
+    lat: 38.6534,
+    lng: -94.3484,
     isElectionBoard: true,
     hours: [
       {
@@ -351,11 +360,11 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
         startDate: '2026-03-24',
         endDate: '2026-04-06',
         open: '8:00 AM',
-        close: '5:00 PM',
+        close: '4:30 PM',
         daysOfWeek: [1, 2, 3, 4, 5],
       },
     ],
-    notes: 'Only early voting location for Cass County residents. Located in Harrisonville.',
+    notes: 'Only early voting location for Cass County residents. Very few KC residents live in the Cass County portion of Kansas City.',
   },
 ];
 
@@ -467,13 +476,15 @@ export const ELECTION_DAY_INFO = {
     open: '6:00 AM',
     close: '7:00 PM',
   },
-  notes: 'On Election Day, voters must go to their assigned polling place based on their home address (ward and precinct).',
+  notes: 'On Election Day, voters must go to their assigned polling place based on their home address.',
+  jacksonCountyNote: 'Jackson County voters can vote at ANY KC polling location on Election Day using a ballot marking device. For a paper ballot, go to your assigned location.',
   lookupUrls: {
     jackson: 'https://www.kceb.org',
     clay: 'https://cceb.maps.arcgis.com/apps/instant/lookup/index.html?appid=0fcebdd0259945a9aded62759f77c311',
     platte: 'https://www.plattecountymovotes.gov',
     cass: 'https://casscounty.com/2355/Absentee-Information',
   },
+  voterLookup: 'https://voteroutreach.sos.mo.gov/portal/',
 } as const;
 
 // County election board contact info
@@ -491,15 +502,15 @@ export const COUNTY_ELECTION_BOARDS = {
     address: '100 W. Mississippi St, Liberty, MO 64068',
   },
   Platte: {
-    name: 'Platte County Election Board',
-    phone: '(816) 858-2232',
+    name: 'Platte County Board of Elections',
+    phone: '(816) 858-4400',
     website: 'https://www.plattecountymovotes.gov',
-    address: '415 Third St, Platte City, MO 64079',
+    address: '2600 NW Prairie View Rd, Platte City, MO 64079',
   },
   Cass: {
-    name: 'Cass County Clerk - Election Division',
-    phone: '(816) 380-8108',
+    name: 'Cass County Clerk - Election Office',
+    phone: '(816) 380-8102',
     website: 'https://casscounty.com/2355/Absentee-Information',
-    address: '2733 Cantrell Rd, Harrisonville, MO 64701',
+    address: '102 E. Wall St, Harrisonville, MO 64701',
   },
 } as const;
