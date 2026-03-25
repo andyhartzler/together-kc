@@ -736,7 +736,7 @@ export default function VotePage() {
                     <AssignedLocationCard info={null} isLoading />
                   )}
 
-                  {/* Step C: Precinct found - show assigned + option to see all */}
+                  {/* Step C: Precinct found */}
                   {precinctInfo && (
                     <>
                       {/* Cass County special note */}
@@ -746,77 +746,41 @@ export default function VotePage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <div className="text-amber-200/80 text-sm">
-                            <p>Cass County voters must vote at their assigned precinct. Contact the Cass County Clerk for your specific polling place assignment.</p>
+                            <p>Contact the Cass County Clerk for your polling place assignment.</p>
                             <a href={`tel:${COUNTY_ELECTION_BOARDS.Cass.phone.replace(/\D/g, '')}`} className="text-amber-300 font-semibold hover:underline">{COUNTY_ELECTION_BOARDS.Cass.phone}</a>
                           </div>
                         </div>
                       )}
 
-                      <AssignedLocationCard info={precinctInfo} isLoading={false} />
+                      {/* Polls hours - ABOVE the green card */}
+                      <div className="rounded-xl bg-white/[0.06] border border-white/10 p-4 text-center">
+                        <p className="text-white font-bold text-lg">Polls open 6:00 AM - 7:00 PM</p>
+                        <p className="text-white/50 text-sm mt-1">Tuesday, April 7, 2026</p>
+                      </div>
 
-                      {precinctInfo && (
-                        <div className="rounded-xl bg-white/[0.04] border border-white/10 p-4 text-center">
-                          <p className="text-white font-bold text-base">Polls open 6:00 AM - 7:00 PM</p>
-                          <p className="text-white/50 text-xs mt-1">Tuesday, April 7, 2026</p>
+                      {/* Assigned location card */}
+                      <AssignedLocationCard info={precinctInfo} isLoading={false} pinLat={assignedPin?.lat} pinLng={assignedPin?.lng} />
+
+
+                      {/* Remind me to vote - BELOW the card */}
+                      <button
+                        onClick={() => {
+                          downloadElectionDayEvent(precinctInfo.pollingPlace, precinctInfo.pollingAddress);
+                          setCalendarAdded(true);
+                          setTimeout(() => setCalendarAdded(false), 3000);
+                        }}
+                        className="w-full flex items-center gap-3 p-4 rounded-xl bg-sky/10 border border-sky/20 hover:bg-sky/15 transition-all text-left"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center shrink-0 text-lg">
+                          {calendarAdded ? '\u2713' : '\ud83d\udcc5'}
                         </div>
-                      )}
-
-                      {precinctInfo && (
-                        <button
-                          onClick={() => {
-                            downloadElectionDayEvent(precinctInfo.pollingPlace, precinctInfo.pollingAddress);
-                            setCalendarAdded(true);
-                            setTimeout(() => setCalendarAdded(false), 3000);
-                          }}
-                          className="w-full flex items-center gap-3 p-4 rounded-xl bg-sky/10 border border-sky/20 hover:bg-sky/15 transition-all text-left"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center shrink-0 text-lg">
-                            {calendarAdded ? '\u2713' : '\ud83d\udcc5'}
-                          </div>
-                          <div>
-                            <h4 className="text-white font-semibold text-sm">
-                              {calendarAdded ? 'Added to Calendar!' : 'Remind Me to Vote'}
-                            </h4>
-                            <p className="text-white/40 text-xs">Add Election Day at {precinctInfo.pollingPlace} to your calendar</p>
-                          </div>
-                        </button>
-                      )}
-
-                      {/* View all locations toggle (for counties with multiple polling sites) */}
-                      {allLocationsCount > 0 && (
-                        <button
-                          onClick={() => setShowAllElectionDay(!showAllElectionDay)}
-                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white/50 text-sm font-medium hover:bg-white/10 hover:text-white/70 transition-all"
-                        >
-                          <svg className={`w-4 h-4 transition-transform ${showAllElectionDay ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                          {showAllElectionDay
-                            ? 'Hide other locations'
-                            : `View all ${allLocationsCount} ${county === 'Jackson' ? 'KC' : county + ' County'} polling locations`}
-                        </button>
-                      )}
-
-                      {showAllElectionDay && allLocationsList.length > 0 && (
-                        <div className="space-y-3">
-                          <p className="text-white/40 text-xs">
-                            {county === 'Jackson'
-                              ? 'Other polling locations in Kansas City.'
-                              : `All ${county} County polling locations:`}
-                          </p>
-                          {allLocationsList.map((loc) => (
-                            <LocationCard
-                              key={loc.id}
-                              location={loc}
-                              userLat={userCoords?.lat}
-                              userLng={userCoords?.lng}
-                              isEarlyVoting={false}
-                              isSelected={selectedId === loc.id}
-                              onSelect={handleCardSelect}
-                            />
-                          ))}
+                        <div>
+                          <h4 className="text-white font-semibold text-sm">
+                            {calendarAdded ? 'Added to Calendar!' : 'Remind Me to Vote'}
+                          </h4>
+                          <p className="text-white/40 text-xs">Add Election Day at {precinctInfo.pollingPlace} to your calendar</p>
                         </div>
-                      )}
+                      </button>
                     </>
                   )}
                 </>
@@ -825,7 +789,7 @@ export default function VotePage() {
           </div>
 
           {/* Right column - Apple Maps (desktop always, mobile toggle) */}
-          <div className={`flex-1 min-h-[250px] md:min-h-[calc(100vh-200px)] ${(showMobileMap || (assignedPin && mode === 'election-day')) ? 'block' : 'hidden md:block'}`}>
+          <div className={`flex-1 ${(assignedPin && mode === 'election-day') ? 'min-h-[250px] md:min-h-[calc(100vh-200px)]' : 'min-h-[400px] md:min-h-[calc(100vh-200px)]'} ${(showMobileMap || (assignedPin && mode === 'election-day')) ? 'block' : 'hidden md:block'}`}>
             <div className="relative w-full h-full min-h-[250px] md:min-h-[calc(100vh-200px)] rounded-xl overflow-hidden border border-white/10">
               <div ref={mapRef} className="absolute inset-0" />
               {!mapLoaded && (
