@@ -98,7 +98,14 @@ export function EndorserCardStack({
     setActive((a) => wrapIndex(a + 1, len));
   }, [canGoNext, len]);
 
+  // Throttle keyboard navigation to prevent animation pile-up on key hold
+  const lastKeyTime = React.useRef(0);
   const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    const now = Date.now();
+    if (now - lastKeyTime.current < 250) return; // 250ms throttle
+    lastKeyTime.current = now;
     if (e.key === "ArrowLeft") prev();
     if (e.key === "ArrowRight") next();
   };
@@ -121,9 +128,12 @@ export function EndorserCardStack({
     <div className={cn("w-full", className)}>
       {/* Stage */}
       <div
-        className="relative w-full touch-pan-y"
+        className="relative w-full touch-pan-y outline-none"
         style={{ height: Math.max(520, cardHeight + 60) }}
         tabIndex={0}
+        role="region"
+        aria-label="Endorsement quotes"
+        aria-roledescription="carousel"
         onKeyDown={onKeyDown}
       >
         {/* Ambient glow effects */}
