@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { VoteYesModal } from '@/components/ui/VoteYesModal';
 import { VOTE_DATE } from '@/lib/constants';
 
 // Simplified "Grows Stronger" animation - graceful fade in with subtle glow
@@ -36,7 +36,6 @@ function GrowsStrongerAnimation({ delay = 0 }: { delay?: number }) {
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isVoteModalOpen, setIsVoteModalOpen] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -127,8 +126,8 @@ export default function Hero() {
           }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          <button
-            onClick={() => setIsVoteModalOpen(true)}
+          <Link
+            href="/vote"
             className="group relative z-0 flex cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap border border-white/10 px-8 py-4 text-lg text-white font-semibold bg-coral rounded-full transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px hover:scale-105 shadow-lg"
           >
             Vote YES
@@ -136,7 +135,7 @@ export default function Hero() {
             <div className="insert-0 absolute size-full rounded-full shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-all duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
             {/* Backdrop */}
             <div className="absolute -z-20 bg-coral rounded-full inset-[0.05em]" />
-          </button>
+          </Link>
           <a
             href="#services"
             className="group relative z-0 flex cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap border border-white/30 px-8 py-4 text-lg text-white font-semibold bg-white/10 backdrop-blur-sm rounded-full transform-gpu transition-all duration-300 ease-in-out active:translate-y-px hover:scale-105 hover:bg-white/20 shadow-lg"
@@ -168,8 +167,6 @@ export default function Hero() {
         </div>
       </motion.div>
 
-      {/* Vote YES Modal */}
-      <VoteYesModal isOpen={isVoteModalOpen} onClose={() => setIsVoteModalOpen(false)} />
     </section>
   );
 }

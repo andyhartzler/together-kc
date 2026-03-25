@@ -253,10 +253,11 @@ export default function VotePage() {
     pins: mapPins,
     onPinSelect: (id) => setSelectedId(id),
     enabled: !!county,
+    showMobileMap,
   });
 
   const handleCardSelect = useCallback((id: string) => {
-    setSelectedId(id);
+    setSelectedId((prev) => prev === id ? null : id);
     const loc = visibleLocations.find((l) => l.id === id);
     if (loc && loc.lat !== 0) {
       centerOn(loc.lat, loc.lng, 10000);
@@ -273,9 +274,10 @@ export default function VotePage() {
           <LocationEntry
             onCountySelect={handleCountySelect}
             onLocationFound={handleLocationFound}
+            mode={mode}
           />
         </div>
-        <VoterInfo />
+        <VoterInfo county={county} />
       </div>
     );
   }
@@ -435,7 +437,7 @@ export default function VotePage() {
                       )}
 
                       <p className="text-white/30 text-xs text-center">
-                        Jackson County voters can vote at any KC location using a ballot marking device, but your assigned location offers a paper ballot.
+                        On Election Day, you can vote at any KC polling location. Your assigned location is the only place you can get a paper ballot.
                       </p>
                     </div>
                   )}

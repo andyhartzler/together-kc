@@ -133,10 +133,19 @@ export function getLocationStatus(location: EarlyVotingLocation): LocationStatus
 
 export function getDirectionsUrl(address: string): string {
   const encoded = encodeURIComponent(address);
-  if (typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)) {
-    return `https://maps.apple.com/?daddr=${encoded}`;
+  if (typeof navigator !== 'undefined') {
+    const ua = navigator.userAgent;
+    // iOS -> Apple Maps
+    if (/iPhone|iPad|iPod/.test(ua)) {
+      return `https://maps.apple.com/?daddr=${encoded}`;
+    }
+    // Android -> Google Maps intent
+    if (/Android/.test(ua)) {
+      return `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+    }
   }
-  return `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+  // Desktop -> Apple Maps (campaign preference)
+  return `https://maps.apple.com/?daddr=${encoded}`;
 }
 
 export function getDistanceMiles(lat1: number, lng1: number, lat2: number, lng2: number): number {

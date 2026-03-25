@@ -57,16 +57,23 @@ interface UseAppleMapOptions {
   pins?: MapPin[];
   onPinSelect?: (id: string) => void;
   enabled?: boolean;
+  showMobileMap?: boolean;
 }
 
 export function useAppleMap(options: UseAppleMapOptions) {
-  const { center, zoom = 80000, pins = [], onPinSelect, enabled = true } = options;
+  const { center, zoom = 80000, pins = [], onPinSelect, enabled = true, showMobileMap } = options;
   const mapRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapInstanceRef = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const annotationsRef = useRef<any[]>([]);
+  const pinsRef = useRef<MapPin[]>(pins);
+  const onPinSelectRef = useRef(onPinSelect);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // Keep refs current
+  pinsRef.current = pins;
+  onPinSelectRef.current = onPinSelect;
 
   useEffect(() => {
     if (!enabled || !mapRef.current) return;
@@ -90,6 +97,41 @@ export function useAppleMap(options: UseAppleMapOptions) {
       });
 
       mapInstanceRef.current = map;
+
+      // If pins already exist at init time, add them immediately
+      const currentPins = pinsRef.current;
+      if (currentPins.length > 0) {
+        const annotations = currentPins.map((pin) => {
+          const a = new mapkit.MarkerAnnotation(
+            new mapkit.Coordinate(pin.lat, pin.lng),
+            {
+              title: pin.title,
+              subtitle: pin.subtitle || '',
+              color: pin.color,
+              glyphText: pin.glyphText || '•',
+            }
+          );
+          if (onPinSelectRef.current) {
+            const cb = onPinSelectRef.current;
+            a.addEventListener('select', () => cb(pin.id));
+          }
+          return a;
+        });
+        map.addAnnotations(annotations);
+        annotationsRef.current = annotations;
+
+        if (annotations.length > 1) {
+          map.showItems(annotations, {
+            animate: true,
+            padding: new mapkit.Padding(30, 30, 30, 30),
+            minimumSpan: new mapkit.CoordinateSpan(0.02, 0.02),
+          });
+        } else if (annotations.length === 1) {
+          map.setCenterAnimated(annotations[0].coordinate);
+          map.setCameraDistanceAnimated(8000);
+        }
+      }
+
       setIsLoaded(true);
     });
 
@@ -140,6 +182,34 @@ export function useAppleMap(options: UseAppleMapOptions) {
     }
   }, [isLoaded, pins, onPinSelect]);
 
+  // When mobile map toggles to visible, re-fit to pins
+  useEffect(() => {
+    if (!showMobileMap || !isLoaded || !mapInstanceRef.current) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapkit = (window as any).mapkit;
+    if (!mapkit) return;
+
+    const map = mapInstanceRef.current;
+    const annotations = annotationsRef.current;
+
+    // Force a resize so the map knows its container dimensions
+    setTimeout(() => {
+      if (annotations.length > 1) {
+        map.showItems(annotations, {
+          animate: true,
+          padding: new mapkit.Padding(30, 30, 30, 30),
+          minimumSpan: new mapkit.CoordinateSpan(0.02, 0.02),
+        });
+      } else if (annotations.length === 1) {
+        map.setCenterAnimated(annotations[0].coordinate);
+        map.setCameraDistanceAnimated(8000);
+      } else if (center) {
+        map.setCenterAnimated(new mapkit.Coordinate(center.lat, center.lng));
+        map.setCameraDistanceAnimated(zoom);
+      }
+    }, 100);
+  }, [showMobileMap]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const centerOn = useCallback((lat: number, lng: number, distance?: number) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapkit = (window as any).mapkit;
@@ -163,7 +233,7 @@ export function useAppleMap(options: UseAppleMapOptions) {
 export function useInlineMap(lat: number, lng: number, enabled: boolean) {
   return useAppleMap({
     center: { lat, lng },
-    zoom: 5000,
+    zoom: 3000,
     pins: [{ id: 'loc', lat, lng, title: '', color: '#e53935', glyphText: '•' }],
     enabled,
   });

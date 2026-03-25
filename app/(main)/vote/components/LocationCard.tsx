@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInlineMap } from '@/hooks/useAppleMap';
 import {
@@ -29,8 +28,7 @@ function isEarlyVotingLoc(loc: Location): loc is EarlyVotingLocation {
 }
 
 export default function LocationCard({ location: loc, userLat, userLng, isEarlyVoting, isSelected, onSelect }: Props) {
-  const [expanded, setExpanded] = useState(false);
-  const isExpanded = isSelected || expanded;
+  const isExpanded = isSelected;
 
   const status: LocationStatus | null = isEarlyVotingLoc(loc) ? getLocationStatus(loc) : null;
 
@@ -47,10 +45,10 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
 
   return (
     <div
-      onClick={() => { onSelect(loc.id); setExpanded(!expanded); }}
+      onClick={() => { onSelect(loc.id); }}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(loc.id); setExpanded(!expanded); } }}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(loc.id); } }}
       className={`w-full text-left rounded-xl p-4 transition-all cursor-pointer ${
         isExpanded ? 'bg-coral/10 border-2 border-coral/40' : 'bg-white/5 border border-white/10 hover:bg-white/10'
       }`}
@@ -140,6 +138,10 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
                     </div>
                   ))}
                 </div>
+              )}
+
+              {!isEarlyVoting && (
+                <p className="text-white/50 text-xs">Election Day polls: 6:00 AM - 7:00 PM</p>
               )}
 
               {isCass && isEarlyVoting && <p className="text-amber-400 text-[11px] font-medium">Closes at 4:30 PM (earlier than other locations)</p>}

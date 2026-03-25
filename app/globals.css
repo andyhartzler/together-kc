@@ -264,6 +264,14 @@ html {
   z-index: 10000 !important;
 }
 
+/* Reduce Apple Maps legal attribution */
+.mk-attribution {
+  font-size: 8px !important;
+  opacity: 0.4 !important;
+  transform: scale(0.7);
+  transform-origin: bottom left;
+}
+
 /* Hide scrollbar for horizontal pill containers */
 .scrollbar-none {
   -ms-overflow-style: none;
