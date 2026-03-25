@@ -117,10 +117,16 @@ export default function SendToPhone({ address, locationName }: Props) {
                   <QRCodeSVG
                     value={qrUrl}
                     size={200}
-                    level="M"
+                    level="H"
                     fgColor="#1e3a5f"
                     bgColor="white"
                     includeMargin={false}
+                    imageSettings={{
+                      src: '/images/qr-logo.png',
+                      height: 44,
+                      width: 44,
+                      excavate: true,
+                    }}
                   />
                 </div>
 
