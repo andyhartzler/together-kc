@@ -35,8 +35,8 @@ export default function SmartBanner() {
             Early voting is open now
           </div>
         )}
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-1.5">Where Do I Vote?</h1>
-        <p className="text-white/60 text-sm md:text-base max-w-md mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Where Do I Vote?</h1>
+        <p className="text-white/70 text-base md:text-lg max-w-md mx-auto font-medium">
           {mode === 'early' && !earlyEnded
             ? `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left to vote early. No excuse needed.`
             : mode === 'election-day'

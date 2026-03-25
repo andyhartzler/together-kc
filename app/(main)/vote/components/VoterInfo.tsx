@@ -75,9 +75,12 @@ export default function VoterInfo({ county }: Props) {
           </div>
 
           {/* Card 3: Check Registration */}
-          <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] p-5 hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300 flex flex-col">
-            <h3 className="text-white font-semibold text-sm mb-1">Check Registration</h3>
-            <p className="text-white/40 text-xs mb-4">
+          <div className="rounded-2xl bg-sky/[0.08] backdrop-blur-sm border border-sky/20 p-5 hover:bg-sky/[0.12] hover:border-sky/30 transition-all duration-300 flex flex-col">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1 h-6 rounded-full bg-sky" />
+              <h3 className="text-white font-semibold text-sm">Check Registration</h3>
+            </div>
+            <p className="text-white/70 text-sm mb-4">
               Verify your voter registration status with the Missouri Secretary of State.
             </p>
             <div className="mt-auto">
@@ -85,7 +88,7 @@ export default function VoterInfo({ county }: Props) {
                 href="https://voteroutreach.sos.mo.gov/portal/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-sky/15 border border-sky/30 text-sky text-sm font-semibold hover:bg-sky/25 transition-all"
+                className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-sky/20 border border-sky/40 text-white text-sm font-semibold hover:bg-sky/30 transition-all min-h-[48px]"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
