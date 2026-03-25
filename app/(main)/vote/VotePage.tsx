@@ -72,17 +72,40 @@ export default function VotePage() {
 
   const userLoc = useUserLocation();
 
+  // Call KCEB ArcGIS directly from browser (CORS enabled, skips Vercel cold start)
   const lookupPrecinct = useCallback(async (lat: number, lng: number) => {
     setPrecinctLoading(true);
     try {
-      const res = await fetch(`/api/precinct-lookup?lat=${lat}&lng=${lng}`);
+      const params = new URLSearchParams({
+        geometry: `${lng},${lat}`,
+        geometryType: 'esriGeometryPoint',
+        spatialRel: 'esriSpatialRelIntersects',
+        outFields: 'Name,Precinct,Home_Poll_Name,Home_Poll_Address,Sample',
+        f: 'json',
+        returnGeometry: 'false',
+        inSR: '4326',
+      });
+      const res = await fetch(
+        `https://services3.arcgis.com/Ayu3EsYWkD5ZwKLW/arcgis/rest/services/Precincts_2023_view/FeatureServer/22/query?${params}`
+      );
       const data = await res.json();
-      if (data.found) {
+      if (data.features?.length > 0) {
+        const attrs = data.features[0].attributes;
+        // Parse address HTML
+        let pollAddress = attrs.Home_Poll_Address || '';
+        pollAddress = pollAddress.replace(/<[^>]+>/g, '').trim();
+        // Parse sample ballot HTML -> local PDF path
+        let sampleBallot: string | null = null;
+        const sampleMatch = (attrs.Sample || '').match(/href="([^"]+)"/);
+        if (sampleMatch) {
+          const filename = sampleMatch[1].split('/').pop();
+          sampleBallot = `/ballots/${filename}`;
+        }
         setPrecinctInfo({
-          precinct: data.precinct,
-          pollingPlace: data.pollingPlace,
-          pollingAddress: data.pollingAddress,
-          sampleBallot: data.sampleBallot,
+          precinct: attrs.Name,
+          pollingPlace: attrs.Home_Poll_Name,
+          pollingAddress: pollAddress,
+          sampleBallot,
         });
       }
     } catch { /* non-critical */ }

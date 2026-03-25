@@ -43,6 +43,19 @@ export async function GET(request: NextRequest) {
       const mapsUrl = hrefMatch ? hrefMatch[1] : null;
       pollAddress = pollAddress.replace(/<[^>]+>/g, '').trim();
 
+      // Parse sample ballot - extract URL and rewrite to local path
+      let sampleBallot: string | null = null;
+      let sampleBallotLabel: string | null = null;
+      const sampleHtml = attrs.Sample || '';
+      const sampleHrefMatch = sampleHtml.match(/href="([^"]+)"/);
+      if (sampleHrefMatch) {
+        const originalUrl = sampleHrefMatch[1];
+        const filename = originalUrl.split('/').pop();
+        sampleBallot = `/ballots/${filename}`;
+        // Extract label text (strip HTML tags)
+        sampleBallotLabel = sampleHtml.replace(/<[^>]+>/g, '').trim();
+      }
+
       return NextResponse.json({
         found: true,
         precinct: attrs.Name, // e.g. "WD 1 PCT 1"
@@ -51,7 +64,8 @@ export async function GET(request: NextRequest) {
         pollingPlace: attrs.Home_Poll_Name,
         pollingAddress: pollAddress,
         mapsUrl,
-        sampleBallot: attrs.Sample || null,
+        sampleBallot,
+        sampleBallotLabel,
       });
     }
 

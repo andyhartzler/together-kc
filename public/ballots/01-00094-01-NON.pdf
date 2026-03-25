@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Sorry 404 Error</title>
+	<style>
+		#fourohfour {
+		    background-color: #E1E6ED;
+		    box-shadow: 0 0 15px #999999;
+		    margin: 0 auto;
+		   	height: 500px;
+		    position: relative;
+		    width: 700px;
+			padding: 40px;
+		}
+		
+		#fourohfour h1 {
+			color: #92241F;
+		    font-family: "Driod Serif","Times",serif;
+		    font-size: 28px;
+		    font-variant: small-caps;
+		    padding-top: 20px;
+		    text-shadow: 1px 1px 0 #EFEFEF;
+			width: 525px;
+		}
+		
+		#fourohfour p {
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 13px;
+			color: #323232;
+			padding-top: 10px;
+			width: 450px;
+		}
+		
+		#fourohfour img {
+			margin-left: 280px;
+			margin-top: 50px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="404">
+		<a href="https://kceb.org"><img src="/_img/logo-button.png" alt="please click here to return to the home page"/></a>
+		<h1>The page you were searching for was not found.</h1>
+		<p>Please click on our logo and you will be redirected to our website where you can search for your document</p>
+	</div><!--end of 404-->
+</body>
+</html>

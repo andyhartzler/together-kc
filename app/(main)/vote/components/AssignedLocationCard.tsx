@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { getDirectionsUrl } from '@/lib/voting-utils';
 
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function AssignedLocationCard({ info, isLoading }: Props) {
+  const [showBallot, setShowBallot] = useState(false);
   if (isLoading) {
     return (
       <div className="rounded-xl bg-green-500/10 border border-green-500/20 p-4 animate-pulse">
@@ -53,18 +55,33 @@ export default function AssignedLocationCard({ info, isLoading }: Props) {
           Directions
         </a>
         {info.sampleBallot && (
-          <a href={info.sampleBallot} target="_blank" rel="noopener noreferrer"
+          <button onClick={() => setShowBallot(true)}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-white/10 text-white/70 text-sm font-semibold hover:bg-white/20 transition-colors min-h-[44px]">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Sample Ballot
-          </a>
+          </button>
         )}
       </div>
       <p className="text-green-300/60 text-[10px] mt-3 leading-relaxed">
         Paper ballot at your assigned location. Vote at any other KC location with a ballot marking device.
       </p>
+      {showBallot && info.sampleBallot && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col" onClick={() => setShowBallot(false)}>
+          <div className="flex items-center justify-between p-4 bg-navy/90">
+            <h3 className="text-white font-semibold text-sm">Sample Ballot - {info.precinct}</h3>
+            <button onClick={() => setShowBallot(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex-1" onClick={(e) => e.stopPropagation()}>
+            <iframe src={info.sampleBallot} className="w-full h-full" title="Sample Ballot" />
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }
