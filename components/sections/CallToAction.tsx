@@ -72,6 +72,14 @@ export default function CallToAction() {
 
   const actions = [
     {
+      icon: '🗳️',
+      title: 'Find Your Polling Place',
+      description: 'Look up early voting and Election Day locations.',
+      buttonText: 'Find Where to Vote',
+      href: '/vote',
+      variant: 'primary' as const,
+    },
+    {
       icon: '✍️',
       title: 'Add Your Name',
       description: 'Show your support by endorsing the renewal.',
@@ -124,7 +132,7 @@ export default function CallToAction() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {actions.map((action, index) => (
               <motion.div
                 key={action.title}

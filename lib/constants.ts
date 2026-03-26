@@ -181,8 +181,20 @@ export const FAQS = [
     answer: 'Community support across Kansas City is vitally important in this local election, where every vote counts. You can become an endorser at together-kc.com, and volunteer to take many actions to support the renewal of the earnings tax, including writing or signing letters to the editor, contacting your friends, and amplifying our message on social media by contacting action@together-kc.com.',
   },
   {
-    question: 'When is the election?',
-    answer: 'The e-tax renewal will appear on the ballot in the April 7, 2026, election. Qualified voters may vote absentee in person beginning on March 24.',
+    question: 'When is the Kansas City election?',
+    answer: 'The election is April 7, 2026. Early voting is open March 24 through April 6.',
+  },
+  {
+    question: 'Where can I vote early in Kansas City?',
+    answer: 'Early voting (no-excuse absentee) is available March 24 through April 6, 2026. Jackson County voters can vote at the Kansas City Election Board (4405 E. 50th Terrace) or at satellite locations across the city. Clay County voters can visit the Clay County Election Board (100 W. Mississippi Ave, Liberty). Platte County voters can go to the Platte County Election Board (415 Third St, Platte City). Cass County voters can visit the Cass County Clerk office (102 E. Wall St, Harrisonville). Visit together-kc.com/vote for a full list of locations, hours, and directions.',
+  },
+  {
+    question: 'Where is my polling place on Election Day?',
+    answer: 'On Election Day (April 7, 2026), voters must go to their assigned polling place based on their home address. Jackson County voters in Kansas City can vote at any Kansas City polling location. You can look up your assigned polling place and get directions at together-kc.com/vote or contact your county election board.',
+  },
+  {
+    question: 'What time do polls open and close?',
+    answer: 'Polls are open from 6:00 AM to 7:00 PM on Election Day, April 7, 2026.',
   },
 ] as const;
 

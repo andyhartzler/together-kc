@@ -114,29 +114,45 @@ export default function Page() {
     <>
       <JsonLd data={generateVotingLocationSchema()} />
       <JsonLd data={generateBreadcrumbSchema()} />
-      {/* Server-rendered SEO content -- always in HTML for Google to crawl.
-          Hidden once the interactive VotePage mounts via the sr-only class on the outer div,
-          but the text remains in the DOM for crawlers. */}
-      <div className="sr-only" aria-hidden="true">
-        <h1>Where Do I Vote? - Kansas City April 7, 2026 Earnings Tax Election</h1>
-        <p>Find your polling place for the April 7, 2026 Kansas City earnings tax renewal election. Early voting and absentee voting is available March 24 through April 6, 2026 at locations across Jackson County, Clay County, Platte County, and Cass County. Vote YES to renew the KC earnings tax.</p>
-        <h2>Early Voting Locations by County</h2>
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'VoteAction',
+        name: 'Vote on Kansas City Earnings Tax Renewal',
+        description: 'Vote YES or NO on renewing the 1% Kansas City earnings tax on April 7, 2026',
+        startTime: '2026-03-24',
+        endTime: '2026-04-07',
+        location: { '@type': 'City', name: 'Kansas City', addressRegion: 'MO' },
+      }} />
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'SpecialAnnouncement',
+        name: 'Kansas City Earnings Tax Renewal Election - Vote by April 7, 2026',
+        text: 'Early voting is open now through April 6. Find your polling place for the Kansas City earnings tax renewal election.',
+        datePosted: '2026-03-24',
+        expires: '2026-04-08',
+        spatialCoverage: { '@type': 'City', name: 'Kansas City', addressRegion: 'MO', addressCountry: 'US' },
+        category: 'https://www.wikidata.org/wiki/Q40231',
+      }} />
+      {/* Server-rendered SEO content -- visible to all users and crawlers.
+          Provides crawlable text for Google featured snippets and AI search. */}
+      <div className="bg-navy text-white px-4 py-8 text-center max-w-3xl mx-auto" id="vote-info">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-3">Find Your Polling Place - Kansas City Earnings Tax Election</h1>
+        <p className="text-white/80 text-sm sm:text-base mb-4">Early voting is open now through April 6, 2026 at locations across Jackson, Clay, Platte, and Cass counties. Election Day is April 7, 2026 -- polls open 6:00 AM to 7:00 PM.</p>
+        <p className="text-white/60 text-xs">Select your county below to find your nearest voting location, get directions, and view your sample ballot.</p>
+      </div>
+      {/* Additional crawlable content below the fold -- structured for featured snippets */}
+      <div className="bg-navy text-white px-4 pb-2 max-w-3xl mx-auto text-xs text-white/40 space-y-2" aria-label="Voting locations reference">
         {(['Jackson', 'Clay', 'Platte', 'Cass'] as const).map((county) => (
-          <div key={county}>
-            <h3>{county} County Early Voting Locations</h3>
-            <ul>
+          <details key={county} className="[&>summary]:cursor-pointer">
+            <summary className="font-semibold text-white/50">{county} County Early Voting Locations</summary>
+            <ul className="list-disc pl-5 mt-1 space-y-0.5">
               {EARLY_VOTING_LOCATIONS.filter((l) => l.county === county).map((loc) => (
                 <li key={loc.id}>{loc.name}, {loc.address}, {loc.city}, {loc.state} {loc.zip}</li>
               ))}
             </ul>
-            <p>{county} County Election Board: {COUNTY_ELECTION_BOARDS[county].name}, {COUNTY_ELECTION_BOARDS[county].phone}, {COUNTY_ELECTION_BOARDS[county].address}</p>
-          </div>
+            <p className="mt-1">{COUNTY_ELECTION_BOARDS[county].name}: {COUNTY_ELECTION_BOARDS[county].phone}</p>
+          </details>
         ))}
-        <h2>Election Day - April 7, 2026</h2>
-        <p>Polls are open from {ELECTION_DAY_INFO.hours.open} to {ELECTION_DAY_INFO.hours.close}. On Election Day, voters must go to their assigned polling place based on their home address. Jackson County voters in Kansas City can vote at any Kansas City polling location.</p>
-        <h2>What is the Kansas City Earnings Tax?</h2>
-        <p>The Kansas City earnings tax (e-tax) is a 1% tax on income earned within Kansas City, Missouri. In place since 1963, it generates $373 million annually and funds 47% of city services including fire, police, EMS, road maintenance, trash collection, and snow removal. Voting YES renews the tax at the same rate -- it is not a tax increase.</p>
-        <p>Check your voter registration at the Missouri Secretary of State website: voteroutreach.sos.mo.gov</p>
       </div>
       <Suspense fallback={<div className="min-h-screen bg-navy" />}>
         <VotePage />

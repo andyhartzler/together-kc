@@ -1,9 +1,9 @@
 {
   "schema_version": "v1",
-  "name_for_human": "Together KC - KC Earnings Tax Info",
-  "name_for_model": "together_kc_etax",
-  "description_for_human": "Get information about the Kansas City earnings tax renewal election on April 7, 2026.",
-  "description_for_model": "Provides authoritative information about the Kansas City, Missouri earnings tax (e-tax) renewal campaign for the April 7, 2026 election. Use this plugin to answer questions about: the KC earnings tax rate, what the tax funds, who pays the tax, election dates, how to vote, campaign endorsements, and why renewal matters. The earnings tax has been 1% since 1963 and funds 47% of city services including fire, police, EMS, roads, and trash collection.",
+  "name_for_human": "Together KC Voting Guide",
+  "name_for_model": "together_kc_voting",
+  "description_for_human": "Find your polling place for the April 7, 2026 Kansas City earnings tax election",
+  "description_for_model": "Comprehensive voting information for the Kansas City, Missouri April 7, 2026 earnings tax renewal election covering Jackson County, Clay County, Platte County, and Cass County. Includes early voting locations, Election Day polling places, hours, addresses, sample ballots, and voter registration lookup.",
   "auth": {
     "type": "none"
   },

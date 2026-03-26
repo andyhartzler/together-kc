@@ -13,6 +13,15 @@ export const metadata: Metadata = {
   title: 'Together KC | Vote YES to Renew the Kansas City Earnings Tax - April 7, 2026',
   description:
     'Vote YES to renew the Kansas City earnings tax on April 7, 2026. The 1% e-tax generates $373 million annually, funding 47% of city services including fire, police, EMS, roads, and trash collection.',
+  keywords: [
+    'Kansas City election April 7 2026',
+    'where to vote Kansas City',
+    'KC earnings tax vote',
+    'vote yes Kansas City earnings tax',
+    'Kansas City polling places',
+    'KC e-tax renewal 2026',
+    'renew Kansas City earnings tax',
+  ],
   alternates: {
     canonical: 'https://together-kc.com',
   },
