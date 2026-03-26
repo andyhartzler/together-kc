@@ -158,6 +158,9 @@ export function useAppleMap(options: UseAppleMapOptions) {
           subtitle: pin.subtitle || '',
           color: pin.color,
           glyphText: pin.glyphText || '•',
+          displayPriority: mapkit.Annotation.DisplayPriority.Required,
+          titleVisibility: mapkit.FeatureVisibility.Visible,
+          subtitleVisibility: mapkit.FeatureVisibility.Hidden,
         }
       );
       if (onPinSelect) {
