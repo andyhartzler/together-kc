@@ -203,14 +203,26 @@ export default function VotePage() {
           setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
         }
       } else if (forCounty === 'Cass') {
-        // Cass County doesn't have ArcGIS boundary data
-        // Show inline contact info
-        setPrecinctInfo({
-          precinct: 'Cass County',
-          pollingPlace: 'Cass County Clerk - Election Office',
-          pollingAddress: '102 E Wall St, Harrisonville, MO 64701',
-          sampleBallot: '/ballots/cass/sample-ballot.pdf',
-        });
+        // Cass County: ~150 KC residents in 2 precincts near Belton
+        // KC enclave is around lat 38.83-38.85, lng -94.54 to -94.55
+        // Nearest polling place is St Sabina Catholic Church
+        const isKCEnclave = lat >= 38.83 && lat <= 38.86 && lng >= -94.56 && lng <= -94.53;
+        if (isKCEnclave) {
+          setPrecinctInfo({
+            precinct: 'Cass County (Kansas City)',
+            pollingPlace: 'St Sabina Catholic Church',
+            pollingAddress: '700 Trevis Ave, Belton, MO 64012',
+            sampleBallot: '/ballots/cass/sample-ballot.pdf',
+          });
+        } else {
+          // Non-KC Cass County address - direct to clerk
+          setPrecinctInfo({
+            precinct: 'Cass County',
+            pollingPlace: 'Cass County Clerk - Election Office',
+            pollingAddress: '102 E Wall St, Harrisonville, MO 64701',
+            sampleBallot: '/ballots/cass/sample-ballot.pdf',
+          });
+        }
       }
     } catch { /* non-critical */ }
     setPrecinctLoading(false);
