@@ -75,6 +75,22 @@ const nextConfig: NextConfig = {
         destination: '/faqs',
         permanent: true,
       },
+      // Old site ghost pages still in Google's index
+      {
+        source: '/facts',
+        destination: '/faqs',
+        permanent: true,
+      },
+      {
+        source: '/login',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/privacy',
+        destination: '/',
+        permanent: true,
+      },
       // E-tax/etax variants redirect to home
       {
         source: '/etax',
