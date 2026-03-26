@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     'vote yes KC earnings tax',
   ],
   openGraph: {
-    title: 'Where Do I Vote? | Together KC',
+    title: 'Find Your Polling Place | Renew the E-Tax',
     description:
       'Find early voting and Election Day polling places in Kansas City. Covers Jackson, Clay, Platte, and Cass counties. Vote YES to renew the earnings tax.',
     url: 'https://together-kc.com/vote',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Where Do I Vote? | Together KC',
+    title: 'Find Your Polling Place | Renew the E-Tax',
     description:
       'Find your polling place for the Kansas City earnings tax election. Early voting open now through April 6.',
     images: ['/images/og-image.png'],
