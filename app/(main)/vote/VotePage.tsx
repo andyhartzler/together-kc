@@ -366,10 +366,7 @@ export default function VotePage() {
   const visibleLocations = useMemo(() => {
     if (showEarly) return earlyLocations;
     if (showElectionDay) {
-      if (county === 'Jackson') return electionDayLocations;
-      if (county === 'Platte') return platteElectionDayLocations;
-      if (county === 'Clay') return clayElectionDayLocations;
-      // Cass: assigned pin handles it
+      // Don't show all locations - just the assigned pin (added separately in mapPins)
       return [];
     }
     return [];
