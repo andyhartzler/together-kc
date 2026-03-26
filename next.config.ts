@@ -124,6 +124,27 @@ const nextConfig: NextConfig = {
         destination: '/vote',
         permanent: true,
       },
+      // Voting location search variants
+      {
+        source: '/where-to-vote',
+        destination: '/vote',
+        permanent: true,
+      },
+      {
+        source: '/polling-places',
+        destination: '/vote',
+        permanent: true,
+      },
+      {
+        source: '/polling-locations',
+        destination: '/vote',
+        permanent: true,
+      },
+      {
+        source: '/where-do-i-vote',
+        destination: '/vote',
+        permanent: true,
+      },
     ];
   },
 };
