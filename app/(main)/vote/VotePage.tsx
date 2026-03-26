@@ -449,10 +449,13 @@ export default function VotePage() {
     showMobileMap,
   });
 
-  // When assigned location is found, zoom map to it
+  // When assigned location is found, zoom map to it (after pins render)
   useEffect(() => {
     if (assignedPin && mapLoaded) {
-      centerOn(assignedPin.lat, assignedPin.lng, 2000);
+      // Delay to ensure pin update effect runs first, then we override the zoom
+      setTimeout(() => {
+        centerOn(assignedPin.lat, assignedPin.lng, 500);
+      }, 400);
     }
   }, [assignedPin, mapLoaded, centerOn]);
 
