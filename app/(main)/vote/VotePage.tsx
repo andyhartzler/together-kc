@@ -203,11 +203,16 @@ export default function VotePage() {
           setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
         }
       } else if (forCounty === 'Cass') {
-        // Cass County: ~150 KC residents in 2 precincts near Belton
-        // KC enclave is around lat 38.83-38.85, lng -94.54 to -94.55
-        // Nearest polling place is St Sabina Catholic Church
-        const isKCEnclave = lat >= 38.83 && lat <= 38.86 && lng >= -94.56 && lng <= -94.53;
-        if (isKCEnclave) {
+        // Cass County KC enclave: exact precinct boundary from Cass County GIS (WFS voting_dist layer #23)
+        const kcCassPolygon: [number, number][] = [[38.834545,-94.548028],[38.836782,-94.548643],[38.83652,-94.550085],[38.838416,-94.550332],[38.839052,-94.550372],[38.839633,-94.550212],[38.839958,-94.550008],[38.841704,-94.55025],[38.841872,-94.551619],[38.841708,-94.552435],[38.841776,-94.552588],[38.841847,-94.553016],[38.841554,-94.553123],[38.841476,-94.553241],[38.841357,-94.554084],[38.841398,-94.554811],[38.836646,-94.55594],[38.833297,-94.555148],[38.832113,-94.555188],[38.830577,-94.555808],[38.830863,-94.560123],[38.824764,-94.561586],[38.824823,-94.565856],[38.831675,-94.565768],[38.845042,-94.562425],[38.84447,-94.551052],[38.844027,-94.542181],[38.835883,-94.54264],[38.83581,-94.543427],[38.835165,-94.545635],[38.834723,-94.547358],[38.834545,-94.548028]];
+        // Ray casting point-in-polygon
+        let inside = false;
+        for (let i = 0, j = kcCassPolygon.length - 1; i < kcCassPolygon.length; j = i++) {
+          const [yi, xi] = kcCassPolygon[i];
+          const [yj, xj] = kcCassPolygon[j];
+          if (((yi > lat) !== (yj > lat)) && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi)) inside = !inside;
+        }
+        if (inside) {
           setPrecinctInfo({
             precinct: 'Cass County (Kansas City)',
             pollingPlace: 'St Sabina Catholic Church',
