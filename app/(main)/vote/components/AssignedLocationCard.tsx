@@ -24,7 +24,8 @@ export default function AssignedLocationCard({ info, isLoading, pinLat, pinLng }
   const [showBallot, setShowBallot] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const hasCoords = pinLat !== undefined && pinLng !== undefined && pinLat !== 0;
-  const { mapRef: inlineMapRef, isLoaded: inlineMapLoaded } = useInlineMap(pinLat || 0, pinLng || 0, expanded && hasCoords);
+  // Always enable the map when we have coords (don't tie to expanded state) so it doesn't reinitialize
+  const { mapRef: inlineMapRef, isLoaded: inlineMapLoaded } = useInlineMap(pinLat || 0, pinLng || 0, hasCoords);
 
   if (isLoading) {
     return (
@@ -95,24 +96,25 @@ export default function AssignedLocationCard({ info, isLoading, pinLat, pinLng }
                     </button>
                   )}
                 </div>
-                {/* Inline map */}
-                {hasCoords && (
-                  <div className="rounded-lg overflow-hidden h-[200px] border border-white/10 relative">
-                    <div ref={inlineMapRef} className="absolute inset-0" />
-                    {!inlineMapLoaded && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-navy/50">
-                        <svg className="w-5 h-5 animate-spin text-white/30" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Inline map - kept mounted to avoid reinit, shown/hidden via CSS */}
+        {hasCoords && (
+          <div className={`md:hidden rounded-lg overflow-hidden h-[280px] border border-white/10 relative mt-3 transition-all ${expanded ? 'block' : 'hidden'}`}>
+            <div ref={inlineMapRef} className="absolute inset-0" />
+            {!inlineMapLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-navy/50">
+                <svg className="w-5 h-5 animate-spin text-white/30" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Desktop: always show buttons */}
         <div className="hidden md:flex gap-2 mt-3">

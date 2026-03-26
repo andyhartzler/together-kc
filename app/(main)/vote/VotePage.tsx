@@ -752,26 +752,21 @@ export default function VotePage() {
                         </div>
                       )}
 
-                      {/* Polls hours - ABOVE the green card */}
-                      <div className="rounded-xl bg-white/[0.06] border border-white/10 p-4 text-center">
-                        <p className="text-white font-bold text-lg">Polls open 6:00 AM - 7:00 PM</p>
-                        <p className="text-white/50 text-sm mt-1">Tuesday, April 7, 2026</p>
+                      {/* Polls hours + Remind me - compact on mobile */}
+                      <div className="rounded-xl bg-white/[0.06] border border-white/10 p-3 md:p-4 text-center">
+                        <p className="text-white font-bold text-base md:text-lg">Polls open 6:00 AM - 7:00 PM</p>
+                        <p className="text-white/50 text-xs md:text-sm">Tuesday, April 7, 2026</p>
                       </div>
 
-                      {/* Assigned location card */}
-                      <AssignedLocationCard info={precinctInfo} isLoading={false} pinLat={assignedPin?.lat} pinLng={assignedPin?.lng} />
-
-
-                      {/* Remind me to vote - BELOW the card */}
                       <button
                         onClick={() => {
                           downloadElectionDayEvent(precinctInfo.pollingPlace, precinctInfo.pollingAddress);
                           setCalendarAdded(true);
                           setTimeout(() => setCalendarAdded(false), 3000);
                         }}
-                        className="w-full flex items-center gap-3 p-4 rounded-xl bg-sky/10 border border-sky/20 hover:bg-sky/15 transition-all text-left"
+                        className="w-full flex items-center gap-3 p-3 md:p-4 rounded-xl bg-sky/10 border border-sky/20 hover:bg-sky/15 transition-all text-left"
                       >
-                        <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center shrink-0 text-lg">
+                        <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-sky/20 flex items-center justify-center shrink-0 text-base md:text-lg">
                           {calendarAdded ? '\u2713' : '\ud83d\udcc5'}
                         </div>
                         <div>
@@ -781,6 +776,9 @@ export default function VotePage() {
                           <p className="text-white/40 text-xs">Add Election Day at {precinctInfo.pollingPlace} to your calendar</p>
                         </div>
                       </button>
+
+                      {/* Assigned location card */}
+                      <AssignedLocationCard info={precinctInfo} isLoading={false} pinLat={assignedPin?.lat} pinLng={assignedPin?.lng} />
                     </>
                   )}
                 </>
