@@ -33,7 +33,6 @@ export default function SendToPhone({ address, locationName }: Props) {
         height: 280,
         type: 'svg',
         data: qrUrl,
-        image: '/images/qr-logo.png',
         dotsOptions: {
           color: '#1e3a5f',
           type: 'dots',
@@ -49,14 +48,8 @@ export default function SendToPhone({ address, locationName }: Props) {
         backgroundOptions: {
           color: '#ffffff',
         },
-        imageOptions: {
-          crossOrigin: 'anonymous',
-          imageSize: 0.35,
-          margin: 6,
-          hideBackgroundDots: true,
-        },
         qrOptions: {
-          errorCorrectionLevel: 'H',
+          errorCorrectionLevel: 'M',
         },
       });
 
