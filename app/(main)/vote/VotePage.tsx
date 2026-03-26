@@ -292,15 +292,12 @@ export default function VotePage() {
     setMode(newMode);
     setShowMobileMap(false);
     setSelectedId(null);
-    if (newMode === 'election-day') {
-      // Don't carry over county from early voting - prompt for address
-      setCounty(null);
-      setUserCoords(null);
-      setPrecinctInfo(null);
-      setElectionDayAddress('');
-      setElectionDayError(null);
-      electionDayAcRef.current = false;
-    }
+    // Clear election-day-specific state but KEEP the county
+    setPrecinctInfo(null);
+    setElectionDayAddress('');
+    setElectionDayError(null);
+    setShowAllElectionDay(false);
+    electionDayAcRef.current = false;
   }, []);
 
   // Filter early voting locations by county
