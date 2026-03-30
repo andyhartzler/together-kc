@@ -59,7 +59,7 @@ export default function Navigation() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-2">
+            <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
               {NAV_LINKS.map((link) => {
                 const isActive = getIsActive(link.href);
                 const showLamp = isActive && link.href !== '/';
@@ -69,7 +69,7 @@ export default function Navigation() {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      'relative px-4 py-2 rounded-lg text-base font-semibold transition-all duration-200 hover:scale-105',
+                      'relative px-2 lg:px-4 py-2 rounded-lg text-sm lg:text-base font-semibold transition-all duration-200 hover:scale-105 whitespace-nowrap',
                       isScrolled || !hasDarkHero
                         ? 'text-navy hover:text-coral'
                         : 'text-white hover:text-coral',
@@ -110,7 +110,7 @@ export default function Navigation() {
                   }
                 }}
                 className={cn(
-                  "ml-2 px-5 py-2.5 text-white font-semibold bg-coral rounded-full transition-all duration-300 hover:scale-105 hover:bg-coral/90 shadow-lg",
+                  "ml-1 lg:ml-2 px-3 lg:px-5 py-2 lg:py-2.5 text-sm lg:text-base text-white font-semibold bg-coral rounded-full transition-all duration-300 hover:scale-105 hover:bg-coral/90 shadow-lg whitespace-nowrap",
                   pathname === '/' && !isScrolled
                     ? 'opacity-0 scale-90 pointer-events-none'
                     : 'opacity-100 scale-100'
