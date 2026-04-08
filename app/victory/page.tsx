@@ -266,7 +266,7 @@ export default function VictoryPage() {
         />
 
         <motion.div
-          className="relative z-20 text-center px-4 pt-12 pb-24 sm:pt-20 sm:pb-40 max-w-5xl mx-auto"
+          className="relative z-20 text-center px-4 pt-8 pb-24 sm:pt-20 sm:pb-40 max-w-5xl mx-auto"
           initial="hidden"
           animate="visible"
           variants={{
@@ -286,7 +286,7 @@ export default function VictoryPage() {
               alt="Together KC"
               width={220}
               height={73}
-              className="h-12 sm:h-18 md:h-20 w-auto"
+              className="h-16 sm:h-18 md:h-20 w-auto"
               priority
             />
           </motion.div>
