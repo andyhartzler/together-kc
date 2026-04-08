@@ -450,6 +450,7 @@ export default function VictoryPage() {
           <div className="space-y-6 sm:space-y-10">
             {HISTORICAL_RESULTS.map((election, i) => {
               const isLatest = election.year === 2026;
+              const barDelay = i * 0.35 + 0.15;
 
               return (
                 <motion.div
@@ -459,50 +460,35 @@ export default function VictoryPage() {
                   viewport={{ once: true, margin: '-30px' }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
                 >
-                  {/* Year + total votes */}
-                  <div className="flex items-end justify-between mb-2 sm:mb-3 px-1">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy tabular-nums">
-                        {election.year}
-                      </span>
-                      {isLatest && (
-                        <motion.span
-                          initial={{ opacity: 0, width: 0 }}
-                          whileInView={{ opacity: 1, width: 'auto' }}
-                          viewport={{ once: true }}
-                          transition={{ delay: i * 0.2 + 1.2, duration: 0.4 }}
-                          className="overflow-hidden inline-block"
-                        >
-                          <span className="inline-block px-3 py-1 bg-navy text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full">
-                            This Year
-                          </span>
-                        </motion.span>
-                      )}
-                    </div>
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.2 + 1.0 }}
-                      className="text-xs sm:text-sm text-gray-400"
-                    >
-                      {election.totalVotes.toLocaleString()} total votes
-                    </motion.span>
+                  {/* Year label + badge */}
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 px-1">
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy tabular-nums">
+                      {election.year}
+                    </span>
+                    {isLatest && (
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: barDelay + 0.3, duration: 0.4 }}
+                        className="px-3 py-1 bg-navy text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full"
+                      >
+                        This Year
+                      </motion.span>
+                    )}
                   </div>
 
-                  {/* The bar */}
+                  {/* The bar - percentage + yes animate with the fill */}
                   <div className={`relative w-full rounded-xl sm:rounded-2xl overflow-hidden ${isLatest ? 'h-16 sm:h-20 md:h-24' : 'h-14 sm:h-16 md:h-20'}`}>
-                    {/* Track */}
                     <div className="absolute inset-0 bg-gray-100 rounded-xl sm:rounded-2xl" />
 
-                    {/* Fill - ALL bars get the bold navy gradient */}
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${election.yesPercent}%` }}
                       viewport={{ once: true }}
                       transition={{
                         duration: 1.6,
-                        delay: i * 0.25 + 0.15,
+                        delay: barDelay,
                         ease: [0.22, 1, 0.36, 1],
                       }}
                       className={`absolute inset-y-0 left-0 rounded-xl sm:rounded-2xl overflow-hidden ${isLatest
@@ -510,27 +496,17 @@ export default function VictoryPage() {
                         : 'bg-gradient-to-r from-navy/90 via-navy/80 to-sky/70'
                       }`}
                     >
-                      {/* Shimmer sweep on every bar */}
+                      {/* Shimmer */}
                       <motion.div
                         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
                         initial={{ x: '-100%' }}
                         whileInView={{ x: '200%' }}
                         viewport={{ once: true }}
-                        transition={{
-                          duration: 0.8,
-                          delay: i * 0.25 + 1.6,
-                          ease: 'easeInOut',
-                        }}
+                        transition={{ duration: 0.8, delay: barDelay + 1.6, ease: 'easeInOut' }}
                       />
 
-                      {/* Percentage inside */}
-                      <motion.div
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.25 + 1.3, duration: 0.4 }}
-                        className="absolute inset-0 flex items-center px-4 sm:px-6"
-                      >
+                      {/* Percentage + Yes ride with the bar */}
+                      <div className="absolute inset-0 flex items-center px-4 sm:px-6">
                         <span className={`font-bold tabular-nums text-white ${isLatest
                           ? 'text-2xl sm:text-4xl md:text-5xl'
                           : 'text-xl sm:text-3xl md:text-4xl'
@@ -540,12 +516,29 @@ export default function VictoryPage() {
                         <span className="ml-2 text-xs sm:text-sm font-semibold text-white/60 uppercase tracking-wider">
                           Yes
                         </span>
-                      </motion.div>
+                      </div>
                     </motion.div>
                   </div>
                 </motion.div>
               );
             })}
+
+            {/* Total votes - all fade in together after all bars complete */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: HISTORICAL_RESULTS.length * 0.35 + 1.6, duration: 0.6 }}
+              className="grid grid-cols-4 gap-2 sm:gap-4 pt-2"
+            >
+              {HISTORICAL_RESULTS.map((election) => (
+                <div key={election.year} className="text-center">
+                  <span className="text-[11px] sm:text-xs text-gray-400 tabular-nums">
+                    {election.totalVotes.toLocaleString()} votes
+                  </span>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
