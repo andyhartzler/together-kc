@@ -172,7 +172,7 @@ export default function SocialLandingPage() {
         >
           <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 px-4 py-2 rounded-full text-xs font-semibold mb-5 border border-white/20">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            Election Results -- April 7, 2026
+            Election Results - April 7, 2026
           </div>
 
           <h1 className="text-4xl font-bold text-white mb-3 leading-tight">

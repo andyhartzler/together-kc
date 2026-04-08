@@ -299,7 +299,7 @@ export default function VictoryPage() {
             className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold mb-6 sm:mb-8 border border-white/20"
           >
             <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-green-400 rounded-full animate-pulse" />
-            Election Results -- April 7, 2026
+            Election Results - April 7, 2026
           </motion.div>
 
           <motion.h1
@@ -547,7 +547,7 @@ export default function VictoryPage() {
           >
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-5 sm:mb-6">
               Because of your vote, Kansas City will continue funding the services
-              that keep our community safe and thriving -- firefighters, police, EMS,
+              that keep our community safe and thriving - firefighters, police, EMS,
               road repair, trash collection, and so much more.
             </p>
             <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto">
