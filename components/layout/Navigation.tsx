@@ -15,7 +15,7 @@ export default function Navigation() {
   const router = useRouter();
 
   // Pages with dark hero backgrounds where we need white text
-  const hasDarkHero = pathname === '/' || pathname === '/endorsements' || pathname === '/vote';
+  const hasDarkHero = pathname === '/' || pathname === '/home' || pathname === '/endorsements' || pathname === '/vote';
 
   useEffect(() => {
     const handleScroll = () => {

@@ -77,6 +77,12 @@ const nextConfig: NextConfig = {
   // Redirects for common URL variants
   async redirects() {
     return [
+      // Victory landing page redirect (post-election)
+      {
+        source: '/',
+        destination: '/victory',
+        permanent: false,
+      },
       // FAQ variants
       {
         source: '/faq',

@@ -15,6 +15,19 @@ export const COLORS = {
 
 export const VOTE_DATE = 'April 7, 2026';
 
+export const ELECTION_RESULTS = {
+  date: 'April 7, 2026',
+  totalYes: 30574,
+  totalNo: 9949,
+  totalVotes: 40523,
+  overallYesPercent: 75.45,
+  counties: [
+    { name: 'Jackson County', yesVotes: 21194, totalVotes: 26008, yesPercent: 81.49 },
+    { name: 'Clay County', yesVotes: 6012, totalVotes: 9286, yesPercent: 64.74 },
+    { name: 'Platte County', yesVotes: 3368, totalVotes: 5229, yesPercent: 64.41 },
+  ],
+} as const;
+
 export const SITE_CONFIG = {
   title: 'Renew the KC Earnings Tax | Vote YES on April 7, 2026',
   description: 'The earnings tax funds nearly half the cost of city services: first responders, street repair, trash pickup, and more. Vote YES to renew the e-tax on or before April 7, 2026.',

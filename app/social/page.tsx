@@ -1,25 +1,89 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { downloadCalendarEvent } from '@/lib/calendar';
-import EndorsementForm from '@/components/forms/EndorsementForm';
+import { motion, useInView, useMotionValue, useTransform, animate, AnimatePresence } from 'framer-motion';
+import { ELECTION_RESULTS } from '@/lib/constants';
 
-// Google Maps API for county lookup
-const GOOGLE_API_KEY = 'AIzaSyA0tnMaQcXi8fn5azv72QOxF0UmsYY7d8k';
+// ---------------------------------------------------------------------------
+// Animated counter
+// ---------------------------------------------------------------------------
+function AnimatedCounter({
+  end,
+  decimals = 0,
+  suffix = '',
+  duration = 2,
+}: {
+  end: number;
+  decimals?: number;
+  suffix?: string;
+  duration?: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  const motionVal = useMotionValue(0);
+  const rounded = useTransform(motionVal, (v) =>
+    v.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + suffix
+  );
+  const [display, setDisplay] = useState((0).toFixed(decimals) + suffix);
 
-type County = 'Jackson' | 'Clay' | 'Platte' | 'Cass';
+  useEffect(() => {
+    if (!isInView) return;
+    const controls = animate(motionVal, end, { duration, ease: [0.25, 0.46, 0.45, 0.94] });
+    const unsub = rounded.on('change', (v) => setDisplay(v));
+    return () => { controls.stop(); unsub(); };
+  }, [isInView, end, duration, motionVal, rounded]);
 
-const COUNTY_URLS: Record<County, string> = {
-  Jackson: 'https://www.kceb.org',
-  Clay: 'https://www.voteclaycountymo.gov',
-  Platte: 'https://www.plattecountymovotes.gov',
-  Cass: 'https://casscounty.com/2355/Absentee-Information',
-};
+  return <span ref={ref}>{display}</span>;
+}
 
+// ---------------------------------------------------------------------------
+// Page-load confetti
+// ---------------------------------------------------------------------------
+function ConfettiEffect() {
+  const COLORS = ['#e53935', '#f5a623', '#4a90d9', '#87CEEB', '#ffffff'];
+  const particles = Array.from({ length: 30 }, (_, i) => ({
+    id: i,
+    color: COLORS[i % COLORS.length],
+    left: `${Math.random() * 100}%`,
+    size: 3 + Math.random() * 5,
+    delay: Math.random() * 2,
+    duration: 2.5 + Math.random() * 2.5,
+    rotation: Math.random() * 360,
+    shape: i % 3 === 0 ? 'circle' : 'square',
+  }));
 
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          initial={{ y: -10, opacity: 1, rotate: 0 }}
+          animate={{
+            y: '110vh',
+            x: [0, (Math.random() - 0.5) * 80],
+            opacity: [1, 1, 0.6, 0],
+            rotate: p.rotation + 360 * (Math.random() > 0.5 ? 1 : -1),
+          }}
+          transition={{ duration: p.duration, delay: p.delay, ease: 'easeIn' }}
+          className="absolute"
+          style={{
+            left: p.left,
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+            borderRadius: p.shape === 'circle' ? '50%' : '2px',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Social links
+// ---------------------------------------------------------------------------
 const SOCIAL_LINKS = [
   { name: 'Facebook', href: 'https://www.facebook.com/TogetherKC/', icon: '/images/social/facebook.png' },
   { name: 'Instagram', href: 'https://www.instagram.com/togetherkcmo/', icon: '/images/social/instagram.png' },
@@ -28,645 +92,306 @@ const SOCIAL_LINKS = [
   { name: 'Threads', href: 'https://www.threads.com/@togetherkcmo', icon: '/images/social/threads.png' },
 ];
 
-// Floating particles component
-function FloatingParticles() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(15)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-2 h-2 rounded-full bg-white/10"
-          initial={{
-            x: typeof window !== 'undefined' ? Math.random() * 400 : 200,
-            y: typeof window !== 'undefined' ? Math.random() * 800 : 400,
-            opacity: 0,
-          }}
-          animate={{
-            y: [null, -150],
-            opacity: [0, 0.6, 0],
-          }}
-          transition={{
-            duration: 12 + Math.random() * 8,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-            ease: 'linear',
-          }}
-          style={{
-            left: `${10 + Math.random() * 80}%`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+// ---------------------------------------------------------------------------
+// Historical results
+// ---------------------------------------------------------------------------
+const HISTORICAL_RESULTS = [
+  { year: 2011, yesVotes: 56965, totalVotes: 73459, yesPercent: 78 },
+  { year: 2016, yesVotes: 40941, totalVotes: 52859, yesPercent: 77.46 },
+  { year: 2021, yesVotes: 29448, totalVotes: 38116, yesPercent: 77.26 },
+  { year: 2026, yesVotes: 30574, totalVotes: 40523, yesPercent: 75.45 },
+];
 
-// Gradient background with orbs
-function GradientBackground() {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Animated gradient orbs */}
-      <motion.div
-        className="absolute -top-32 -left-32 w-64 h-64 rounded-full bg-coral/20 blur-3xl"
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, 20, 0],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <motion.div
-        className="absolute -bottom-32 -right-32 w-64 h-64 rounded-full bg-sky/20 blur-3xl"
-        animate={{
-          scale: [1, 1.3, 1],
-          x: [0, -20, 0],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <motion.div
-        className="absolute top-1/3 right-0 w-48 h-48 rounded-full bg-coral/10 blur-3xl"
-        animate={{
-          scale: [1, 1.15, 1],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-    </div>
-  );
-}
-
-// Premium link button component - simplified animations
-function LinkButton({
-  children,
-  href,
-  onClick,
-  icon,
-  description,
-  index,
-  variant = 'default',
-  external = false,
-}: {
-  children: React.ReactNode;
-  href?: string;
-  onClick?: () => void;
-  icon: React.ReactNode;
-  description?: string;
-  index: number;
-  variant?: 'default' | 'primary' | 'glass';
-  external?: boolean;
-}) {
-  const baseClasses = "relative w-full p-4 rounded-2xl flex items-center gap-4 transition-all duration-200 overflow-hidden group active:scale-[0.98]";
-
-  const variantClasses = {
-    default: "bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/15 active:bg-white/20",
-    primary: "bg-gradient-to-r from-coral to-coral/80 border border-coral/50 shadow-lg shadow-coral/25 hover:shadow-coral/40 active:shadow-coral/20",
-    glass: "bg-white/5 backdrop-blur-lg border border-white/10 hover:bg-white/10",
-  };
-
-  const content = (
-    <>
-      {/* Icon container */}
-      <div className="relative z-10 w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
-        {icon}
-      </div>
-
-      {/* Text content */}
-      <div className="relative z-10 flex-grow min-w-0">
-        <span className="text-white font-semibold text-lg block">{children}</span>
-        {description && (
-          <span className="text-white/60 text-sm block truncate">{description}</span>
-        )}
-      </div>
-
-      {/* Arrow */}
-      <svg
-        className="relative z-10 w-5 h-5 text-white/60 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-      </svg>
-    </>
-  );
-
-  const animationProps = {
-    initial: { opacity: 0, y: 15 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.3, delay: index * 0.05 },
-  };
-
-  if (onClick) {
-    return (
-      <motion.button
-        {...animationProps}
-        onClick={onClick}
-        className={`${baseClasses} ${variantClasses[variant]} text-left`}
-      >
-        {content}
-      </motion.button>
-    );
-  }
-
-  if (external) {
-    return (
-      <motion.a
-        {...animationProps}
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${baseClasses} ${variantClasses[variant]}`}
-      >
-        {content}
-      </motion.a>
-    );
-  }
-
-  return (
-    <Link href={href || '/'} className="block">
-      <motion.div
-        {...animationProps}
-        className={`${baseClasses} ${variantClasses[variant]}`}
-      >
-        {content}
-      </motion.div>
-    </Link>
-  );
-}
-
-// Social icon button - simplified
-function SocialButton({ social, index }: { social: typeof SOCIAL_LINKS[0]; index: number }) {
-  return (
-    <motion.a
-      href={social.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.2, delay: 0.3 + index * 0.05 }}
-      className="relative group"
-      aria-label={`Follow us on ${social.name}`}
-    >
-      {/* Icon container */}
-      <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-all duration-200 group-hover:bg-white/20 group-hover:scale-110 group-active:scale-95">
-        <Image
-          src={social.icon}
-          alt={social.name}
-          width={28}
-          height={28}
-          className="w-7 h-7 object-contain"
-        />
-      </div>
-    </motion.a>
-  );
-}
-
-// Modal component - simplified animations
-function Modal({
-  isOpen,
-  onClose,
-  title,
-  children,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-          onClick={onClose}
-        >
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.25 }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative w-full sm:max-w-md bg-gradient-to-b from-navy to-navy/95 sm:rounded-2xl rounded-t-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
-          >
-            {/* Header */}
-            <div className="sticky top-0 bg-navy/95 backdrop-blur-md p-4 border-b border-white/10 flex items-center justify-between z-10">
-              <h2 className="text-xl font-bold text-white">{title}</h2>
-              <button
-                onClick={onClose}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Content */}
-            <div className="p-4">
-              {children}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
+// ===========================================================================
+// Social Landing Page - Victory Edition
+// ===========================================================================
 export default function SocialLandingPage() {
-  const [activeModal, setActiveModal] = useState<'polling' | 'endorse' | null>(null);
-  const [calendarAdded, setCalendarAdded] = useState(false);
-  const [selectedCounty, setSelectedCounty] = useState<County | null>(null);
-  const [showAddressLookup, setShowAddressLookup] = useState(false);
-  const [addressInput, setAddressInput] = useState('');
-  const [isLooking, setIsLooking] = useState(false);
-  const [lookupResult, setLookupResult] = useState<{ county: County; address: string } | null>(null);
-  const [lookupError, setLookupError] = useState<string | null>(null);
-
-  const handleCalendarDownload = () => {
-    downloadCalendarEvent();
-    setCalendarAdded(true);
-    setTimeout(() => setCalendarAdded(false), 3000);
-  };
-
-  const resetPollingState = () => {
-    setSelectedCounty(null);
-    setShowAddressLookup(false);
-    setAddressInput('');
-    setLookupResult(null);
-    setLookupError(null);
-  };
-
-  const loadGoogleMaps = useCallback(() => {
-    return new Promise<void>((resolve, reject) => {
-      if (window.google?.maps?.Geocoder) {
-        resolve();
-        return;
-      }
-
-      const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-      if (existingScript) {
-        if (window.google?.maps?.Geocoder) {
-          resolve();
-        } else {
-          existingScript.addEventListener('load', () => resolve());
-        }
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
-      script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load Google Maps'));
-      document.head.appendChild(script);
-    });
-  }, []);
-
-  const lookupCounty = async () => {
-    if (!addressInput.trim()) return;
-
-    setIsLooking(true);
-    setLookupError(null);
-    setLookupResult(null);
-
-    try {
-      await loadGoogleMaps();
-
-      const isZipOnly = /^\d{5}(-\d{4})?$/.test(addressInput.trim());
-      const query = isZipOnly
-        ? `${addressInput.trim()}, MO`
-        : `${addressInput.trim()}, Kansas City, MO`;
-
-      const geocoder = new window.google!.maps.Geocoder();
-
-      geocoder.geocode({ address: query }, (results, status) => {
-        if (status === 'OK' && results && results.length > 0) {
-          const result = results[0];
-          const countyComponent = result.address_components.find(
-            (c) => c.types.includes('administrative_area_level_2')
-          );
-
-          if (countyComponent) {
-            const countyName = countyComponent.long_name.replace(' County', '');
-
-            if (['Jackson', 'Clay', 'Platte', 'Cass'].includes(countyName)) {
-              setLookupResult({
-                county: countyName as County,
-                address: result.formatted_address,
-              });
-              setSelectedCounty(countyName as County);
-            } else {
-              setLookupError(`That address is in ${countyName} County, which is outside Kansas City.`);
-            }
-          } else {
-            setLookupError("Couldn't determine the county. Try entering your zip code.");
-          }
-        } else {
-          setLookupError("Couldn't find that address. Please try again.");
-        }
-
-        setIsLooking(false);
-      });
-    } catch {
-      setLookupError("Something went wrong. Please try again.");
-      setIsLooking(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-navy relative overflow-hidden">
-      {/* Background effects */}
-      <GradientBackground />
-      <FloatingParticles />
+      {/* Background orbs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-32 -left-32 w-64 h-64 rounded-full bg-coral/20 blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 w-64 h-64 rounded-full bg-sky/20 blur-3xl" />
+        <div className="absolute top-1/2 right-0 w-48 h-48 rounded-full bg-golden/10 blur-3xl" />
+      </div>
 
-      {/* Main content */}
+      {/* Page-load confetti */}
+      <ConfettiEffect />
+
       <div className="relative z-10 min-h-screen flex flex-col px-4 py-8 max-w-md mx-auto">
-        {/* Header / Logo */}
+        {/* ---- Logo ---- */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="text-center mb-6"
         >
-          {/* Logo */}
-          <div className="relative inline-block mb-3">
-            <Image
-              src="/images/renew-kc-logo-white.png"
-              alt="Together KC"
-              width={200}
-              height={70}
-              className="h-14 w-auto object-contain"
-              priority
-            />
-          </div>
-
-          {/* Tagline */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-white/90 text-lg font-semibold"
-          >
-            Vote YES on April 7
-          </motion.p>
+          <Image
+            src="/images/renew-kc-logo-white.png"
+            alt="Together KC"
+            width={200}
+            height={70}
+            className="h-14 w-auto object-contain mx-auto"
+            priority
+          />
         </motion.div>
 
-        {/* Social Links Row */}
-        <div className="flex justify-center gap-3 mb-6">
-          {SOCIAL_LINKS.map((social, index) => (
-            <SocialButton key={social.name} social={social} index={index} />
+        {/* ---- Social Links ---- */}
+        <div className="flex justify-center gap-3 mb-5">
+          {SOCIAL_LINKS.map((social, i) => (
+            <motion.a
+              key={social.name}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.2, delay: 0.3 + i * 0.05 }}
+              className="w-11 h-11 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center active:scale-95 transition-transform"
+              aria-label={`Follow us on ${social.name}`}
+            >
+              <Image src={social.icon} alt={social.name} width={22} height={22} className="w-5.5 h-5.5 object-contain" />
+            </motion.a>
           ))}
         </div>
 
-        {/* Divider */}
+        {/* ---- Divider ---- */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: 0.5, duration: 0.3 }}
-          className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-6"
+          className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8"
         />
 
-        {/* Action Links */}
-        <div className="space-y-3 flex-grow">
-          {/* Visit Website */}
-          <LinkButton
-            href="/"
-            icon={<span className="text-2xl">🌐</span>}
-            description="Learn more about the renewal"
-            index={0}
-            variant="glass"
-          >
-            Visit Website
-          </LinkButton>
+        {/* ---- HERO RESULT (prominent) ---- */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-center mb-8"
+        >
+          <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 px-4 py-2 rounded-full text-xs font-semibold mb-5 border border-white/20">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            Election Results -- April 7, 2026
+          </div>
 
-          {/* Request Yard Sign - with giggle animation */}
-          <motion.div
-            animate={{ rotate: [0, -1.5, 1.5, -1, 1, 0] }}
-            transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 1.2, ease: 'easeInOut' }}
-          >
-            <LinkButton
-              href="/sign"
-              icon={<span className="text-2xl">🪧</span>}
-              description="Free yard signs available!"
-              index={1}
-            >
-              Get a Free Yard Sign
-            </LinkButton>
-          </motion.div>
+          <h1 className="text-4xl font-bold text-white mb-3 leading-tight">
+            Kansas City Said{' '}
+            <span className="text-coral" style={{ textShadow: '0 0 40px rgba(229, 57, 53, 0.5)' }}>YES</span>
+          </h1>
 
-          {/* Check Registration */}
-          <LinkButton
-            href="https://voteroutreach.sos.mo.gov/portal/"
-            external
-            icon={<span className="text-2xl">📋</span>}
-            description="Verify you're registered to vote"
-            index={2}
-          >
-            Check Your Registration
-          </LinkButton>
+          <div className="text-7xl font-bold text-white leading-none my-4 tracking-tight">
+            <AnimatedCounter end={ELECTION_RESULTS.overallYesPercent} decimals={2} suffix="%" duration={1.8} />
+          </div>
 
-          {/* Add to Calendar */}
-          <LinkButton
-            onClick={handleCalendarDownload}
-            icon={calendarAdded ? <span className="text-2xl">✓</span> : <Image src="/images/calendar-april-7.png" alt="April 7" width={36} height={36} className="w-9 h-9 object-contain" />}
-            description={calendarAdded ? 'Added to your calendar!' : 'Save Election Day'}
-            index={3}
-            variant={calendarAdded ? 'primary' : 'default'}
-          >
-            {calendarAdded ? 'Calendar Reminder Set!' : 'Remind Me to Vote'}
-          </LinkButton>
+          <div className="flex justify-center gap-6 text-white/50 mt-4">
+            <div className="text-center">
+              <div className="text-lg font-bold text-white">{ELECTION_RESULTS.totalYes.toLocaleString()}</div>
+              <div className="text-[11px]">Votes YES</div>
+            </div>
+            <div className="w-px h-8 bg-white/20" />
+            <div className="text-center">
+              <div className="text-lg font-bold text-white/70">{ELECTION_RESULTS.totalVotes.toLocaleString()}</div>
+              <div className="text-[11px]">Total Votes</div>
+            </div>
+          </div>
+        </motion.div>
 
-          {/* Find Polling Location */}
-          <LinkButton
-            onClick={() => {
-              resetPollingState();
-              setActiveModal('polling');
-            }}
-            icon={<span className="text-2xl">📍</span>}
-            description="Locate where to vote in your county"
-            index={4}
-          >
-            Find My Polling Location
-          </LinkButton>
-
-          {/* Add Endorsement */}
-          <LinkButton
-            onClick={() => setActiveModal('endorse')}
-            icon={<span className="text-2xl">❤️</span>}
-            description="Join thousands of supporters"
-            index={5}
-            variant="primary"
-          >
-            Add Your Endorsement
-          </LinkButton>
-        </div>
-
-        {/* Footer */}
+        {/* ---- Counties (compact) ---- */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="mt-8 text-center"
+          className="mb-8"
         >
+          <div className="grid grid-cols-3 gap-2">
+            {ELECTION_RESULTS.counties.map((county, i) => (
+              <motion.div
+                key={county.name}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 + i * 0.1 }}
+                className="bg-white/5 rounded-xl p-3 text-center border border-white/10"
+              >
+                <div className="text-[11px] text-white/50 mb-1">{county.name.replace(' County', '')}</div>
+                <div className="text-xl font-bold text-white">{county.yesPercent}%</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ---- HISTORY (prominent) ---- */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
+          <h2 className="text-xl font-bold text-white mb-2 text-center">
+            Kansas City Always Shows Up
+          </h2>
+          <p className="text-xs text-white/40 text-center mb-6">
+            Four elections. Four decisive victories.
+          </p>
+
+          <div className="space-y-4">
+            {HISTORICAL_RESULTS.map((election, i) => {
+              const isLatest = election.year === 2026;
+              return (
+                <motion.div
+                  key={election.year}
+                  initial={{ opacity: 0, x: -15 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.12 }}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl font-bold text-white tabular-nums">{election.year}</span>
+                      {isLatest && (
+                        <span className="px-2 py-0.5 bg-coral/20 text-coral text-[9px] font-bold uppercase tracking-wider rounded-full border border-coral/30">
+                          This Year
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[11px] text-white/30">{election.totalVotes.toLocaleString()} votes</span>
+                  </div>
+
+                  <div className={`relative w-full rounded-xl overflow-hidden ${isLatest ? 'h-12' : 'h-10'}`}>
+                    <div className="absolute inset-0 bg-white/5 rounded-xl" />
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${election.yesPercent}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.4, delay: i * 0.2 + 0.2, ease: [0.22, 1, 0.36, 1] }}
+                      className={`absolute inset-y-0 left-0 rounded-xl overflow-hidden ${isLatest
+                        ? 'bg-gradient-to-r from-navy/90 via-sky/60 to-sky/40 shadow-lg shadow-sky/20'
+                        : 'bg-gradient-to-r from-white/15 to-white/8'
+                      }`}
+                    >
+                      {isLatest && (
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
+                          initial={{ x: '-100%' }}
+                          whileInView={{ x: '200%' }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.8, delay: i * 0.2 + 1.4, ease: 'easeInOut' }}
+                        />
+                      )}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.2 + 1.0 }}
+                        className="absolute inset-0 flex items-center px-4"
+                      >
+                        <span className={`text-base font-bold ${isLatest ? 'text-white' : 'text-white/70'}`}>
+                          {election.yesPercent}%
+                        </span>
+                        <span className="ml-1.5 text-[10px] font-semibold text-white/40 uppercase">Yes</span>
+                      </motion.div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* ---- THANK YOU (beautiful) ---- */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="relative text-center py-8 mb-6"
+        >
+          {/* Decorative gradient line */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="w-12 h-[2px] bg-gradient-to-r from-coral to-golden mx-auto mb-8 origin-center"
+          />
+
+          <h2 className="text-3xl font-bold text-white mb-2 leading-tight">
+            Thank You,
+          </h2>
+          <h2 className="text-3xl font-bold mb-6 leading-tight">
+            <span
+              className="bg-gradient-to-r from-sky via-white to-coral bg-clip-text"
+              style={{ WebkitTextFillColor: 'transparent' }}
+            >
+              Kansas City
+            </span>
+          </h2>
+
+          <p className="text-sm text-white leading-relaxed max-w-xs mx-auto mb-6">
+            Because of your vote, Kansas City will continue funding the services
+            that keep our community safe and thriving.
+          </p>
+
+          <p className="text-xs text-white/70 max-w-xs mx-auto">
+            This victory belongs to every voter, volunteer, and supporter who made their voice heard.
+          </p>
+
+          {/* Decorative bottom line */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="w-12 h-[2px] bg-gradient-to-r from-golden to-sky mx-auto mt-8 origin-center"
+          />
+        </motion.div>
+
+        {/* ---- Explore links ---- */}
+        <p className="text-white/50 text-xs font-medium uppercase tracking-widest mb-4 text-center">
+          Explore the Full Website
+        </p>
+        <div className="flex justify-center gap-3 mb-6">
+          {[
+            { label: 'Home', href: '/home' },
+            { label: 'Endorsements', href: '/endorsements' },
+            { label: 'FAQs', href: '/faqs' },
+          ].map((link, i) => (
+            <motion.div
+              key={link.href}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Link
+                href={link.href}
+                className="inline-block px-5 py-2.5 bg-white/10 text-white font-semibold text-sm rounded-full border border-white/20 active:bg-white/20 transition-colors"
+              >
+                {link.label}
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* ---- Footer ---- */}
+        <div className="mt-auto pt-6 text-center">
+          <div className="flex justify-center mb-3">
+            <Image
+              src="/images/together-kc-footer.png"
+              alt="Together KC"
+              width={200}
+              height={60}
+              className="max-w-[160px] h-auto w-auto object-contain"
+            />
+          </div>
           <p className="text-white/40 text-xs leading-relaxed">
             Paid for by Together KC, Dan Kopp, Treasurer.
             <br />
             Not authorized by any candidate or candidate committee.
           </p>
-        </motion.div>
-      </div>
-
-      {/* Polling Location Modal */}
-      <Modal
-        isOpen={activeModal === 'polling'}
-        onClose={() => setActiveModal(null)}
-        title="Find My Polling Location"
-      >
-        <AnimatePresence mode="wait">
-          {!selectedCounty ? (
-            <motion.div
-              key="select"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <p className="text-white/70 text-center mb-4">
-                Kansas City spans 4 counties.<br />
-                Select yours to find voting info.
-              </p>
-
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                {(['Jackson', 'Clay', 'Platte', 'Cass'] as County[]).map((county) => (
-                  <button
-                    key={county}
-                    onClick={() => setSelectedCounty(county)}
-                    className="p-4 rounded-xl bg-white/10 hover:bg-coral text-white font-semibold transition-colors active:scale-95"
-                  >
-                    {county} County
-                  </button>
-                ))}
-              </div>
-
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/20" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-navy px-3 text-sm text-white/50">or</span>
-                </div>
-              </div>
-
-              {!showAddressLookup ? (
-                <button
-                  onClick={() => setShowAddressLookup(true)}
-                  className="w-full text-center text-sm text-white/60 hover:text-white transition-colors"
-                >
-                  Not sure? <span className="underline">Look up by address</span>
-                </button>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="space-y-3"
-                >
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={addressInput}
-                      onChange={(e) => setAddressInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && lookupCounty()}
-                      placeholder="Enter address or zip code"
-                      className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:border-coral focus:outline-none"
-                    />
-                    <button
-                      onClick={lookupCounty}
-                      disabled={isLooking || !addressInput.trim()}
-                      className="px-4 py-3 bg-coral text-white rounded-xl font-medium disabled:opacity-50 transition-all"
-                    >
-                      {isLooking ? '...' : 'Find'}
-                    </button>
-                  </div>
-                  {lookupError && (
-                    <p className="text-sm text-coral text-center">{lookupError}</p>
-                  )}
-                </motion.div>
-              )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="result"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center"
-            >
-              <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl text-white bg-coral">
-                ✓
-              </div>
-
-              <h3 className="text-xl font-bold text-white mb-1">
-                {selectedCounty} County
-              </h3>
-
-              {lookupResult && (
-                <p className="text-sm text-white/60 mb-4">{lookupResult.address}</p>
-              )}
-
-              <p className="text-white/70 mb-6">
-                Visit your county&apos;s election board for polling locations and voting info.
-              </p>
-
-              <a
-                href={COUNTY_URLS[selectedCounty]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold bg-coral hover:bg-coral/90 transition-colors"
-              >
-                Visit Election Board
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-
-              <button
-                onClick={resetPollingState}
-                className="block w-full mt-4 text-sm text-white/50 hover:text-white transition-colors"
-              >
-                ← Choose a different county
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </Modal>
-
-      {/* Endorsement Modal */}
-      <Modal
-        isOpen={activeModal === 'endorse'}
-        onClose={() => setActiveModal(null)}
-        title="Add Your Endorsement"
-      >
-        <div className="pb-4">
-          <p className="text-white/70 text-center mb-6">
-            Join thousands of Kansas Citians supporting the renewal.
-          </p>
-          <EndorsementForm compact onSuccess={() => setActiveModal(null)} />
         </div>
-      </Modal>
+      </div>
     </div>
   );
 }
