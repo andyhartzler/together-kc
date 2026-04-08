@@ -623,7 +623,7 @@ export default function VictoryPage() {
       {/* WHITE-TO-NAVY FADE (short, just above footer logo)                 */}
       {/* ================================================================= */}
       <div
-        className="h-44 sm:h-52 -mb-px"
+        className="h-48 sm:h-56 -mb-px"
         style={{
           background: 'linear-gradient(to bottom, #ffffff 0%, #f5f7fa 8%, #e4ebf2 16%, #cedae6 24%, #b3c5d6 32%, #96aec5 40%, #7896b3 48%, #5d7ea0 56%, #45668a 64%, #325475 68%, #264565 72%, #1e3a5f 78%, #1e3a5f 100%)',
         }}
