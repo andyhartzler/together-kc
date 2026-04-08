@@ -460,22 +460,33 @@ export default function VictoryPage() {
                   viewport={{ once: true, margin: '-30px' }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
                 >
-                  {/* Year label + badge */}
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 px-1">
-                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy tabular-nums">
-                      {election.year}
-                    </span>
-                    {isLatest && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: barDelay + 0.3, duration: 0.4 }}
-                        className="px-3 py-1 bg-navy text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full"
-                      >
-                        This Year
-                      </motion.span>
-                    )}
+                  {/* Year + total votes */}
+                  <div className="flex items-end justify-between mb-2 sm:mb-3 px-1">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy tabular-nums">
+                        {election.year}
+                      </span>
+                      {isLatest && (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: barDelay + 0.3, duration: 0.4 }}
+                          className="px-3 py-1 bg-navy text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full"
+                        >
+                          This Year
+                        </motion.span>
+                      )}
+                    </div>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: HISTORICAL_RESULTS.length * 0.35 + 1.6, duration: 0.5 }}
+                      className="text-xs sm:text-sm text-gray-400"
+                    >
+                      {election.totalVotes.toLocaleString()} total votes
+                    </motion.span>
                   </div>
 
                   {/* The bar - percentage + yes animate with the fill */}
@@ -523,22 +534,6 @@ export default function VictoryPage() {
               );
             })}
 
-            {/* Total votes - all fade in together after all bars complete */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: HISTORICAL_RESULTS.length * 0.35 + 1.6, duration: 0.6 }}
-              className="grid grid-cols-4 gap-2 sm:gap-4 pt-2"
-            >
-              {HISTORICAL_RESULTS.map((election) => (
-                <div key={election.year} className="text-center">
-                  <span className="text-[11px] sm:text-xs text-gray-400 tabular-nums">
-                    {election.totalVotes.toLocaleString()} votes
-                  </span>
-                </div>
-              ))}
-            </motion.div>
           </div>
         </div>
       </section>
@@ -546,7 +541,7 @@ export default function VictoryPage() {
       {/* ================================================================= */}
       {/* THANK YOU                                                          */}
       {/* ================================================================= */}
-      <section className="relative pt-8 sm:pt-16 pb-16 sm:pb-24 bg-white overflow-hidden">
+      <section className="relative pt-8 sm:pt-16 pb-8 sm:pb-12 bg-white overflow-hidden">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Decorative divider */}
           <motion.div
@@ -623,7 +618,7 @@ export default function VictoryPage() {
       {/* WHITE-TO-NAVY FADE (short, just above footer logo)                 */}
       {/* ================================================================= */}
       <div
-        className="h-48 sm:h-56 -mb-px"
+        className="h-44 sm:h-52 -mb-px"
         style={{
           background: 'linear-gradient(to bottom, #ffffff 0%, #f5f7fa 8%, #e4ebf2 16%, #cedae6 24%, #b3c5d6 32%, #96aec5 40%, #7896b3 48%, #5d7ea0 56%, #45668a 64%, #325475 68%, #264565 72%, #1e3a5f 78%, #1e3a5f 100%)',
         }}
