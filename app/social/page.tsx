@@ -96,7 +96,7 @@ const SOCIAL_LINKS = [
 // Historical results
 // ---------------------------------------------------------------------------
 const HISTORICAL_RESULTS = [
-  { year: 2011, yesVotes: 56965, totalVotes: 73459, yesPercent: 78 },
+  { year: 2011, yesVotes: 56965, totalVotes: 73459, yesPercent: 77.55 },
   { year: 2016, yesVotes: 40941, totalVotes: 52859, yesPercent: 77.46 },
   { year: 2021, yesVotes: 29448, totalVotes: 38116, yesPercent: 77.26 },
   { year: 2026, yesVotes: 30574, totalVotes: 40523, yesPercent: 75.45 },

@@ -156,36 +156,25 @@ function CountyCard({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-40px' });
-  const [burst, setBurst] = useState<{ x: number; y: number } | null>(null);
-  const [hasFiredHover, setHasFiredHover] = useState(false);
+  const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([]);
+  const burstId = useRef(0);
 
   const triggerBurst = useCallback(() => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
-    setBurst({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+    const id = ++burstId.current;
+    setBursts((prev) => [...prev, { id, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }]);
   }, []);
-
-  const handleHover = useCallback(() => {
-    if (hasFiredHover) return;
-    setHasFiredHover(true);
-    triggerBurst();
-  }, [hasFiredHover, triggerBurst]);
-
-  const handleTap = useCallback(() => {
-    triggerBurst();
-  }, [triggerBurst]);
 
   return (
     <>
-      <AnimatePresence>
-        {burst && (
-          <ConfettiBurst originX={burst.x} originY={burst.y} onDone={() => setBurst(null)} />
-        )}
-      </AnimatePresence>
+      {bursts.map((b) => (
+        <ConfettiBurst key={b.id} originX={b.x} originY={b.y} onDone={() => setBursts((prev) => prev.filter((p) => p.id !== b.id))} />
+      ))}
       <motion.div
         ref={ref}
-        onMouseEnter={handleHover}
-        onTouchStart={handleTap}
+        onMouseEnter={triggerBurst}
+        onTouchStart={triggerBurst}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -233,7 +222,7 @@ function CountyCard({
 // Historical election data
 // ---------------------------------------------------------------------------
 const HISTORICAL_RESULTS = [
-  { year: 2011, yesVotes: 56965, totalVotes: 73459, yesPercent: 78 },
+  { year: 2011, yesVotes: 56965, totalVotes: 73459, yesPercent: 77.55 },
   { year: 2016, yesVotes: 40941, totalVotes: 52859, yesPercent: 77.46 },
   { year: 2021, yesVotes: 29448, totalVotes: 38116, yesPercent: 77.26 },
   { year: 2026, yesVotes: 30574, totalVotes: 40523, yesPercent: 75.45 },
@@ -462,22 +451,9 @@ export default function VictoryPage() {
                 >
                   {/* Year + total votes */}
                   <div className="flex items-end justify-between mb-2 sm:mb-3 px-1">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy tabular-nums">
-                        {election.year}
-                      </span>
-                      {isLatest && (
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          whileInView={{ opacity: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: barDelay + 0.3, duration: 0.4 }}
-                          className="px-3 py-1 bg-navy text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full"
-                        >
-                          This Year
-                        </motion.span>
-                      )}
-                    </div>
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy tabular-nums">
+                      {election.year}
+                    </span>
                     <motion.span
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
@@ -490,7 +466,7 @@ export default function VictoryPage() {
                   </div>
 
                   {/* The bar - percentage + yes animate with the fill */}
-                  <div className={`relative w-full rounded-xl sm:rounded-2xl overflow-hidden ${isLatest ? 'h-16 sm:h-20 md:h-24' : 'h-14 sm:h-16 md:h-20'}`}>
+                  <div className={`relative w-full rounded-xl sm:rounded-2xl overflow-hidden group cursor-pointer ${isLatest ? 'h-16 sm:h-20 md:h-24' : 'h-14 sm:h-16 md:h-20'}`}>
                     <div className="absolute inset-0 bg-gray-100 rounded-xl sm:rounded-2xl" />
 
                     <motion.div
@@ -507,17 +483,13 @@ export default function VictoryPage() {
                         : 'bg-gradient-to-r from-navy/90 via-navy/80 to-sky/70'
                       }`}
                     >
-                      {/* Shimmer */}
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
-                        initial={{ x: '-100%' }}
-                        whileInView={{ x: '200%' }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: barDelay + 1.6, ease: 'easeInOut' }}
+                      {/* Shimmer - hover/touch only */}
+                      <div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent translate-x-[-100%] group-hover:translate-x-[200%] group-active:translate-x-[200%] transition-transform duration-700 ease-in-out"
                       />
 
-                      {/* Percentage + Yes ride with the bar */}
-                      <div className="absolute inset-0 flex items-center px-4 sm:px-6">
+                      {/* Percentage + Yes ride with the bar, right-aligned */}
+                      <div className="absolute inset-0 flex items-center justify-end px-4 sm:px-6">
                         <span className={`font-bold tabular-nums text-white ${isLatest
                           ? 'text-2xl sm:text-4xl md:text-5xl'
                           : 'text-xl sm:text-3xl md:text-4xl'
@@ -541,7 +513,7 @@ export default function VictoryPage() {
       {/* ================================================================= */}
       {/* THANK YOU                                                          */}
       {/* ================================================================= */}
-      <section className="relative pt-8 sm:pt-16 pb-8 sm:pb-12 bg-white overflow-hidden">
+      <section className="relative pt-8 sm:pt-16 pb-16 sm:pb-24 bg-white overflow-hidden">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Decorative divider */}
           <motion.div
@@ -618,9 +590,9 @@ export default function VictoryPage() {
       {/* WHITE-TO-NAVY FADE (short, just above footer logo)                 */}
       {/* ================================================================= */}
       <div
-        className="h-44 sm:h-52 -mb-px"
+        className="h-52 sm:h-60 -mb-px"
         style={{
-          background: 'linear-gradient(to bottom, #ffffff 0%, #f5f7fa 8%, #e4ebf2 16%, #cedae6 24%, #b3c5d6 32%, #96aec5 40%, #7896b3 48%, #5d7ea0 56%, #45668a 64%, #325475 68%, #264565 72%, #1e3a5f 78%, #1e3a5f 100%)',
+          background: 'linear-gradient(to bottom, #ffffff 0%, #f8f9fb 5%, #eef2f6 12%, #e1e8ef 18%, #d1dbe5 24%, #bfccd9 30%, #aabcce 36%, #94abc2 42%, #7d99b5 48%, #6787a8 54%, #53759b 60%, #41648d 66%, #325580 70%, #264869 74%, #1f3d62 78%, #1e3a5f 82%, #1e3a5f 100%)',
         }}
       />
 
