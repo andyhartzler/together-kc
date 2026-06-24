@@ -325,3 +325,29 @@ html {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* ===== August ballot: kinetic motion utilities ===== */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 34s) linear infinite;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(4%, -3%) scale(1.06); }
+  66% { transform: translate(-3%, 4%) scale(0.96); }
+}
+.animate-drift {
+  animation: drift 22s ease-in-out infinite;
+}
+
+@keyframes sheen {
+  0% { transform: translateX(-120%) skewX(-12deg); }
+  60%, 100% { transform: translateX(220%) skewX(-12deg); }
+}
+.animate-sheen {
+  animation: sheen 4.5s ease-in-out infinite;
+}

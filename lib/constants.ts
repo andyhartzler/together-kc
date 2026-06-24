@@ -312,6 +312,11 @@ export const AUGUST_BALLOT = {
       'Five questions are on the August 4 ballot. Clean water. Protected rivers. Affordable homes. Working civic buildings. Reinvestment on the East Side. Not one of them raises your tax rate, and every one of them moves Kansas City forward.',
     primaryCta: 'See all five questions',
     secondaryCta: 'How to vote',
+    flipWords: ['Clean water.', 'Safe rivers.', 'Affordable homes.', 'Working civic buildings.', 'A stronger East Side.'],
+    hook: [
+      { target: 1.7, decimals: 1, prefix: '$', suffix: 'B', display: '', label: 'for Kansas City' },
+      { target: 0, decimals: 0, prefix: '', suffix: '', display: '$0', label: 'new taxes' },
+    ],
     stats: [
       { value: 'Five', label: 'questions on the ballot' },
       { value: '~$1.7B', label: 'invested back into Kansas City' },
@@ -332,6 +337,9 @@ export const AUGUST_BALLOT = {
   questions: [
     {
       anchorId: 'clean-water',
+      bigStat: { target: 750, decimals: 0, prefix: '$', suffix: 'M', display: '' },
+      punch: 'Fix the pipes that bring you clean water.',
+      costChip: 'No new tax',
       eyebrow: 'Clean Water',
       icon: '💧',
       accent: 'sky',
@@ -348,6 +356,9 @@ export const AUGUST_BALLOT = {
     },
     {
       anchorId: 'sewers',
+      bigStat: { target: 750, decimals: 0, prefix: '$', suffix: 'M', display: '' },
+      punch: 'Keep raw sewage out of our rivers.',
+      costChip: 'No new tax',
       eyebrow: 'Sewers',
       icon: '🌊',
       accent: 'navy',
@@ -364,6 +375,9 @@ export const AUGUST_BALLOT = {
     },
     {
       anchorId: 'housing',
+      bigStat: { target: 100, decimals: 0, prefix: '$', suffix: 'M', display: '' },
+      punch: 'Build affordable homes across Kansas City.',
+      costChip: 'No rate increase',
       eyebrow: 'Housing',
       icon: '🏠',
       accent: 'coral',
@@ -380,6 +394,9 @@ export const AUGUST_BALLOT = {
     },
     {
       anchorId: 'civic-buildings',
+      bigStat: { target: 100, decimals: 0, prefix: '$', suffix: 'M', display: '' },
+      punch: 'Repair Bartle Hall, City Hall, and more.',
+      costChip: 'No rate increase',
       eyebrow: 'Civic Buildings',
       icon: '🏛️',
       accent: 'golden',
@@ -396,6 +413,9 @@ export const AUGUST_BALLOT = {
     },
     {
       anchorId: 'central-city',
+      bigStat: { target: 0, decimals: 0, prefix: '', suffix: '', display: '1/8¢' },
+      punch: 'Keep investing in the East Side.',
+      costChip: 'Same rate, renewed',
       eyebrow: 'Central City',
       icon: '🌇',
       accent: 'sky',
@@ -424,6 +444,17 @@ export const AUGUST_BALLOT = {
     bottomLine:
       'Bottom line: vote YES on all five and your tax rates do not go up. Two are funded entirely through utility fees, two replace retiring debt, and one continues a tax that is already in place.',
   },
+  costsShort: {
+    big: '$0',
+    sub: 'new taxes',
+    headline: 'Five yeses. Zero new taxes.',
+    chips: ['Funded by utility fees', 'New bonds replace old debt', 'Renews an existing tax'],
+  },
+  voteSteps: [
+    { kicker: 'Step one', date: 'By July 8', title: 'Register to vote' },
+    { kicker: 'Step two', date: 'July 21', title: 'Early voting opens' },
+    { kicker: 'Step three', date: 'August 4', title: 'Election Day', sub: 'Polls open 6am to 7pm' },
+  ],
   howToVote: {
     eyebrow: 'Make Your Plan',
     heading: 'How to vote YES on all five',
