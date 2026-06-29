@@ -298,8 +298,9 @@ export const SITE_SEO_CONFIG = {
 // defensibly per measure: revenue bonds (water/sewer) are repaid from utility
 // fees, GO bonds (housing/civic) keep the property-tax RATE flat by replacing
 // retiring debt, and CCED renews an existing sales tax. Do not flatten the GO
-// bonds into "tax-free." Question numbering is intentionally omitted because
-// the official KCEB ballot order is not yet confirmed.
+// bonds into "tax-free." Official KCEB question numbers (Q1 housing, Q2 civic,
+// Q3 central city, Q4 water, Q5 sewers) are confirmed from the KCEB Issues-Only
+// sample ballot and are shown on each measure.
 // ===========================================================================
 export const AUGUST_BALLOT = {
   electionDate: 'August 4, 2026',
@@ -486,7 +487,7 @@ export const AUGUST_BALLOT = {
     {
       question: 'What is on the August 4, 2026 ballot?',
       answer:
-        'Five Kansas City measures placed on the ballot by the City Council, together worth roughly $1.7 billion: a $750 million drinking-water revenue bond, a $750 million sanitary-sewer revenue bond, a $100 million affordable-housing bond, a $100 million civic-facilities bond for the convention center and City Hall, and a 10-year renewal of the one-eighth-cent Central City Economic Development sales tax.',
+        'Five Kansas City measures placed on the ballot by the City Council, anchored by about $1.7 billion in bonds: a $750 million drinking-water revenue bond, a $750 million sanitary-sewer revenue bond, a $100 million affordable-housing bond, a $100 million civic-facilities bond for the convention center and City Hall, and a 10-year renewal of the one-eighth-cent Central City Economic Development sales tax.',
     },
     {
       question: 'Are the water and sewer questions really not a tax?',
@@ -530,5 +531,489 @@ export const AUGUST_BALLOT = {
     { label: 'Home', href: '/home' },
     { label: 'Endorsements', href: '/endorsements' },
     { label: 'FAQs', href: '/faqs' },
+  ],
+  // =========================================================================
+  // PER-MEASURE DETAIL DATA (single source of truth for /august-2026/[slug]).
+  // Order defines the prev/next cycle. Each measure carries everything both the
+  // hub card and the bespoke detail page need. Official question numbers are
+  // included because they are confirmed verbatim from the KCEB Issues-Only
+  // sample ballot PDF; officialQuestion.text is the verbatim ballot language.
+  // Cost framing stays mechanism-accurate per measure (revenue bond vs GO bond
+  // vs sales-tax renewal) and is never flattened to "tax-free".
+  // =========================================================================
+  measures: [
+    {
+      slug: 'clean-water',
+      name: 'Clean Water',
+      eyebrow: 'Clean Water',
+      motif: 'clean-water',
+      title: "Clean Water: $750 million to keep Kansas City's drinking water reliable",
+      cardPunch: 'Fix the pipes that bring you clean water.',
+      cardSub:
+        'Repair and modernize the water system with revenue bonds, funded through water rates, not property taxes.',
+      amount: '$750,000,000',
+      bigStat: { target: 750, decimals: 0, prefix: '$', suffix: 'M', display: '', label: 'in water bonds' },
+      accent: {
+        name: 'Sky',
+        swatch: '#4a90d9',
+        gradient: 'from-sky to-navy',
+        gradientHero: 'from-sky to-navy',
+        glow: 'rgba(74,144,217,0.45)',
+      },
+      costChip: 'No new tax',
+      costFraming:
+        'Revenue bond repaid from utility water rates, not taxes. No property tax impact. Cheapest available financing for mandatory infrastructure; rejecting it raises costs and rates.',
+      mechanism:
+        'Waterworks revenue bonds. Principal and interest are payable solely from the revenues KC Water derives from operating the waterworks system (water bills and fees). By law the City cannot use property, sales, or earnings tax money to repay them, so there is no property tax impact. Revenue bonds carry lower interest rates than the alternative financing KC Water would otherwise use, and city staff say the bond costs are already built into the utility long-range rate plan.',
+      honestCost:
+        'No new tax and no tax increase. These are revenue bonds repaid only from the water rates KC Water already collects, not from property, sales, or earnings taxes, so they have no property tax impact. This is not a promise that your water bill never rises. Water rates are set separately by the City and the cost of this work is already factored into the utility rate plan. The honest framing: a YES funds work that has to happen anyway with the cheapest available borrowing, while a NO forces KC Water into pricier debt and faster rate increases.',
+      voteThreshold: 'Simple majority',
+      officialQuestion: {
+        number: 'Question 4',
+        text: "Shall the City of Kansas City, Missouri issue waterworks revenue bonds in the principal amount of $750,000,000.00 for the purpose of rehabilitating, expanding and improving the City's waterworks system, including acquiring necessary land and rights of way, in order to provide for its continuing operation and to maintain compliance with federal, state and judicial requirements, with the principal of and interest on said revenue bonds to be payable solely from the revenues derived by the City from the operation of its waterworks system, including all future rehabilitations, improvements and expansions thereto?",
+      },
+      heroStats: [
+        { value: '$750M', label: 'in waterworks revenue bonds (Question 4)' },
+        { value: '2,800 mi', label: 'of water mains KC Water keeps flowing' },
+        { value: '172,000', label: 'customers served by the drinking-water system' },
+        { value: '$0', label: 'impact on your property taxes' },
+      ],
+      narrative: {
+        problem:
+          "Kansas City's drinking-water system is large and aging. KC Water maintains roughly 2,800 miles of water mains, a 240-million-gallon-per-day treatment plant, four major pump stations, and fourteen re-pump stations to deliver safe water to about 172,000 customers plus 34 wholesale customers. Pipes, pumps, and treatment equipment wear out, and federal and state drinking-water rules keep getting stricter. Much of this work is not optional. It is required to keep clean water coming out of the tap and to stay in compliance with federal, state, and judicial requirements.",
+        whatItDoes:
+          'Question 4 authorizes the City to issue up to $750 million in waterworks revenue bonds to rehabilitate, expand, and improve the drinking-water system, including acquiring land and rights of way. In plain terms, that means replacing old water mains and upgrading treatment, pumping, and distribution so service stays reliable. The bonds are repaid solely from KC Water’s own water-rate revenue. The City is legally barred from using property, sales, or earnings taxes to pay them back.',
+        whyItMatters:
+          'Revenue bonds are the lowest-cost money available for infrastructure that has to be rebuilt regardless of how anyone votes. City staff say the cost of these bonds is already baked into KC Water’s long-range rate plan. If voters reject them, the work still has to happen, but the utility would be forced into more expensive financing with higher interest rates, which means bigger rate increases for the same projects. This is the drinking-water companion to the sanitary-sewer revenue bonds in Question 5 and to the $750 million sewer bonds Kansas City voters already approved in 2022.',
+        whatYourYesDoes:
+          'A YES on Question 4 lets KC Water borrow at the cheapest available rate to keep clean, reliable water flowing and to stay compliant with federal and state drinking-water rules, without adding a single dollar to your property tax bill. A NO does not stop the projects. It just makes them cost more and pushes water rates up faster.',
+      },
+      keyFacts: [
+        'Official ballot designation: Question 4 on the City of Kansas City, Missouri portion of the August 4, 2026 special election ballot.',
+        'Authorizes up to $750,000,000 in waterworks revenue bonds.',
+        'Bonds are payable solely from waterworks system revenues (water bills and fees); the City cannot use property, sales, or earnings tax to repay them, so there is no property tax impact.',
+        'Funds rehabilitating, expanding, and improving the drinking-water system, including acquiring land and rights of way, and maintaining compliance with federal, state, and judicial requirements.',
+        "KC Water's drinking-water system spans roughly 2,800 miles of water mains, a 240-million-gallon-per-day treatment plant, 4 major pump stations, and 14 re-pump stations.",
+        'The system serves about 172,000 customers plus 34 active wholesale customers; about 80% of raw water comes from the Missouri River and 20% from the Missouri River aquifer.',
+        'City staff say the bond costs are already built into KC Water’s plan for future rates; rejecting the bonds would force costlier borrowing and faster rate increases.',
+        'Requires only a simple majority to pass, unlike the general-obligation bond questions (Questions 1 and 2), which need a four-sevenths supermajority.',
+      ],
+      // Real, sourced dates. Per the design spec the detail page may choose to
+      // omit this rail for clean-water; the data stays here as source of truth.
+      timeline: [
+        { date: '2022-04-05', label: 'Kansas City voters approve $750 million in sanitary-sewer revenue bonds, the prior KC Water bond authorization' },
+        { date: '2026-05', label: 'City Council places five measures, including the $750 million waterworks bond, on the August 4 ballot' },
+        { date: '2026-07-08', label: 'Last day to register to vote in the August 4 election' },
+        { date: '2026-07-21', label: 'No-excuse early in-person voting opens' },
+        { date: '2026-08-04', label: 'Election Day: polls open 6:00 AM to 7:00 PM' },
+      ],
+      realExamples: [
+        'Prior KC Water bond proceeds (2014 and 2022 authorizations) paid for projects such as backup generators, odor control, wastewater treatment plant upgrades, and water- and sewer-main repairs citywide, per KCUR.',
+        "KC Water's 240-million-gallon-per-day treatment plant and roughly 2,800 miles of mains are the kind of assets this authorization is meant to keep rehabilitating and upgrading.",
+      ],
+      faqs: [
+        { q: 'Does Question 4 raise my taxes?', a: 'No. These are waterworks revenue bonds, repaid solely from KC Water’s own water-rate revenue. The City is legally prohibited from using property, sales, or earnings tax money to pay them back, so there is no property tax impact.' },
+        { q: 'Will my water bill go up because of this?', a: 'This question does not set rates. City staff say the cost of these bonds is already built into KC Water’s long-range rate plan. Voting NO would not lower your bill; because the projects still have to be done, it would force more expensive borrowing and push rates up faster.' },
+        { q: 'What exactly does the $750 million pay for?', a: 'Rehabilitating, expanding, and improving the drinking-water system: replacing aging water mains, upgrading the treatment plant, and improving pumping and distribution, plus acquiring any land and rights of way needed to keep the system running and compliant with federal and state rules.' },
+        { q: 'Is this the same as the sewer question?', a: 'No. Question 4 is the drinking-water (waterworks) bond. Question 5 is a separate $750 million sanitary-sewer revenue bond tied to the federal Clean Water Act sewer cleanup. They are two different systems and two different votes.' },
+        { q: 'What happens if Question 4 fails?', a: 'The aging infrastructure still has to be replaced to keep water safe and reliable and to meet federal and state rules. Without the low-cost revenue bonds, KC Water would have to use more expensive financing with higher interest rates, meaning bigger water-rate increases for the same projects.' },
+        { q: 'How many votes does it need to pass?', a: 'A simple majority. Unlike the general-obligation bond questions for housing and civic buildings, this revenue-bond question does not require a four-sevenths supermajority.' },
+      ],
+      relatedLinks: [
+        { label: 'KCEB August 4, 2026 sample ballots', url: 'https://kceb.org/elections/ballot/' },
+        { label: 'KC Water drinking-water system overview', url: 'https://www.kcwater.us/about-us/water/' },
+        { label: 'The Beacon August 2026 ballot guide', url: 'https://thebeaconnews.org/stories/2026/05/21/kansas-city-ballot-questions-august-2026/' },
+        { label: 'KCUR August 2026 ballot guide', url: 'https://www.kcur.org/politics-elections-and-government/2026-05-26/kansas-city-is-asking-voters-to-pass-5-bond-and-tax-measures-in-augusts-election-heres-a-guide' },
+      ],
+      sources: [
+        { title: 'Kansas City Election Board, August 4, 2026 sample ballot (Issues Only PDF, Question 4 verbatim)', url: 'https://kceb.org/elections/ballot/' },
+        { title: 'The Beacon: Your guide to the August 2026 Kansas City ballot questions', url: 'https://thebeaconnews.org/stories/2026/05/21/kansas-city-ballot-questions-august-2026/' },
+        { title: "KCUR: Kansas City is asking voters to pass 5 bond and tax measures in August's election", url: 'https://www.kcur.org/politics-elections-and-government/2026-05-26/kansas-city-is-asking-voters-to-pass-5-bond-and-tax-measures-in-augusts-election-heres-a-guide' },
+        { title: 'KSHB 41: Kansas City, Missouri, adds 5 measures to August ballot', url: 'https://www.kshb.com/news/local-news/missouri/kansas-city/kansas-city-missouri-adds-5-measures-to-august-ballot' },
+        { title: 'KCTV5: $1.7 billion question - Kansas City voters to weigh in on infrastructure, housing and more', url: 'https://www.kctv5.com/2026/05/22/17-billion-question-kansas-city-voters-weigh-infrastructure-housing-more/' },
+        { title: 'KC Water: Water (drinking-water system facts)', url: 'https://www.kcwater.us/about-us/water/' },
+        { title: 'KC Water: Sewer Bond Authorization (prior 2022 $750M authorization context)', url: 'https://www.kcwater.us/about-us/sewer-bond-authorization/' },
+      ],
+      yesCta: 'Vote YES on Clean Water',
+    },
+    {
+      slug: 'sewers',
+      name: 'Sewers',
+      eyebrow: 'Sewers',
+      motif: 'sewers',
+      title: '$750 million to clean up our rivers and fix the sewers',
+      cardPunch: 'Keep raw sewage out of our rivers.',
+      cardSub:
+        'Fund the federal Clean Water Act cleanup with revenue bonds, repaid through sewer fees, not property taxes.',
+      amount: '$750,000,000',
+      bigStat: { target: 750, decimals: 0, prefix: '$', suffix: 'M', display: '', label: 'in sewer bonds' },
+      accent: {
+        name: 'Navy',
+        swatch: '#1e3a5f',
+        gradient: 'from-navy via-navy to-sky',
+        gradientHero: 'from-navy via-navy to-sky',
+        glow: 'rgba(30,58,95,0.5)',
+      },
+      costChip: 'No new tax',
+      costFraming:
+        'Revenue bond repaid from utility fees, not property taxes. Distinct from the housing and civic-building questions (general obligation bonds backed by the property-tax levy) and from the Central City question (a sales-tax renewal).',
+      mechanism:
+        'Sanitary sewer revenue bonds. By the ballot’s own words, principal and interest are payable solely from the revenues derived by the City from the operation of its sanitary sewer system, meaning the sewer fees KC Water already collects. No property-tax pledge and no general-fund pledge.',
+      honestCost:
+        'No new tax and no property-tax increase. These are revenue bonds, and the ballot itself says they are payable solely from sewer system revenues, meaning the sewer fees KC Water already bills. That is the honest part: it is not a promise that your sewer bill will never rise. Sewer rates are set separately each year and have been climbing for over a decade to pay for the federally required cleanup. What a YES does is lock in the cheapest available financing for work the city is legally ordered to do. City staff say the cost of these bonds is already baked into current rates, and that rejecting them would force more expensive borrowing that drives rates up faster.',
+      voteThreshold: 'Simple majority',
+      officialQuestion: {
+        number: 'Question 5',
+        text: 'Shall the City of Kansas City, Missouri issue sanitary sewer revenue bonds in the principal amount of $750,000,000.00 for the purpose of rehabilitating, expanding and improving the City’s sanitary sewer system, including acquiring necessary land and rights of way, in order to provide for its continuing operation and to maintain compliance with federal, state and judicial requirements, with the principal of and interest on said revenue bonds to be payable solely from the revenues derived by the City from the operation of its sanitary sewer system, including all future rehabilitations, improvements and expansions thereto?',
+      },
+      heroStats: [
+        { value: '$750M', label: 'Sanitary sewer revenue bonds on the ballot' },
+        { value: '85%', label: 'Wet-weather sewage capture required by 2040' },
+        { value: '$2.3B', label: 'Total court-ordered Smart Sewer cleanup' },
+        { value: '$0', label: 'New taxes (repaid from sewer fees)' },
+      ],
+      narrative: {
+        problem:
+          'When heavy rain hits Kansas City, the aging sewer system overflows and pushes raw, untreated sewage into local creeks, streams, and rivers. The pollution was severe enough that the U.S. EPA and Department of Justice took the city to federal court under the Clean Water Act. The 2010 settlement documented billions of gallons of combined sewer overflow reaching area waterways and around one hundred million gallons of separate sanitary sewer overflow that had to be eliminated entirely. This is a public-health and clean-water problem the city is legally bound to fix.',
+        whatItDoes:
+          'Question 5 authorizes the City to issue up to $750 million in sanitary sewer revenue bonds to keep the court-ordered Smart Sewer cleanup moving: rebuilding aging pipes, pump stations, and treatment plants and building green infrastructure that keeps stormwater out of the sewers. The ballot language is explicit that the bonds are paid back only from sewer system revenues, so there is no property-tax pledge behind them.',
+        whyItMatters:
+          'The cleanup is not optional. A federal consent decree, amended over the years and now anchored by a 2040 deadline, requires Kansas City to capture 85 percent of wet-weather sewage flows. The work will get done either way. The only real question is how it is financed. Revenue bonds carry lower interest rates than the alternatives, and KC Water says the cost of this debt is already built into current rates. Voting the bonds down would not erase the federal obligation; it would force the city into pricier borrowing that pushes sewer rates up faster.',
+        whatYourYesDoes:
+          'A YES on Question 5 lets Kansas City keep paying for the federally mandated sewer cleanup with the lowest-cost financing available. It protects the Blue River, Brush Creek, and the other waterways that overflows pollute, keeps the city in compliance with its federal consent decree, and holds future sewer-rate increases down compared to rejecting the bonds. It adds no new tax and does not touch your property-tax rate.',
+      },
+      keyFacts: [
+        'Appears on the August 4, 2026 Kansas City ballot as Question 5, authorizing up to $750,000,000 in sanitary sewer revenue bonds.',
+        'Repaid solely from sewer system revenues (the sewer fees KC Water already collects). The ballot pledges no property tax and no general-fund money.',
+        'Funds the court-ordered Smart Sewer program required by a 2010 federal Clean Water Act consent decree to reduce raw-sewage overflows into local creeks, streams, and rivers.',
+        'The consent decree requires the city to capture 85 percent of wet-weather sewage flows in a typical year by a final deadline of 2040.',
+        'The total remaining Smart Sewer program is now estimated at about $2.3 billion, reduced from an initial estimate of roughly $4.5 billion as the decree was renegotiated.',
+        "Kansas City's wastewater system spans roughly 320 square miles and includes 6 wastewater treatment plants, about 40 pumping stations, and more than 2,800 miles of sewer lines, one of the largest systems in the country by area.",
+        'This is the latest in a series of authorizations: voters approved $500 million in sewer bonds in 2012 (since exhausted) and another $750 million in April 2022. Question 5 renews that financing capacity.',
+        'City staff say revenue bonds are the lowest-cost way to borrow for this mandated work, and the council committed to structuring the issuance to minimize the effect on ratepayers.',
+      ],
+      timeline: [
+        { date: '2010', label: 'U.S. EPA and DOJ reach a Clean Water Act settlement with Kansas City; a federal judge enters the consent decree on September 27, 2010, ordering a 25-year overflow-control program then estimated at roughly $4.5 billion.' },
+        { date: '2012', label: 'Voters authorize a first $500 million in sanitary sewer revenue bonds to begin the work.' },
+        { date: '2021', label: 'The consent decree is amended; the final compliance deadline is extended to 2040 and the program scope and cost are renegotiated downward.' },
+        { date: 'April 5, 2022', label: 'Kansas City voters approve $750 million in additional sanitary sewer revenue bonds.' },
+        { date: '2024', label: 'The Third Amended Consent Decree sets the target at 85 percent capture of wet-weather flows by 2040 and lowers the total program cost to about $2.3 billion.' },
+        { date: 'August 4, 2026', label: 'Question 5 asks voters to authorize another $750 million in sanitary sewer revenue bonds to keep the cleanup financed at the lowest cost.' },
+        { date: '2040', label: 'Federal deadline to achieve 85 percent capture of annual wet-weather sewage flows.' },
+      ],
+      realExamples: [
+        'Blue River Wastewater Treatment Plant improvements, a flagship Smart Sewer project to expand treatment capacity and cut overflows.',
+        'More than 234 miles of sewer line rehabilitated under the program to date.',
+        'About 287 green acres of green infrastructure built so far toward a minimum of 480 green acres planned for the combined-sewer area, capturing stormwater before it overwhelms the pipes.',
+        'Wet-weather capture has risen from roughly 45 percent in 2012 toward an interim target near 77 percent by 2035 and the final 85 percent by 2040.',
+      ],
+      faqs: [
+        { q: 'Is the sewer question really not a tax?', a: 'Correct. The ballot language states the bonds are payable solely from the revenues of the sanitary sewer system, meaning the sewer fees KC Water already collects. There is no property-tax pledge and no general-fund pledge. It is not a guarantee that sewer bills stay flat, because rates are set separately by the City, but the bonds themselves add no new tax.' },
+        { q: 'What is the Smart Sewer program and why is it required?', a: 'It is Kansas City’s multidecade overflow-control program, mandated by a 2010 federal Clean Water Act consent decree. The system was dumping billions of gallons of untreated sewage into local waterways during storms. The court ordered the city to fix it, and a federal judge oversees the schedule.' },
+        { q: 'What does 85 percent by 2040 mean?', a: 'The consent decree requires Kansas City to capture and treat 85 percent of the sewage-and-stormwater flow that the system sees during wet weather in a typical year, with a final deadline of 2040. Capture has climbed from about 45 percent in 2012 as the work has progressed.' },
+        { q: 'What happens if Question 5 fails?', a: 'The federal obligation does not go away. The cleanup still has to be finished by 2040. Rejecting the bonds simply forces the city toward more expensive financing with higher interest, which city staff warn would push sewer rates up faster than staying on the revenue-bond path.' },
+        { q: 'Will my sewer bill go up because of this?', a: 'This question does not set rates and does not freeze them. Sewer rates have been rising for years to pay for the court-ordered cleanup, and that continues regardless. KC Water says using low-cost revenue bonds keeps those increases as small as possible, and that the cost of this debt is already built into current rates.' },
+        { q: 'Have not voters approved sewer bonds before?', a: 'Yes. Voters authorized $500 million in 2012, which has been spent, and $750 million in April 2022. Question 5 renews that financing capacity with another $750 million so the mandated work can keep going without interruption.' },
+      ],
+      relatedLinks: [
+        { label: 'KC Smart Sewer program (official)', url: 'https://www.kcsmartsewer.us/' },
+        { label: 'KC Water sewer bond authorization', url: 'https://www.kcwater.us/about-us/sewer-bond-authorization/' },
+        { label: 'EPA Kansas City Clean Water Act settlement', url: 'https://www.epa.gov/enforcement/kansas-city-missouri-clean-water-act-settlement' },
+        { label: 'Kansas City Election Board sample ballot', url: 'https://kceb.org/elections/ballot/' },
+      ],
+      sources: [
+        { title: 'Kansas City Election Board, August 4, 2026 sample ballot (Issues Only, official Question 5 language)', url: 'https://kceb.org/elections/ballot/' },
+        { title: 'KSHB 41: Kansas City, Missouri, adds 5 measures to August ballot', url: 'https://www.kshb.com/news/local-news/missouri/kansas-city/kansas-city-missouri-adds-5-measures-to-august-ballot' },
+        { title: "KCUR: Kansas City's August election will have 5 bond and tax measures (voter guide)", url: 'https://www.kcur.org/politics-elections-and-government/2026-05-26/kansas-city-is-asking-voters-to-pass-5-bond-and-tax-measures-in-augusts-election-heres-a-guide' },
+        { title: 'The Beacon: Your guide to the August 2026 Kansas City ballot questions', url: 'https://thebeaconnews.org/stories/2026/05/21/kansas-city-ballot-questions-august-2026/' },
+        { title: 'U.S. EPA: Kansas City, Missouri Clean Water Act Settlement (2010 consent decree terms)', url: 'https://www.epa.gov/enforcement/kansas-city-missouri-clean-water-act-settlement' },
+        { title: 'City of Kansas City: Third Amended Consent Decree (85% capture, 2040, ~$2.3 billion)', url: 'https://www.kcsmartsewer.us/approach/third-amended-consent-decree' },
+        { title: 'KC Water: Sewer Bond Authorization', url: 'https://www.kcwater.us/about-us/sewer-bond-authorization/' },
+        { title: 'City of Kansas City: Council Places Five Measures on August 4 Ballot', url: 'https://www.kcmo.gov/Home/Components/News/News/3103/16' },
+      ],
+      yesCta: 'Vote YES on Sewers',
+    },
+    {
+      slug: 'housing',
+      name: 'Housing',
+      eyebrow: 'Housing',
+      motif: 'housing',
+      title: '$100 million for affordable homes, with no rate increase',
+      cardPunch: 'Build affordable homes across Kansas City.',
+      cardSub:
+        'Double the City’s annual affordable-housing investment by replacing retiring debt, keeping the property tax rate flat.',
+      amount: '$100,000,000',
+      bigStat: { target: 100, decimals: 0, prefix: '$', suffix: 'M', display: '', label: 'in housing bonds' },
+      accent: {
+        name: 'Coral',
+        swatch: '#e53935',
+        gradient: 'from-coral to-[#8f1815]',
+        gradientHero: 'from-coral to-[#8f1815]',
+        glow: 'rgba(229,57,53,0.45)',
+      },
+      costChip: 'No rate increase',
+      costFraming:
+        'No increase to your property tax RATE. The new bonds replace roughly $200 million in older City debt that is being retired, so the debt-service levy stays level. This is a property-tax-backed GO bond, not a tax-free measure.',
+      mechanism:
+        'General obligation (GO) bond, up to $100,000,000, backed by the City’s debt-service (tangible) property tax levy. It is structured to replace roughly $200 million in older general-obligation debt that is being paid off, so the debt-service tax RATE stays flat rather than rising. Proceeds flow through the Kansas City Housing Trust Fund. This is a property-tax-backed bond, not a tax-free measure: the ballot language itself authorizes the City to maintain property tax rates sufficient to pay principal and interest on the bonds. Requires a four-sevenths (57.1%) supermajority because it is a GO bond.',
+      honestCost:
+        'This is a property-tax-backed general obligation bond, not a tax-free measure, and the ballot language says so directly: it authorizes the City to keep property tax rates high enough to pay the bonds off. What stays flat is the RATE. The City can issue these $100 million in bonds without raising the debt-service levy because roughly $200 million in older general-obligation debt is being paid off and these bonds take its place. So the honest framing is: no increase to your property tax RATE, but yes, this is debt repaid by the City’s debt-service property tax, not a cost-free program.',
+      voteThreshold: 'Four-sevenths supermajority',
+      officialQuestion: {
+        number: 'Question 1',
+        text: 'Shall the City of Kansas City, Missouri issue its general obligation bonds in an amount not to exceed $100,000,000.00 for the purpose of affordable housing through the rehabilitation, renovation, and construction of houses and buildings, including blight removal, to provide affordable housing for very low- to moderate-income households?\n\nThe authorization of the bonds will authorize the City to maintain tangible property tax rates sufficient to pay the interest and principal on the bonds until fully paid.',
+      },
+      heroStats: [
+        { value: '$100M', label: 'in bonds for affordable homes' },
+        { value: '64,000', label: 'unit affordable-housing shortage in KC' },
+        { value: '~$20M/yr', label: 'doubles the City’s annual housing investment' },
+        { value: '$0', label: 'increase to your property tax rate' },
+      ],
+      narrative: {
+        problem:
+          'Kansas City is short an estimated 64,000 affordable homes, a gap concentrated among the very-low-income and extremely-low-income families who can least absorb rising rents. The City’s housing director, Blaine Proctor, put it plainly: the shortage is made up of households at the bottom of the income ladder, the people with the fewest options when a unit is lost or a rent goes up. The Housing Trust Fund that the City built to chip away at this gap is on track to run out: the $50 million voters approved in 2022 has been going out the door at roughly $15 million a year and is projected to be spent by 2027.',
+        whatItDoes:
+          'Question 1 authorizes the City to issue up to $100 million in general obligation bonds for affordable housing: rehabilitating and renovating existing houses and buildings, building new ones, and clearing blighted property, all to serve very-low- to moderate-income households. The money flows through the Housing Trust Fund, the City’s competitive grant program for affordable housing. With this infusion the Trust Fund could award about $20 million a year through 2032, roughly double its current pace, potentially producing thousands more affordable units.',
+        whyItMatters:
+          'Without new bonds the Trust Fund effectively goes dark in 2027, just as the shortage is most acute. The bond does not just keep the program alive, it scales it: doubling annual investment is the difference between a few hundred units and several thousand over the life of the program. And it is structured so taxpayers carry no higher rate, because it slots into the space left by about $200 million in older City debt that is being retired.',
+        whatYourYesDoes:
+          'A YES on Question 1 lets the City sell up to $100 million in housing bonds and roughly double what the Housing Trust Fund can invest each year, while keeping the property tax RATE flat by replacing debt that is being paid off. Because it is a general obligation bond, it needs a four-sevenths supermajority, so turnout and margin both matter.',
+      },
+      keyFacts: [
+        'Officially Question 1 on the Kansas City portion of the August 4, 2026 primary ballot.',
+        'Authorizes up to $100,000,000 in general obligation bonds for affordable housing.',
+        'Money flows through the Kansas City Housing Trust Fund (established 2018, Ordinance 180719).',
+        'Funds rehabilitation, renovation, new construction, and blight removal for very-low- to moderate-income households.',
+        'Would roughly double the Trust Fund annual investment to about $20 million a year, sustained through 2032.',
+        'Addresses an estimated 64,000-unit affordable-housing shortage cited by the City’s housing department.',
+        'Requires a four-sevenths (about 57.1%) supermajority to pass, because it is a GO bond.',
+        'Structured to replace roughly $200 million in older debt being retired, so the debt-service tax RATE does not rise.',
+        'The Trust Fund was first seeded with $12.5 million in federal pandemic relief in 2021 and a $50 million voter-approved infusion in November 2022.',
+        'To date the Trust Fund has awarded more than $61 million and helped fund roughly 3,000 affordable units.',
+      ],
+      timeline: [
+        { date: '2018', label: 'Kansas City establishes the Housing Trust Fund (Ordinance 180719)' },
+        { date: 'May 2021', label: 'Fund first seeded with $12.5 million in federal pandemic relief' },
+        { date: 'Nov 2022', label: 'Voters approve a $50 million infusion to the Trust Fund' },
+        { date: '2026', label: 'Trust Fund has awarded more than $61 million, helping fund roughly 3,000 affordable units' },
+        { date: '2027', label: 'The 2022 funding is projected to be fully spent' },
+        { date: 'Aug 4, 2026', label: 'Voters decide Question 1, the $100 million affordable housing bond' },
+        { date: 'Through 2032', label: 'If passed, the Trust Fund could award about $20 million a year, roughly double its current pace' },
+      ],
+      realExamples: [],
+      faqs: [
+        { q: 'Will Question 1 raise my taxes?', a: 'It will not raise your property tax RATE. The City can issue these $100 million in bonds while keeping the debt-service levy flat because about $200 million in older debt is being paid off and these bonds replace it. Be clear-eyed though: this is a general obligation bond backed by the property tax, and the ballot language authorizes the City to keep rates high enough to repay it. The rate stays the same; the City is not promising the bonds are free.' },
+        { q: 'What is the Housing Trust Fund and how does the money get spent?', a: 'The Housing Trust Fund is the City’s competitive grant program for affordable housing, established in 2018. It awards money to developers through a regular request-for-proposals process to rehab, renovate, build, and clear blight for very-low- to moderate-income households. The $100 million bond would feed this fund, letting it award about $20 million a year through 2032, roughly double its current pace.' },
+        { q: 'Why does this need a supermajority?', a: 'Because it is a general obligation bond, Missouri law requires a four-sevenths supermajority, about 57.1 percent, rather than a simple majority. That is a higher bar than a normal yes-or-no question, so both turnout and the margin of victory matter.' },
+        { q: 'How big is Kansas City’s housing shortage, really?', a: 'The City’s housing department estimates a 64,000-unit shortage of affordable housing, concentrated among very-low-income and extremely-low-income households. That is the gap this bond is meant to start closing.' },
+        { q: 'What happens if it fails?', a: 'The Housing Trust Fund current money, the $50 million voters approved in 2022, is going out at about $15 million a year and is projected to be spent by 2027. Without new bonds, the City’s affordable-housing program effectively stalls just as the shortage is most severe.' },
+        { q: 'Has the Trust Fund actually built anything?', a: 'Yes. Since it was first funded in 2021 the Trust Fund has awarded more than $61 million and helped fund roughly 3,000 affordable units across the city. Reported unit counts vary by date and source as projects move from award to completion.' },
+      ],
+      relatedLinks: [
+        { label: 'Kansas City Election Board sample ballot', url: 'https://kceb.org/elections/ballot/' },
+        { label: 'City of Kansas City Housing Trust Fund', url: 'https://www.kcmo.gov/city-hall/housing/housing-trust-fund' },
+        { label: 'Kansas City ordinance, File #260484', url: 'https://clerk.kcmo.gov/LegislationDetail.aspx?GUID=8EED7EA0-A903-4FE5-845A-84B1A6FCC962&ID=8027543' },
+      ],
+      sources: [
+        { title: 'KCEB August 4, 2026 sample ballot (Issues Only PDF), confirming Question 1 official wording', url: 'https://kceb.org/elections/ballot/' },
+        { title: 'City of Kansas City ordinance calling the housing bond election, File #260484', url: 'https://clerk.kcmo.gov/LegislationDetail.aspx?GUID=8EED7EA0-A903-4FE5-845A-84B1A6FCC962&ID=8027543' },
+        { title: 'KSHB: Kansas City adds 5 measures to August ballot', url: 'https://www.kshb.com/news/local-news/missouri/kansas-city/kansas-city-missouri-adds-5-measures-to-august-ballot' },
+        { title: "KCUR: Kansas City's August election will have 5 bond and tax measures, a guide", url: 'https://www.kcur.org/politics-elections-and-government/2026-05-26/kansas-city-is-asking-voters-to-pass-5-bond-and-tax-measures-in-augusts-election-heres-a-guide' },
+        { title: 'The Beacon: Your guide to the August 2026 Kansas City ballot questions', url: 'https://thebeaconnews.org/stories/2026/05/21/kansas-city-ballot-questions-august-2026/' },
+        { title: 'City of Kansas City: Affordable Housing Trust Fund', url: 'https://www.kcmo.gov/city-hall/housing/housing-trust-fund' },
+        { title: 'KCUR: Kansas City got $50 million for its Housing Trust Fund, how did it spend the money', url: 'https://www.kcur.org/housing-development-section/2023-11-27/kansas-city-got-50-million-for-its-housing-trust-fund-how-did-it-spend-the-money-this-year' },
+      ],
+      yesCta: 'Vote YES on Housing',
+    },
+    {
+      slug: 'civic-buildings',
+      name: 'Civic Buildings',
+      eyebrow: 'Civic Buildings',
+      motif: 'civic-buildings',
+      title: 'Civic Buildings: $100 Million to Repair the Convention Center and City Hall',
+      cardPunch: 'Repair Bartle Hall, City Hall, and more.',
+      cardSub:
+        'Fix aging civic buildings by replacing retiring debt, with no projected property tax rate increase.',
+      amount: '$100,000,000',
+      bigStat: { target: 100, decimals: 0, prefix: '$', suffix: 'M', display: '', label: 'in repair bonds' },
+      accent: {
+        name: 'Golden',
+        swatch: '#f5a623',
+        gradient: 'from-coral via-coral to-golden',
+        gradientHero: 'from-coral via-coral to-golden',
+        glow: 'rgba(245,166,35,0.45)',
+      },
+      costChip: 'No rate increase',
+      costFraming:
+        'GO bond repaid from the existing debt-service property tax levy; projected to keep the property tax RATE flat by replacing retiring debt, NOT tax-free.',
+      mechanism:
+        'General obligation (GO) bonds, not to exceed $100 million, repaid from the City’s existing debt-service (tangible property) tax levy. The bonds are timed to replace roughly $200 million of older GO debt (this question plus the housing question) that is being fully paid off, so the City projects no increase in the property tax rate. This is not a tax-free measure: the ballot expressly authorizes the City to maintain property tax rates sufficient to repay principal and interest until the bonds are paid in full.',
+      honestCost:
+        'This is a general obligation bond backed by the City’s existing debt-service property tax levy, so it is not tax-free, and the ballot says so plainly: it authorizes the City to maintain property tax rates sufficient to pay the bonds until they are fully paid. The reason there is no projected rate increase is timing. The City plans to issue this $100 million (together with the $100 million housing bond) as roughly $200 million of older general obligation debt is being completely paid off, so the overall debt-service rate is projected to stay flat. You keep paying the rate you already pay rather than a higher one. The catch worth stating honestly: the ballot authorizes, but does not cap or prohibit, the levy needed to repay the bonds, and the $25 million planned for City Hall is only about half of the roughly $51 million in repairs staff have already identified there.',
+      voteThreshold: 'Four-sevenths supermajority',
+      officialQuestion: {
+        number: 'Question 2',
+        text: 'Shall the City of Kansas City, Missouri, issue its general obligation bonds in an amount not to exceed $100,000,000.00 for the purpose of paying for the acquisition, construction, renovation, improvement, equipping, and furnishing of City convention facilities and building facilities constructed before 1950 that are used primarily for governmental administration, convention, or public assembly?\n\nThe authorization of the bonds will authorize the City to maintain tangible property tax rates sufficient to pay the interest and principal on the bonds until fully paid.',
+      },
+      heroStats: [
+        { value: '$100M', label: 'In general obligation bonds for civic buildings' },
+        { value: '$75M / $25M', label: 'Convention center repairs / City Hall repairs' },
+        { value: '1937', label: 'The year City Hall opened, now nearly 90 years old' },
+        { value: '4/7', label: 'Supermajority of YES votes needed to pass' },
+      ],
+      narrative: {
+        problem:
+          "Kansas City's signature public buildings are wearing out. Bartle Hall and the Municipal Auditorium make up the convention center that competes for the events, visitors, and spending that flow into the local economy, and City Hall, which opened in 1937, still houses core city government nearly 90 years later. Their heating and cooling, electrical, plumbing, and building systems are aging out. City staff have identified roughly $51 million in repair needs at City Hall alone, far more than this measure can cover, including HVAC for floors 1 through 15, about $10 million in water piping, fire alarm and intercom replacement, exterior window replacement, and waterproofing of the building envelope.",
+        whatItDoes:
+          'Question 2 authorizes the City to issue up to $100 million in general obligation bonds to acquire, renovate, improve, equip, and furnish City convention facilities and pre-1950 government buildings used for administration, convention, or public assembly. City staff plan to direct about $75 million to the convention center and about $25 million to City Hall. Within the convention center share, roughly $49 million is planned for architectural projects, $23 million for mechanical projects such as a new heating and air conditioning system, and $3 million for electrical projects such as conference center lighting. The City is partnering with the design firm Populous on the convention center work.',
+        whyItMatters:
+          'The City’s convention and entertainment facilities director, Kimiko Gilmore, calls these core infrastructure investments, not cosmetic projects, that directly affect the City’s ability to operate its buildings safely, efficiently, and competitively. A convention center that cannot reliably heat, cool, and power its halls loses bookings to other cities, and those lost events mean lost hotel stays, restaurant tabs, and jobs. City Hall is where residents do business with their government every day. Letting these buildings decline costs more to fix later.',
+        whatYourYesDoes:
+          'A YES vote authorizes the $100 million in repair bonds and lets the City keep its debt-service property tax rate flat by timing the new borrowing to replace older debt that is being paid off. Because this is a general obligation bond on a primary election ballot, it needs a four-sevenths supermajority, about 57.1 percent, so every YES vote counts toward that higher bar.',
+      },
+      keyFacts: [
+        'Official ballot designation: Question 2 on the City of Kansas City portion of the August 4, 2026 primary ballot.',
+        'Authorizes up to $100,000,000 in general obligation bonds for City convention facilities and pre-1950 government buildings used for administration, convention, or public assembly.',
+        'City staff plan roughly $75 million for the convention center (Bartle Hall and the Municipal Auditorium) and roughly $25 million for City Hall.',
+        'Convention center share breaks down to about $49 million architectural, $23 million mechanical (new HVAC), and $3 million electrical (such as conference center lighting).',
+        'City staff have identified about $51 million in repair needs at City Hall, more than the $25 million this measure would provide; Assistant City Manager Tammy Queen said the City has far more needs than $25 million would support.',
+        "The Municipal Auditorium and Music Hall opened in 1935 and City Hall opened in 1937; both fall under the ballot's 'constructed before 1950' language.",
+        'Requires a four-sevenths supermajority (about 57.1 percent) to pass because it is a general obligation bond at a primary election.',
+        'Combined with the housing bond (Question 1), the City says about $200 million in new bonds replaces about $200 million in debt being fully paid off, so no property tax rate increase is projected.',
+        'The bonds still require subsequent City Council approval to actually issue as specific projects move forward.',
+        'The City is partnering with the design firm Populous on the convention center renovations.',
+      ],
+      // Real, sourced dates. Per the design spec the detail page may choose to
+      // omit this rail for civic-buildings; the data stays here as source of truth.
+      timeline: [
+        { date: '1935', label: 'Municipal Auditorium and Music Hall open' },
+        { date: '1937', label: "Kansas City's City Hall opens" },
+        { date: 'May 2026', label: 'City Council votes to place five measures, including the civic facilities bond, on the August ballot' },
+        { date: 'August 4, 2026', label: 'Primary election; voters decide Question 2 (needs four-sevenths to pass)' },
+      ],
+      realExamples: [
+        'A new heating and air conditioning system for the convention center, part of the $23 million mechanical share',
+        'Conference center lighting and other electrical upgrades, part of the $3 million electrical share',
+        'City Hall HVAC for floors 1 through 15, about $10 million in water piping, fire alarm and intercom replacement, exterior window replacement, and building envelope waterproofing',
+      ],
+      faqs: [
+        { q: 'What exactly does Question 2 pay for?', a: 'Repairs and renovations to the City’s convention facilities and its older government buildings. City staff plan about $75 million for the convention center, Bartle Hall and the Municipal Auditorium, and about $25 million for City Hall. The convention center money is slated for roughly $49 million in architectural work, $23 million in mechanical work like a new heating and air conditioning system, and $3 million in electrical work such as conference center lighting.' },
+        { q: 'Will this raise my taxes?', a: 'The City does not project a property tax rate increase. This is a general obligation bond backed by the existing debt-service property tax levy, and it is timed to replace older debt that is being paid off. Combined with the housing bond, staff say about $200 million in new bonds replaces about $200 million in retiring debt, so the rate stays flat. It is not tax-free, though: the ballot authorizes the City to maintain the levy needed to repay the bonds.' },
+        { q: 'Why does it need a supermajority?', a: 'Because it is a general obligation bond on a primary election ballot, it requires a four-sevenths supermajority, about 57.1 percent, rather than a simple majority. That higher threshold is exactly why turnout matters; every YES vote counts toward reaching it.' },
+        { q: 'How old are these buildings?', a: 'The Municipal Auditorium and Music Hall opened in 1935 and City Hall opened in 1937, making City Hall nearly 90 years old. The ballot covers government and convention buildings constructed before 1950, whose heating, cooling, electrical, and plumbing systems are wearing out.' },
+        { q: 'Is $100 million enough to fix everything?', a: 'No, and city officials say so. Staff have identified about $51 million in needs at City Hall alone, while the plan directs only about $25 million there. Assistant City Manager Tammy Queen said the City has far more needs than $25 million would support. This measure addresses the most pressing core infrastructure, not every repair.' },
+        { q: 'Does approval mean the bonds are issued right away?', a: 'No. A YES vote authorizes the City to issue up to $100 million in bonds. The bonds still require subsequent City Council approval to actually be issued as specific projects move forward.' },
+      ],
+      relatedLinks: [
+        { label: 'Kansas City Election Board sample ballots and voter info', url: 'https://kceb.org/elections/ballot/' },
+        { label: 'City of Kansas City official ballot measures announcement', url: 'https://www.kcmo.gov/Home/Components/News/News/3103/16' },
+        { label: 'The Beacon nonpartisan ballot guide', url: 'https://thebeaconnews.org/stories/2026/05/21/kansas-city-ballot-questions-august-2026/' },
+        { label: 'KCUR nonpartisan voter guide', url: 'https://www.kcur.org/politics-elections-and-government/2026-05-26/kansas-city-is-asking-voters-to-pass-5-bond-and-tax-measures-in-augusts-election-heres-a-guide' },
+      ],
+      sources: [
+        { title: 'Kansas City Election Board sample ballot (Issues Only), August 4, 2026 primary', url: 'https://kceb.org/elections/ballot/' },
+        { title: 'KSHB 41: Kansas City, Missouri, adds 5 measures to August ballot', url: 'https://www.kshb.com/news/local-news/missouri/kansas-city/kansas-city-missouri-adds-5-measures-to-august-ballot' },
+        { title: 'The Beacon: Your guide to the August 2026 Kansas City ballot questions', url: 'https://thebeaconnews.org/stories/2026/05/21/kansas-city-ballot-questions-august-2026/' },
+        { title: "KCUR: Kansas City's August election will have 5 bond and tax measures", url: 'https://www.kcur.org/politics-elections-and-government/2026-05-26/kansas-city-is-asking-voters-to-pass-5-bond-and-tax-measures-in-augusts-election-heres-a-guide' },
+        { title: 'City of Kansas City: City Council Places Five Measures on August 4 Ballot', url: 'https://www.kcmo.gov/Home/Components/News/News/3103/16' },
+        { title: 'KCTV5: $1.7 billion question: Kansas City voters to weigh in on infrastructure, housing and more', url: 'https://www.kctv5.com/2026/05/22/17-billion-question-kansas-city-voters-weigh-infrastructure-housing-more/' },
+      ],
+      yesCta: 'Vote YES on Civic Buildings',
+    },
+    {
+      slug: 'central-city',
+      name: 'Central City',
+      eyebrow: 'Central City',
+      motif: 'central-city',
+      title: 'Central City Economic Development Sales Tax Renewal',
+      cardPunch: 'Keep investing in the East Side.',
+      cardSub:
+        'Continue the one-eighth-cent sales tax that funds economic development on the East Side, at the same rate.',
+      amount: '1/8-cent sales tax, renewed for 10 years (roughly $10 million per year)',
+      bigStat: { target: 0, decimals: 0, prefix: '', suffix: '', display: '1/8¢', label: 'renewed 10 years' },
+      accent: {
+        name: 'Sunrise',
+        swatch: '#d2561e',
+        gradient: 'from-sky to-coral',
+        gradientHero: 'from-sky to-coral',
+        glow: 'rgba(229,57,53,0.4)',
+      },
+      costChip: 'Same rate, renewed',
+      costFraming:
+        'Renews an existing 1/8-cent sales tax at the same rate. No new tax, no rate increase; if rejected it expires September 30, 2027.',
+      mechanism:
+        'Renewal of an existing 1/8-percent (one-eighth-cent) local sales tax authorized under Section 67.1305 of the Revised Statutes of Missouri. It is collected on retail sales within the Central City district and pooled into a dedicated economic-development fund. It is not a bond and not a property tax. A Central City Economic Development (CCED) Sales Tax Board reviews developer applications and recommends projects to the City Council; as of September 2025 the program is administered by the Economic Development Corporation of Kansas City (EDCKC). The ballot language also allows proceeds to retire debt on previously authorized bonds or to repay bonds not yet issued.',
+      honestCost:
+        'This is a renewal of an existing tax, not a new one. The one-eighth-cent (1/8%) sales tax has been collected inside the Central City district since 2017. A YES vote keeps that rate exactly the same for 10 more years, so shoppers see no increase at the register. It is not a no-tax measure: if voters reject it, the levy simply expires after September 30, 2027, and the dedicated East Side development fund goes away. Unlike the water and sewer questions on the same ballot, this is a sales tax, not a bond, so it is not repaid from utility fees or property taxes.',
+      voteThreshold: 'Simple majority',
+      officialQuestion: {
+        number: 'Question 3',
+        text: 'Shall the City of Kansas City be authorized to renew a sales tax authorized by Section 67.1305 of the Revised Statutes of Missouri for a period of 10 years at a rate of 1/8% to be used for funding economic development projects within the area bounded by 9th Street on the north; Gregory Boulevard on the south; The Paseo on the west; and Indiana Avenue on the east, which may include the retirement of debt under previously authorized bonded indebtedness or to repay bonds not yet issued? This sales tax would continue the existing sales tax authorized by Section 67.1305 of the Revised Statutes of Missouri and scheduled to expire on September 30, 2027.',
+      },
+      heroStats: [
+        { value: '1/8¢', label: 'Sales-tax rate, unchanged' },
+        { value: '$88M+', label: 'Invested on the East Side since 2017' },
+        { value: '58', label: 'Projects funded so far' },
+        { value: '~$10M', label: 'Generated for the district each year' },
+      ],
+      narrative: {
+        problem:
+          "For generations, Kansas City's East Side was left out of the development boom that reshaped downtown, the Plaza, and the suburbs. Banks and private capital routinely passed it by, so good projects stalled for lack of that last piece of financing. In 2017 voters created a dedicated tool to change that: a one-eighth-cent sales tax that pools local dollars to fund economic development inside a defined Central City district. That authorization is now scheduled to expire on September 30, 2027.",
+        whatItDoes:
+          'Question 3 renews the existing one-eighth-cent (1/8%) Central City Economic Development sales tax for another 10 years, at the same rate, under Section 67.1305 of the Revised Statutes of Missouri. The money funds economic-development projects inside the district bounded by 9th Street on the north, Gregory Boulevard on the south, The Paseo on the west, and Indiana Avenue on the east. A citizen CCED Sales Tax Board reviews developer applications and recommends projects to the City Council, with the program now administered by the Economic Development Corporation of Kansas City for tighter oversight and steadier funding rounds.',
+        whyItMatters:
+          "This is the primary dedicated funding stream for reinvestment in Kansas City's historically disinvested urban core. Since 2017 it has put more than $88 million into 58 projects and generates roughly $10 million a year, financing jobs, small and locally owned businesses, early-childhood facilities, housing, and neighborhood revitalization that private capital alone has not delivered. If the renewal fails, the tax simply expires after September 30, 2027, and the East Side loses its only sales-tax-funded development engine.",
+        whatYourYesDoes:
+          'A YES vote keeps the sales tax exactly where it is, at the same one-eighth-cent rate, for 10 more years. Shoppers see no increase, because this renews a tax that is already in place rather than creating a new one. It keeps roughly $10 million a year flowing into East Side jobs, businesses, and neighborhoods instead of letting the program lapse in 2027.',
+      },
+      keyFacts: [
+        'Renews an existing one-eighth-cent (1/8%) sales tax under Section 67.1305 RSMo for a 10-year term. It is not a new tax and not a rate increase.',
+        'Kansas City voters first approved the tax in 2017.',
+        'The district is bounded by 9th Street (north), Gregory Boulevard (south), The Paseo (west), and Indiana Avenue (east), on the city’s East Side.',
+        'The current authorization is scheduled to expire September 30, 2027, if voters do not renew it.',
+        'The tax generates roughly $10 million per year and is projected to total about $100 million by September 2026.',
+        'The City reports more than $88 million directed into 58 projects since 2017 (earlier 2025 reporting cited about $60 million across roughly 60 projects, before the most recent rounds).',
+        'A citizen CCED Sales Tax Board reviews developer applications and recommends projects to the City Council; as of September 2025 the program is administered by the Economic Development Corporation of Kansas City (EDCKC).',
+        'On the August 4, 2026 City of Kansas City ballot this is Question 3. As a sales-tax renewal it requires a simple majority to pass.',
+      ],
+      timeline: [
+        { date: '2017', label: 'Kansas City voters approve the one-eighth-cent Central City Economic Development sales tax' },
+        { date: '2017 to 2026', label: 'More than $88 million directed into 58 East Side projects' },
+        { date: 'September 2025', label: 'CCED administration transitions to the Economic Development Corporation of Kansas City (EDCKC)' },
+        { date: 'May 2026', label: 'City Council places the 10-year renewal on the August 4 ballot' },
+        { date: 'August 4, 2026', label: 'Voters decide the renewal (Question 3)' },
+        { date: 'September 30, 2027', label: 'Current authorization expires if the renewal does not pass' },
+      ],
+      realExamples: [
+        'KD Academy, a 24-hour early-learning facility on Prospect Avenue (developer said it likely would not have been possible without CCED support)',
+        'One Nine Vine, a mixed-use development with 80 residential units and seven retail spaces',
+        'Zhou B Art Center and a new hotel project near 18th and Vine, among CCED-backed developments (per Startland News)',
+      ],
+      faqs: [
+        { q: 'Is this a new tax or a tax increase?', a: 'Neither. Question 3 renews the one-eighth-cent (1/8%) sales tax that has already been collected in the Central City district since 2017. The rate does not change, so shoppers see no increase. It is a renewal, not a new tax.' },
+        { q: 'What happens if it fails?', a: 'The tax expires after September 30, 2027. That removes roughly $10 million a year, the East Side’s primary dedicated economic-development funding stream, with no replacement in place.' },
+        { q: 'Where does the tax apply, and who pays it?', a: 'It is a sales tax collected on purchases within a defined Central City district on the East Side, bounded by 9th Street on the north, Gregory Boulevard on the south, The Paseo on the west, and Indiana Avenue on the east. Anyone shopping inside that district pays the one-eighth-cent rate.' },
+        { q: 'What has the tax actually paid for?', a: 'The City reports more than $88 million directed into 58 projects since 2017. Examples include KD Academy, a 24-hour early-learning facility on Prospect Avenue, and One Nine Vine, a mixed-use development with 80 residential units and seven retail spaces. Developers have said projects like these likely would not have happened without the CCED boost.' },
+        { q: 'Who decides which projects get funded?', a: 'A citizen Central City Economic Development (CCED) Sales Tax Board reviews and analyzes developer applications and recommends projects to the City Council, which makes the final call. As of September 2025 the program is administered by the Economic Development Corporation of Kansas City (EDCKC), a change city leaders made to strengthen oversight and deliver more predictable funding rounds after earlier criticism that the program moved slowly.' },
+        { q: 'How long does the renewal last?', a: 'Ten years. If approved, the renewed tax picks up when the current authorization expires on September 30, 2027, and runs for another decade.' },
+      ],
+      relatedLinks: [
+        { label: 'EDCKC: Central City Economic Development (CCED) Sales Tax District', url: 'https://edckc.com/what-we-do/land-development/cced/' },
+        { label: 'City of Kansas City: CCED Sales Tax District', url: 'https://www.kcmo.gov/programs-initiatives/cced' },
+        { label: 'City of Kansas City: CCED Governance', url: 'https://www.kcmo.gov/programs-initiatives/central-city-economic-development-cced-sales-tax-district/cced-governance' },
+        { label: 'Kansas City Election Board: Sample Ballots', url: 'https://kceb.org/elections/ballot/' },
+      ],
+      sources: [
+        { title: 'Kansas City Election Board, August 4, 2026 Issues-Only Sample Ballot (official Question 3 language)', url: 'https://kceb.org/elections/ballot/' },
+        { title: 'City of Kansas City: Council Places Five Measures on August 4 Ballot (official news release, $88M/58 projects)', url: 'https://www.kcmo.gov/Home/Components/News/News/3103/16' },
+        { title: "KCUR: Kansas City is asking voters to pass 5 bond and tax measures in August's election, here's a guide", url: 'https://www.kcur.org/politics-elections-and-government/2026-05-26/kansas-city-is-asking-voters-to-pass-5-bond-and-tax-measures-in-augusts-election-heres-a-guide' },
+        { title: 'The Beacon: Your guide to the August 2026 Kansas City ballot questions', url: 'https://thebeaconnews.org/stories/2026/05/21/kansas-city-ballot-questions-august-2026/' },
+        { title: 'KSHB 41: Kansas City, Missouri, adds 5 measures to August ballot', url: 'https://www.kshb.com/news/local-news/missouri/kansas-city/kansas-city-missouri-adds-5-measures-to-august-ballot' },
+        { title: 'Startland News: Lesser-known sales tax faces pivotal 2026 vote', url: 'https://www.startlandnews.com/2025/12/kansas-city-cced-vote/' },
+        { title: 'EDCKC: Central City Economic Development (CCED) Sales Tax District', url: 'https://edckc.com/what-we-do/land-development/cced/' },
+        { title: 'The Community Voice: KC East Side Sales Tax Fund Shift Announced (EDCKC transition)', url: 'https://www.communityvoiceks.com/2025/09/25/cced-sales-tax-program-edckc-transition/' },
+      ],
+      yesCta: 'Vote YES on Central City',
+    },
   ],
 } as const;

@@ -1,247 +1,30 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence, useInView, useMotionValue, useTransform, animate } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 import { AUGUST_BALLOT } from '@/lib/constants';
 import Accordion from '@/components/ui/Accordion';
 import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { FlipText } from '@/components/ui/FlipText';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
+import { Marquee } from '@/components/ui/Marquee';
+import { fadeUp, EASE } from '@/components/ui/Reveal';
+import MeasureCard from '@/components/august/MeasureCard';
 import Footer from '@/components/layout/Footer';
 
-const { hero, questions, costsShort, voteSteps, howToVote, faqsSection, faqs, closing, exploreLinks } = AUGUST_BALLOT;
+const { hero, measures, questionsSection, costsShort, voteSteps, howToVote, faqsSection, faqs, closing, exploreLinks } =
+  AUGUST_BALLOT;
 
-// Bold two-tone color block per measure (white number sits on these).
-const BLOCK: Record<string, string> = {
-  'clean-water': 'from-sky to-navy',
-  sewers: 'from-navy via-navy to-sky',
-  housing: 'from-coral to-[#8f1815]',
-  'civic-buildings': 'from-coral via-coral to-golden',
-  'central-city': 'from-sky to-coral',
-};
-const NUMLABEL: Record<string, string> = {
-  'clean-water': 'in water bonds',
-  sewers: 'in sewer bonds',
-  housing: 'in housing bonds',
-  'civic-buildings': 'in repair bonds',
-  'central-city': 'renewed 10 years',
-};
-
-const fadeUp = {
-  initial: { opacity: 0, y: 28 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-};
-
-// ---------------------------------------------------------------------------
-function AnimatedCounter({
-  end,
-  decimals = 0,
-  prefix = '',
-  suffix = '',
-  duration = 1.8,
-}: {
-  end: number;
-  decimals?: number;
-  prefix?: string;
-  suffix?: string;
-  duration?: number;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-40px' });
-  const mv = useMotionValue(0);
-  const rounded = useTransform(
-    mv,
-    (v) => prefix + v.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + suffix
-  );
-  const [disp, setDisp] = useState(prefix + (0).toFixed(decimals) + suffix);
-  useEffect(() => {
-    if (!inView) return;
-    const controls = animate(mv, end, { duration, ease: [0.25, 0.46, 0.45, 0.94] });
-    const unsub = rounded.on('change', (v) => setDisp(v));
-    return () => {
-      controls.stop();
-      unsub();
-    };
-  }, [inView, end, duration, mv, rounded]);
-  return <span ref={ref}>{disp}</span>;
-}
-
-// ---------------------------------------------------------------------------
-function TopicIcon({ id, className }: { id: string; className?: string }) {
-  const common = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
-  switch (id) {
-    case 'clean-water':
-      return (
-        <svg viewBox="0 0 24 24" className={className} {...common}>
-          <path d="M12 3c3.6 4.6 6 7.2 6 10.2a6 6 0 0 1-12 0C6 10.2 8.4 7.6 12 3z" />
-          <path d="M9.5 13.5a2.5 2.5 0 0 0 2.5 2.5" />
-        </svg>
-      );
-    case 'sewers':
-      return (
-        <svg viewBox="0 0 24 24" className={className} {...common}>
-          <path d="M2 8c1.8-2 3.7-2 5.5 0s3.7 2 5.5 0 3.7-2 5.5 0" />
-          <path d="M2 13c1.8-2 3.7-2 5.5 0s3.7 2 5.5 0 3.7-2 5.5 0" />
-          <path d="M2 18c1.8-2 3.7-2 5.5 0s3.7 2 5.5 0 3.7-2 5.5 0" />
-        </svg>
-      );
-    case 'housing':
-      return (
-        <svg viewBox="0 0 24 24" className={className} {...common}>
-          <path d="M3 11.5 12 4l9 7.5" />
-          <path d="M5.5 10v9.5h13V10" />
-          <path d="M10 19.5v-5h4v5" />
-        </svg>
-      );
-    case 'civic-buildings':
-      return (
-        <svg viewBox="0 0 24 24" className={className} {...common}>
-          <path d="M3 9.5 12 4l9 5.5" />
-          <path d="M5 9.5V18M9 9.5V18M15 9.5V18M19 9.5V18" />
-          <path d="M3.5 18h17M3 21h18" />
-        </svg>
-      );
-    case 'central-city':
-    default:
-      return (
-        <svg viewBox="0 0 24 24" className={className} {...common}>
-          <path d="M3 21V9l4-2.2V21" />
-          <path d="M9 21V4.5l5-2.5V21" />
-          <path d="M16 21v-9l5-2.2V21" />
-          <path d="M2 21h20" />
-        </svg>
-      );
-  }
-}
-
-// ---------------------------------------------------------------------------
-function Marquee({ items }: { items: string[] }) {
-  return (
-    <div className="relative flex overflow-hidden">
-      <div className="flex w-max animate-marquee motion-reduce:animate-none">
-        {[0, 1].map((dup) => (
-          <div key={dup} className="flex shrink-0 items-center" aria-hidden={dup === 1 ? true : undefined}>
-            {items.map((t, i) => (
-              <div key={i} className="flex items-center">
-                <span className="text-base sm:text-xl font-extrabold uppercase tracking-tight whitespace-nowrap">{t}</span>
-                <svg className="mx-5 sm:mx-7 w-3.5 h-3.5 shrink-0 opacity-70" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5 21.4l1.4-6.8L1.3 9.9l6.9-.8z" />
-                </svg>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-function QuestionPanel({ q }: { q: (typeof AUGUST_BALLOT.questions)[number] }) {
-  const [open, setOpen] = useState(false);
-  const showCounter = q.bigStat.display === '';
-
-  return (
-    <motion.article
-      id={q.anchorId}
-      {...fadeUp}
-      transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ y: -4 }}
-      className="scroll-mt-24 group rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-xl shadow-navy/5"
-    >
-      <div className="grid sm:grid-cols-[42%_1fr]">
-        {/* NUMBER BLOCK */}
-        <div className={cn('relative overflow-hidden bg-gradient-to-br p-7 sm:p-9 flex flex-col justify-between min-h-[180px] sm:min-h-[280px]', BLOCK[q.anchorId])}>
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.12]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)',
-              backgroundSize: '36px 36px',
-            }}
-          />
-          <div className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/15 blur-xl -translate-x-full group-hover:translate-x-[450%] transition-transform duration-1000 ease-in-out" />
-
-          <div className="relative z-10 flex items-center justify-between">
-            <TopicIcon id={q.anchorId} className="w-8 h-8 sm:w-9 sm:h-9 text-white/90" />
-            <span className="text-white/70 text-[0.7rem] font-semibold uppercase tracking-widest">{q.eyebrow}</span>
-          </div>
-
-          <div className="relative z-10 mt-6">
-            <div
-              className="text-white font-bold leading-[0.95] text-5xl sm:text-6xl md:text-7xl"
-              style={{ textShadow: '0 2px 30px rgba(0,0,0,0.28)' }}
-            >
-              {showCounter ? (
-                <AnimatedCounter end={q.bigStat.target} prefix={q.bigStat.prefix} suffix={q.bigStat.suffix} decimals={q.bigStat.decimals} />
-              ) : (
-                q.bigStat.display
-              )}
-            </div>
-            <div className="text-white/75 text-sm font-medium mt-2">{NUMLABEL[q.anchorId]}</div>
-          </div>
-        </div>
-
-        {/* CONTENT */}
-        <div className="p-7 sm:p-9 flex flex-col justify-center">
-          <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-navy/[0.06] text-navy border border-navy/10 text-xs font-semibold px-3 py-1">
-            <svg className="w-3.5 h-3.5 text-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-            </svg>
-            {q.costChip}
-          </span>
-
-          <h3 className="text-2xl sm:text-3xl font-bold text-navy leading-snug mt-4">{q.punch}</h3>
-
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mt-6">
-            <InteractiveHoverButton text={q.yesCta} href="#vote" variant="primary" />
-            <button
-              type="button"
-              onClick={() => setOpen((o) => !o)}
-              aria-expanded={open}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy/55 hover:text-coral transition-colors"
-            >
-              {open ? 'Show less' : 'Why it matters'}
-              <motion.svg
-                animate={{ rotate: open ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </motion.svg>
-            </button>
-          </div>
-
-          <AnimatePresence initial={false}>
-            {open && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="overflow-hidden"
-              >
-                <div className="pt-5 mt-5 border-t border-gray-100 space-y-3">
-                  <p className="text-sm text-gray-600 leading-relaxed">{q.body}</p>
-                  <p className="text-sm text-navy/80 leading-relaxed bg-light-gray/70 rounded-xl p-3.5 border border-gray-100">
-                    {q.costLine}
-                  </p>
-                  <p className="text-xs text-gray-400 leading-relaxed">{q.sourceNote}</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </motion.article>
-  );
-}
+// Short FAQ on the hub stays to the three top-level questions; the deep,
+// per-measure answers live on each detail page. Selected by exact question text
+// so it stays in sync with the source of truth in constants.ts.
+const HUB_FAQ_QUESTIONS = [
+  'Will voting YES raise my taxes?',
+  'What is on the August 4, 2026 ballot?',
+  'When and where do I vote?',
+];
+const shortFaqs = faqs.filter((f) => HUB_FAQ_QUESTIONS.includes(f.question));
 
 // ===========================================================================
 export default function AugustBallotPage() {
@@ -285,7 +68,7 @@ export default function AugustBallotPage() {
             className="flex justify-center mb-7 sm:mb-9"
           >
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm text-white px-4 py-2 text-xs sm:text-sm font-semibold border border-white/20">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
               {hero.eyebrow}
             </span>
           </motion.div>
@@ -306,11 +89,7 @@ export default function AugustBallotPage() {
             variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6 } } }}
             className="mt-5 sm:mt-7 flex justify-center"
           >
-            <FlipText
-              words={[...hero.flipWords]}
-              duration={1800}
-              className="text-2xl sm:text-3xl md:text-4xl text-coral"
-            />
+            <FlipText words={[...hero.flipWords]} duration={1800} className="text-2xl sm:text-3xl md:text-4xl text-coral" />
           </motion.div>
 
           <motion.div
@@ -358,21 +137,24 @@ export default function AugustBallotPage() {
       </div>
 
       {/* ================================================================= */}
-      {/* THE FIVE QUESTIONS                                                 */}
+      {/* THE FIVE MEASURES (clickable hub cards -> detail pages)            */}
       {/* ================================================================= */}
       <section id="questions" className="relative py-16 sm:py-24 bg-gradient-to-b from-white via-light-gray/40 to-white scroll-mt-4">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.6 }} className="text-center mb-11 sm:mb-14">
+          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-11 sm:mb-14">
             <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse" />
-              On your ballot
+              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
+              {questionsSection.eyebrow}
             </span>
             <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Five questions. Five yeses.</h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-5 leading-relaxed">
+              Tap any question for the full breakdown, the official ballot language, and the sources behind it.
+            </p>
           </motion.div>
 
           <div className="space-y-6 sm:space-y-8">
-            {questions.map((q) => (
-              <QuestionPanel key={q.anchorId} q={q} />
+            {measures.map((m, i) => (
+              <MeasureCard key={m.slug} measure={m} index={i} />
             ))}
           </div>
         </div>
@@ -400,11 +182,11 @@ export default function AugustBallotPage() {
             <p className="text-lg sm:text-xl text-white/60 font-medium mt-2 uppercase tracking-widest">{costsShort.sub}</p>
           </motion.div>
 
-          <motion.h2 {...fadeUp} transition={{ duration: 0.7, delay: 0.1 }} className="text-2xl sm:text-4xl font-bold text-white mt-8 sm:mt-10 leading-tight">
+          <motion.h2 {...fadeUp} transition={{ duration: 0.7, delay: 0.1, ease: EASE }} className="text-2xl sm:text-4xl font-bold text-white mt-8 sm:mt-10 leading-tight">
             {costsShort.headline}
           </motion.h2>
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.2 }} className="mt-9 sm:mt-11 flex flex-wrap justify-center gap-3">
+          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.2, ease: EASE }} className="mt-9 sm:mt-11 flex flex-wrap justify-center gap-3">
             {costsShort.chips.map((chip) => (
               <span key={chip} className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white/90 text-sm font-medium px-4 py-2">
                 <svg className="w-4 h-4 text-coral shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -422,9 +204,9 @@ export default function AugustBallotPage() {
       {/* ================================================================= */}
       <section id="vote" className="relative py-16 sm:py-24 bg-white scroll-mt-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.6 }} className="text-center mb-11 sm:mb-14">
+          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-11 sm:mb-14">
             <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
               {howToVote.eyebrow}
             </span>
             <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Make your plan to vote</h2>
@@ -435,7 +217,7 @@ export default function AugustBallotPage() {
               <motion.div
                 key={s.date}
                 {...fadeUp}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: EASE }}
                 className="relative bg-white rounded-2xl p-6 sm:p-7 shadow-xl shadow-navy/5 border border-gray-100 overflow-hidden text-center sm:text-left"
               >
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-coral via-golden to-sky" />
@@ -447,7 +229,7 @@ export default function AugustBallotPage() {
             ))}
           </div>
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6 }} className="text-center">
+          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center">
             <InteractiveHoverButton text="Find your polling place" href="/vote" variant="secondary" size="lg" />
             <p className="text-xs sm:text-sm text-gray-400 max-w-xl mx-auto mt-5 leading-relaxed">{howToVote.pollingNote}</p>
           </motion.div>
@@ -455,18 +237,30 @@ export default function AugustBallotPage() {
       </section>
 
       {/* ================================================================= */}
-      {/* FAQ                                                                */}
+      {/* SHORT FAQ (deep answers live on each measure page)                 */}
       {/* ================================================================= */}
       <section className="relative py-16 sm:py-24 bg-gradient-to-b from-light-gray/40 to-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.6 }} className="text-center mb-10 sm:mb-12">
+          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-10 sm:mb-12">
             <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
               {faqsSection.eyebrow}
             </span>
             <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">{faqsSection.heading}</h2>
           </motion.div>
-          <Accordion items={faqs} />
+          <Accordion items={shortFaqs} />
+
+          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mt-9 sm:mt-10">
+            <Link
+              href="#questions"
+              className="inline-flex items-center gap-2 text-sm font-bold text-coral hover:text-navy transition-colors"
+            >
+              See every measure in detail
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+              </svg>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
@@ -480,15 +274,15 @@ export default function AugustBallotPage() {
         </div>
 
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.h2 {...fadeUp} transition={{ duration: 0.7 }} className="text-3xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
+          <motion.h2 {...fadeUp} transition={{ duration: 0.7, ease: EASE }} className="text-3xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
             {closing.heading}
           </motion.h2>
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.12 }} className="mt-9 flex justify-center">
+          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.12, ease: EASE }} className="mt-9 flex justify-center">
             <InteractiveHoverButton text={closing.cta} href="/vote" variant="primary" size="lg" />
           </motion.div>
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.2 }} className="mt-16 sm:mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.2, ease: EASE }} className="mt-16 sm:mt-20">
             <p className="text-white/40 text-xs sm:text-sm font-medium uppercase tracking-widest mb-5 sm:mb-6">Explore the Full Website</p>
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
               {exploreLinks.map((link) => (

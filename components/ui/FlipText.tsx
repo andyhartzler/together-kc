@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface FlipTextProps {
@@ -17,20 +17,32 @@ export function FlipText({
 }: FlipTextProps) {
   const [index, setIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
 
   // Only start when 80% in view
   const isInView = useInView(containerRef, { once: true, amount: 0.8 });
 
-  // Continuous loop - never stops
+  // Continuous loop - never stops. Skipped entirely under prefers-reduced-motion.
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reduceMotion) return;
 
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % words.length);
     }, duration);
 
     return () => clearInterval(interval);
-  }, [isInView, duration, words.length]);
+  }, [isInView, duration, words.length, reduceMotion]);
+
+  // Under reduced motion, render a single static word with no flip animation.
+  if (reduceMotion) {
+    return (
+      <div className="relative inline-flex items-center select-none">
+        <div className="relative py-2">
+          <span className={cn("inline-block font-bold", className)}>{words[0]}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
