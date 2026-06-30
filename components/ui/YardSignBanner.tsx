@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
@@ -8,6 +9,7 @@ const STORAGE_KEY = 'togetherkc_yard_sign_banner_dismissed';
 
 export default function YardSignBanner() {
   const [show, setShow] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Only show for first-time visitors
@@ -30,6 +32,12 @@ export default function YardSignBanner() {
     observer.observe(hero);
     return () => observer.disconnect();
   }, []);
+
+  // The August polling tool at /vote uses AugustNav, not the e-tax chrome, so
+  // suppress this e-tax yard-sign banner there.
+  if (pathname === '/vote' || pathname.startsWith('/vote/')) {
+    return null;
+  }
 
   const dismiss = () => {
     setShow(false);

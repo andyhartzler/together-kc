@@ -23,30 +23,31 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://together-kc.com'),
   title: {
-    default: 'Together KC | Vote YES to Renew the Kansas City Earnings Tax - April 7, 2026',
+    default: 'Together KC | Vote YES on All Five Kansas City Ballot Questions, August 4, 2026',
     template: '%s | Together KC',
   },
   description:
-    'Vote YES to renew the Kansas City earnings tax on April 7, 2026. The 1% e-tax funds $373 million annually — 47% of city services including fire, police, EMS, roads, and trash collection.',
+    'Five Kansas City questions are on the August 4, 2026 ballot: clean water, sewers, affordable housing, civic buildings, and Central City reinvestment. None of them raises your tax rate. Vote YES on all five.',
   keywords: [
     // Primary keywords
-    'Kansas City earnings tax',
-    'KC e-tax',
-    'KC etax',
-    'e-tax renewal',
-    'earnings tax renewal 2026',
+    'August 4 2026 Kansas City ballot',
+    'Vote YES on all five',
+    'Kansas City ballot questions',
+    'KC clean water bonds',
+    'KC sewer bonds',
     // Secondary keywords
+    'Kansas City affordable housing bond',
+    'Kansas City civic buildings bond',
+    'Central City reinvestment Kansas City',
     'Vote YES Kansas City',
-    'April 7 2026 election',
-    'KC first responders funding',
     'Together KC',
     // Local keywords
-    'Kansas City Missouri tax',
-    'KCMO earnings tax',
+    'Kansas City Missouri election',
+    'KCMO August election',
     'Jackson County election',
     // Long-tail keywords
-    'what does KC earnings tax fund',
-    'KC municipal tax renewal',
+    'how to vote Kansas City August 2026',
+    'Kansas City ballot guide 2026',
   ],
   authors: [{ name: SITE_CONFIG.organization }],
   creator: 'Together KC',
@@ -57,9 +58,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: 'Together KC | Vote YES to Renew the Kansas City Earnings Tax',
+    title: 'Together KC | Vote YES on All Five Kansas City Ballot Questions',
     description:
-      'The earnings tax funds 47% of city services: fire, police, EMS, roads, and trash collection. Vote YES on April 7, 2026.',
+      'Clean water, sewers, affordable housing, civic buildings, and Central City reinvestment. Five questions on the August 4, 2026 ballot, none raising your tax rate. Vote YES on all five.',
     type: 'website',
     locale: 'en_US',
     url: 'https://together-kc.com',
@@ -69,15 +70,15 @@ export const metadata: Metadata = {
         url: '/images/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Together KC - Vote YES to renew the earnings tax on April 7, 2026',
+        alt: 'Together KC - Vote YES on all five August 4, 2026 ballot questions',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Together KC | Vote YES to Renew the KC Earnings Tax',
+    title: 'Together KC | Vote YES on All Five',
     description:
-      'The e-tax funds 47% of KC city services. Vote YES on April 7, 2026.',
+      'Five Kansas City ballot questions, none raising your tax rate. Vote YES on all five on August 4, 2026.',
     images: ['/images/og-image.png'],
   },
   robots: {

@@ -19,7 +19,7 @@ export const organizationSchema = {
   url: 'https://together-kc.com',
   logo: 'https://together-kc.com/images/og-image.png',
   description:
-    'Together KC is the official campaign supporting the renewal of the Kansas City earnings tax in the April 7, 2026 election.',
+    'Together KC is a Kansas City civic campaign urging voters to vote YES on all five Kansas City questions on the August 4, 2026 ballot.',
   email: 'action@together-kc.com',
   areaServed: {
     '@type': 'City',
@@ -28,10 +28,10 @@ export const organizationSchema = {
     addressCountry: 'US',
   },
   knowsAbout: [
-    'Kansas City earnings tax',
-    'KC e-tax',
-    'Municipal taxation',
+    'Kansas City ballot measures',
+    'Municipal bonds',
     'City services funding',
+    'Kansas City elections',
   ],
 };
 
@@ -42,7 +42,7 @@ export const websiteSchema = {
   name: 'Together KC',
   url: 'https://together-kc.com',
   description:
-    'Vote YES to renew the Kansas City earnings tax on April 7, 2026. The e-tax funds 47% of city services including fire, police, EMS, roads, and trash collection.',
+    'Five Kansas City questions are on the August 4, 2026 ballot: clean water, sewers, affordable housing, civic buildings, and Central City reinvestment. None of them raises your tax rate. Vote YES on all five.',
   publisher: {
     '@type': 'PoliticalOrganization',
     name: 'Together KC',

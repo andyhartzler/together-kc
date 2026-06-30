@@ -25,6 +25,13 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // The /vote polling tool is part of the August front door, which has its own
+  // nav (AugustNav, mounted by app/(main)/vote/layout.tsx). Hide the e-tax nav
+  // there so the two never stack.
+  if (pathname === '/vote' || pathname.startsWith('/vote/')) {
+    return null;
+  }
+
   // Determine active nav item based on pathname
   const getIsActive = (href: string) => {
     if (href === '/') return pathname === '/';
