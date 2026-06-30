@@ -4,10 +4,10 @@ export default function RootLoading() {
   return (
     <div className="min-h-screen bg-navy flex flex-col items-center justify-center">
       <Image
-        src="/images/renew-kc-logo-white.png"
+        src="/images/together-kc-footer.png"
         alt="Together KC"
-        width={200}
-        height={67}
+        width={300}
+        height={90}
         className="h-14 w-auto mb-6 animate-pulse"
         priority
       />
