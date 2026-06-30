@@ -36,20 +36,20 @@ export function getCentralDateStr(): string {
 
 export function getVotingMode(): VotingMode {
   const today = getCentralDateStr();
-  return today >= '2026-04-07' ? 'election-day' : 'early';
+  return today >= '2026-08-04' ? 'election-day' : 'early';
 }
 
 export function hasEarlyVotingEnded(): boolean {
-  return getCentralDateStr() > '2026-04-06';
+  return getCentralDateStr() > '2026-08-03';
 }
 
 export function hasElectionEnded(): boolean {
-  return getCentralDateStr() > '2026-04-07';
+  return getCentralDateStr() > '2026-08-04';
 }
 
 export function earlyVotingDaysLeft(): number {
   const todayStr = getCentralDateStr();
-  const endStr = '2026-04-06';
+  const endStr = '2026-08-03';
   if (todayStr > endStr) return 0;
   const today = new Date(todayStr + 'T00:00:00');
   const end = new Date(endStr + 'T00:00:00');

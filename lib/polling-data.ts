@@ -1,4 +1,4 @@
-// Polling location data for the April 7, 2026 election
+// Polling location data for the August 4, 2026 election
 // Kansas City spans Jackson, Clay, Platte, and Cass counties
 
 export interface EarlyVotingLocation {
@@ -21,16 +21,41 @@ export interface ScheduleEntry {
   dates: string; // human-readable date range
   startDate: string; // ISO date for comparison
   endDate: string; // ISO date for comparison
-  open: string; // e.g. "8:00 AM"
-  close: string; // e.g. "6:00 PM"
+  // Verified clock times. Leave as '' for window-only entries whose exact daily
+  // hours are NOT confirmed (see unverifiedHours). Never present empty/unverified
+  // times to users as fact.
+  open: string; // e.g. "8:00 AM" ('' when hours are unverified)
+  close: string; // e.g. "6:00 PM" ('' when hours are unverified)
   daysOfWeek?: number[]; // 0=Sun, 1=Mon, ... 6=Sat; if omitted, all days in range
   closed?: boolean; // if true, location is closed during this period
+  // True when only the date window is verified and the exact daily open/close
+  // clock times (and which weekdays) are NOT confirmed. Consumers must show the
+  // window plus a "confirm at kceb.org" note instead of asserting clock times.
+  unverifiedHours?: boolean;
 }
 
 // ============================================================
 // EARLY VOTING LOCATIONS
-// No-Excuse Absentee Voting: March 24 - April 6, 2026
+// No-excuse early in-person voting: Tuesday, July 21 - Monday, August 3, 2026
+//
+// The verified, always-available early-voting site is each county's
+// election board (the election authority). We do NOT list the April
+// community satellite sites here, because their August dates and hours
+// are not yet published. For the full list of early-voting satellite
+// sites and their confirmed hours, send users to the Kansas City
+// Election Board (see EARLY_VOTING_INFO below / https://kceb.org).
 // ============================================================
+
+// Where to send voters for the full, confirmed list of August early-voting
+// satellite sites and hours (we do not fabricate those locations/hours).
+export const EARLY_VOTING_INFO = {
+  windowLabel: 'Tuesday, July 21 - Monday, August 3, 2026',
+  startDate: '2026-07-21',
+  endDate: '2026-08-03',
+  satelliteSitesNote:
+    'Your county election board is open for early in-person voting during this window. Additional early-voting satellite sites may be added closer to the election. For the full list of sites and confirmed hours, visit the Kansas City Election Board.',
+  kcebUrl: 'https://kceb.org',
+} as const;
 
 export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
   // ---- JACKSON COUNTY (Kansas City Election Board) ----
@@ -47,222 +72,16 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     isElectionBoard: true,
     hours: [
       {
-        label: 'Weekdays',
-        dates: 'March 24 - April 3',
-        startDate: '2026-03-24',
-        endDate: '2026-04-03',
-        open: '8:00 AM',
-        close: '6:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
-      },
-      {
-        label: 'Saturday',
-        dates: 'April 4',
-        startDate: '2026-04-04',
-        endDate: '2026-04-04',
-        open: '8:00 AM',
-        close: '12:00 PM',
-        daysOfWeek: [6],
-      },
-      {
-        label: 'Monday',
-        dates: 'April 6',
-        startDate: '2026-04-06',
-        endDate: '2026-04-06',
-        open: '8:00 AM',
-        close: '5:00 PM',
-        daysOfWeek: [1],
-      },
-    ],
-    
-  },
-  {
-    id: 'jc-fellowship',
-    name: 'Fellowship Right Baptist Church',
-    address: '4700 Pittman Rd',
-    city: 'Kansas City',
-    state: 'MO',
-    zip: '64133',
-    county: 'Jackson',
-    lat: 39.0368734,
-    lng: -94.4629826,
-    hours: [
-      {
-        label: 'Weekdays',
-        dates: 'March 24 - April 3',
-        startDate: '2026-03-24',
-        endDate: '2026-04-03',
-        open: '10:00 AM',
-        close: '6:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
-      },
-      {
-        label: 'Saturday',
-        dates: 'April 4',
-        startDate: '2026-04-04',
-        endDate: '2026-04-04',
-        open: '8:00 AM',
-        close: '12:00 PM',
-        daysOfWeek: [6],
-      },
-    ],
-  },
-  {
-    id: 'jc-garrison',
-    name: 'Garrison Community Center',
-    address: '1124 E. 5th St',
-    city: 'Kansas City',
-    state: 'MO',
-    zip: '64106',
-    county: 'Jackson',
-    lat: 39.1113925,
-    lng: -94.5687153,
-    hours: [
-      {
-        label: 'Weekdays',
-        dates: 'March 24 - April 3',
-        startDate: '2026-03-24',
-        endDate: '2026-04-03',
-        open: '10:00 AM',
-        close: '6:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
-      },
-      {
-        label: 'Saturday, April 4',
-        dates: 'April 4',
-        startDate: '2026-04-04',
-        endDate: '2026-04-04',
+        label: 'Early voting',
+        dates: 'July 21 to Aug 3, 2026',
+        startDate: '2026-07-21',
+        endDate: '2026-08-03',
         open: '',
         close: '',
-        closed: true,
+        unverifiedHours: true,
       },
     ],
-    notes: 'Will NOT be open on Saturday, April 4.',
-  },
-  {
-    id: 'jc-mount-christian',
-    name: 'Mount Christian Worship Center',
-    address: '1800 E. 79th St',
-    city: 'Kansas City',
-    state: 'MO',
-    zip: '64132',
-    county: 'Jackson',
-    lat: 38.984099,
-    lng: -94.5661537,
-    hours: [
-      {
-        label: 'Weekdays',
-        dates: 'March 24 - April 3',
-        startDate: '2026-03-24',
-        endDate: '2026-04-03',
-        open: '10:00 AM',
-        close: '6:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
-      },
-      {
-        label: 'Saturday',
-        dates: 'April 4',
-        startDate: '2026-04-04',
-        endDate: '2026-04-04',
-        open: '8:00 AM',
-        close: '12:00 PM',
-        daysOfWeek: [6],
-      },
-    ],
-    notes: 'Corner of 79th and Paseo.',
-  },
-  {
-    id: 'jc-palestine',
-    name: 'Palestine Senior Center',
-    address: '3325 Prospect Ave',
-    city: 'Kansas City',
-    state: 'MO',
-    zip: '64128',
-    county: 'Jackson',
-    lat: 39.0647657,
-    lng: -94.5523316,
-    hours: [
-      {
-        label: 'Weekdays',
-        dates: 'March 24 - April 3',
-        startDate: '2026-03-24',
-        endDate: '2026-04-03',
-        open: '10:00 AM',
-        close: '6:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
-      },
-      {
-        label: 'Saturday',
-        dates: 'April 4',
-        startDate: '2026-04-04',
-        endDate: '2026-04-04',
-        open: '8:00 AM',
-        close: '12:00 PM',
-        daysOfWeek: [6],
-      },
-    ],
-  },
-  {
-    id: 'jc-second-pres',
-    name: 'Second Presbyterian Church',
-    address: '318 E. 55th St',
-    city: 'Kansas City',
-    state: 'MO',
-    zip: '64113',
-    county: 'Jackson',
-    lat: 39.0277082,
-    lng: -94.5840435,
-    hours: [
-      {
-        label: 'Weekdays',
-        dates: 'March 24 - April 3',
-        startDate: '2026-03-24',
-        endDate: '2026-04-03',
-        open: '10:00 AM',
-        close: '6:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
-      },
-      {
-        label: 'Saturday',
-        dates: 'April 4',
-        startDate: '2026-04-04',
-        endDate: '2026-04-04',
-        open: '8:00 AM',
-        close: '12:00 PM',
-        daysOfWeek: [6],
-      },
-    ],
-  },
-  {
-    id: 'jc-united-believers',
-    name: 'United Believers Community Church',
-    address: '5600 E. 112th Ter',
-    city: 'Kansas City',
-    state: 'MO',
-    zip: '64134',
-    county: 'Jackson',
-    lat: 38.9217232,
-    lng: -94.5255603,
-    hours: [
-      {
-        label: 'Weekdays',
-        dates: 'March 24 - April 3',
-        startDate: '2026-03-24',
-        endDate: '2026-04-03',
-        open: '10:00 AM',
-        close: '6:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
-      },
-      {
-        label: 'Saturday',
-        dates: 'April 4',
-        startDate: '2026-04-04',
-        endDate: '2026-04-04',
-        open: '8:00 AM',
-        close: '12:00 PM',
-        daysOfWeek: [6],
-      },
-    ],
+    notes: 'Early in-person voting runs Tuesday, July 21 through Monday, August 3, 2026 at the election board. Confirm exact daily hours and find any additional early-voting satellite sites at the Kansas City Election Board (kceb.org).',
   },
 
   // ---- CLAY COUNTY ----
@@ -279,16 +98,16 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     isElectionBoard: true,
     hours: [
       {
-        label: 'Weekdays',
-        dates: 'March 24 - April 6',
-        startDate: '2026-03-24',
-        endDate: '2026-04-06',
-        open: '8:00 AM',
-        close: '5:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
+        label: 'Early voting',
+        dates: 'July 21 to Aug 3, 2026',
+        startDate: '2026-07-21',
+        endDate: '2026-08-03',
+        open: '',
+        close: '',
+        unverifiedHours: true,
       },
     ],
-    notes: 'Only early voting location for Clay County. Located at the Clay County Administration Building in Liberty.',
+    notes: 'Early in-person voting for Clay County, July 21 through August 3, 2026, at the Clay County Administration Building in Liberty. Confirm exact daily hours at the Kansas City Election Board (kceb.org).',
   },
 
   // ---- PLATTE COUNTY ----
@@ -305,25 +124,16 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     isElectionBoard: true,
     hours: [
       {
-        label: 'Weekdays',
-        dates: 'March 24 - April 6',
-        startDate: '2026-03-24',
-        endDate: '2026-04-06',
-        open: '8:00 AM',
-        close: '5:00 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
-      },
-      {
-        label: 'Saturday',
-        dates: 'April 4',
-        startDate: '2026-04-04',
-        endDate: '2026-04-04',
-        open: '8:00 AM',
-        close: '12:00 PM',
-        daysOfWeek: [6],
+        label: 'Early voting',
+        dates: 'July 21 to Aug 3, 2026',
+        startDate: '2026-07-21',
+        endDate: '2026-08-03',
+        open: '',
+        close: '',
+        unverifiedHours: true,
       },
     ],
-    notes: 'Only early voting location for Platte County residents. About 20 min north of the Northland/KCI area.',
+    notes: 'Early in-person voting for Platte County residents, July 21 through August 3, 2026. About 20 min north of the Northland/KCI area. Confirm exact daily hours at the Kansas City Election Board (kceb.org).',
   },
 
   // ---- CASS COUNTY ----
@@ -340,16 +150,16 @@ export const EARLY_VOTING_LOCATIONS: EarlyVotingLocation[] = [
     isElectionBoard: true,
     hours: [
       {
-        label: 'Weekdays',
-        dates: 'March 24 - April 6',
-        startDate: '2026-03-24',
-        endDate: '2026-04-06',
-        open: '8:00 AM',
-        close: '4:30 PM',
-        daysOfWeek: [1, 2, 3, 4, 5],
+        label: 'Early voting',
+        dates: 'July 21 to Aug 3, 2026',
+        startDate: '2026-07-21',
+        endDate: '2026-08-03',
+        open: '',
+        close: '',
+        unverifiedHours: true,
       },
     ],
-    notes: 'Only early voting location for Cass County residents. Very few KC residents live in the Cass County portion of Kansas City.',
+    notes: 'Early in-person voting for Cass County residents, July 21 through August 3, 2026. Very few KC residents live in the Cass County portion of Kansas City. Confirm exact daily hours at the Kansas City Election Board (kceb.org).',
   },
 ];
 
@@ -370,7 +180,17 @@ export function getLocationStatus(location: EarlyVotingLocation, now: Date = new
     if (todayStr < schedule.startDate || todayStr > schedule.endDate) continue;
     if (schedule.daysOfWeek && !schedule.daysOfWeek.includes(currentDay)) continue;
 
-    // This schedule applies today
+    // Window-only entry: we know the date window but the exact daily open/close
+    // clock times are NOT verified. Return an honest, non-clock status (positive
+    // within the window) instead of asserting a specific closing time.
+    if (schedule.unverifiedHours || !schedule.open || !schedule.close) {
+      return {
+        isOpen: true,
+        status: 'Open July 21 to Aug 3' as string,
+      };
+    }
+
+    // This schedule applies today (verified clock times)
     const [openH, openM] = parseTime(schedule.open);
     const [closeH, closeM] = parseTime(schedule.close);
 
@@ -406,12 +226,12 @@ export function getLocationStatus(location: EarlyVotingLocation, now: Date = new
   }
 
   // No matching schedule
-  const earlyVotingEnd = '2026-04-06';
+  const earlyVotingEnd = '2026-08-03';
   if (todayStr > earlyVotingEnd) {
     return { isOpen: false, status: 'Early voting has ended' as string };
   }
-  if (todayStr < '2026-03-24') {
-    return { isOpen: false, status: 'Opens March 24' as string };
+  if (todayStr < '2026-07-21') {
+    return { isOpen: false, status: 'Opens July 21' as string };
   }
 
   return { isOpen: false, status: 'Closed today' as string };
@@ -455,8 +275,8 @@ function toRad(deg: number): number {
 // ============================================================
 
 export const ELECTION_DAY_INFO = {
-  date: '2026-04-07',
-  dateFormatted: 'April 7, 2026',
+  date: '2026-08-04',
+  dateFormatted: 'August 4, 2026',
   hours: {
     open: '6:00 AM',
     close: '7:00 PM',

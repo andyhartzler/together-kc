@@ -1,4 +1,4 @@
-// Clay County Election Day Polling Sites - April 7, 2026
+// Clay County Election Day Polling Sites - August 4, 2026
 // 58 Polling Places with precinct-to-location mapping
 // Source: Clay County Board of Election Commissioners
 // Coordinates: Google Places API

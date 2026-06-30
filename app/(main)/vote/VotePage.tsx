@@ -26,6 +26,11 @@ interface PrecinctInfo {
   sampleBallot: string | null;
 }
 
+// Sample ballots for the August 4, 2026 KC election are served by the Kansas City
+// Election Board. We point to their official sample-ballot tool rather than serving
+// stale prior-election PDFs.
+const KCEB_SAMPLE_BALLOT_URL = 'https://kceb.org/elections/ballot/';
+
 export default function VotePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -129,17 +134,11 @@ export default function VotePage() {
           const attrs = data.features[0].attributes;
           let pollAddress = attrs.Home_Poll_Address || '';
           pollAddress = pollAddress.replace(/<[^>]+>/g, '').trim();
-          let sampleBallot: string | null = null;
-          const sampleMatch = (attrs.Sample || '').match(/href="([^"]+)"/);
-          if (sampleMatch) {
-            const filename = sampleMatch[1].split('/').pop();
-            sampleBallot = `/ballots/${filename}`;
-          }
           setPrecinctInfo({
             precinct: attrs.Name,
             pollingPlace: attrs.Home_Poll_Name,
             pollingAddress: pollAddress,
-            sampleBallot,
+            sampleBallot: KCEB_SAMPLE_BALLOT_URL,
           });
         } else {
           setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
@@ -188,13 +187,11 @@ export default function VotePage() {
           const attrs = data.features[0].attributes;
           const site = findClayPollingPlace(attrs.precinct);
           if (site) {
-            const ballotStyle = attrs.BallotStyleNumber;
-            const styleNum = String(ballotStyle).padStart(3, '0');
             setPrecinctInfo({
               precinct: attrs.precinct,
               pollingPlace: site.name,
               pollingAddress: `${site.address}, ${site.city}, MO ${site.zip}`,
-              sampleBallot: `/ballots/clay/style-${styleNum}.pdf`,
+              sampleBallot: KCEB_SAMPLE_BALLOT_URL,
             });
           } else {
             setElectionDayError("We couldn't find your assigned polling place. Please contact your county election board.");
@@ -217,7 +214,7 @@ export default function VotePage() {
             precinct: 'Cass County (Kansas City)',
             pollingPlace: 'St Sabina Catholic Church',
             pollingAddress: '700 Trevis Ave, Belton, MO 64012',
-            sampleBallot: '/ballots/cass/sample-ballot.pdf',
+            sampleBallot: KCEB_SAMPLE_BALLOT_URL,
           });
         } else {
           // Non-KC Cass County address - direct to clerk
@@ -225,7 +222,7 @@ export default function VotePage() {
             precinct: 'Cass County',
             pollingPlace: 'Cass County Clerk - Election Office',
             pollingAddress: '102 E Wall St, Harrisonville, MO 64701',
-            sampleBallot: '/ballots/cass/sample-ballot.pdf',
+            sampleBallot: KCEB_SAMPLE_BALLOT_URL,
           });
         }
       }
@@ -769,7 +766,7 @@ export default function VotePage() {
                       {/* Polls hours + Remind me - compact on mobile */}
                       <div className="rounded-xl bg-white/[0.06] border border-white/10 p-3 md:p-4 text-center">
                         <p className="text-white font-bold text-base md:text-lg">Polls open 6:00 AM - 7:00 PM</p>
-                        <p className="text-white/50 text-xs md:text-sm">Tuesday, April 7, 2026</p>
+                        <p className="text-white/50 text-xs md:text-sm">Tuesday, August 4, 2026</p>
                       </div>
 
                       <button

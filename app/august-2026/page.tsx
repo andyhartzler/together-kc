@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { AUGUST_BALLOT } from '@/lib/constants';
@@ -59,19 +58,15 @@ export default function AugustBallotPage() {
         />
         <div className="noise-overlay absolute inset-0 z-[1]" />
 
+        {/* Top padding clears the fixed transparent nav (h-16 / md:h-20); the
+            nav now carries the Together KC wordmark, so the hero no longer
+            repeats it. */}
         <motion.div
-          className="relative z-20 text-center px-4 pt-12 pb-28 sm:pt-16 sm:pb-32 max-w-4xl mx-auto"
+          className="relative z-20 text-center px-4 pt-28 pb-28 sm:pt-32 sm:pb-32 max-w-4xl mx-auto"
           initial="hidden"
           animate="visible"
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } } }}
         >
-          <motion.div
-            variants={{ hidden: { opacity: 0, y: -16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
-            className="flex justify-center mb-8 sm:mb-10"
-          >
-            <Image src="/images/together-kc-footer.png" alt="Together KC" width={240} height={92} className="h-12 sm:h-14 md:h-16 w-auto" priority />
-          </motion.div>
-
           <motion.div
             variants={{ hidden: { opacity: 0, scale: 0.85 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5, type: 'spring', stiffness: 200 } } }}
             className="flex justify-center mb-7 sm:mb-9"
@@ -168,7 +163,7 @@ export default function AugustBallotPage() {
       {/* ================================================================= */}
       {/* THE FIVE MEASURES (clickable hub cards -> detail pages)            */}
       {/* ================================================================= */}
-      <section id="questions" className="relative py-16 sm:py-24 bg-gradient-to-b from-white via-light-gray/40 to-white scroll-mt-4">
+      <section id="questions" className="relative py-16 sm:py-24 bg-gradient-to-b from-white via-light-gray/40 to-white scroll-mt-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-11 sm:mb-14">
             <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
@@ -250,7 +245,7 @@ export default function AugustBallotPage() {
       {/* ================================================================= */}
       {/* HOW TO VOTE                                                        */}
       {/* ================================================================= */}
-      <section id="vote" className="relative py-16 sm:py-24 bg-white scroll-mt-12">
+      <section id="vote" className="relative py-16 sm:py-24 bg-white scroll-mt-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-11 sm:mb-14">
             <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
@@ -287,7 +282,7 @@ export default function AugustBallotPage() {
       {/* ================================================================= */}
       {/* SHORT FAQ (deep answers live on each measure page)                 */}
       {/* ================================================================= */}
-      <section className="relative py-16 sm:py-24 bg-gradient-to-b from-light-gray/40 to-white">
+      <section id="faqs" className="relative py-16 sm:py-24 bg-gradient-to-b from-light-gray/40 to-white scroll-mt-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-10 sm:mb-12">
             <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">

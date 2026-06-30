@@ -5,6 +5,7 @@ import {
   COUNTY_ELECTION_BOARDS,
   ELECTION_DAY_INFO,
 } from '@/lib/polling-data';
+import { AUGUST_BALLOT } from '@/lib/constants';
 
 const COUNTY = 'Cass' as const;
 const SLUG = 'cass-county';
@@ -12,9 +13,9 @@ const BASE_URL = 'https://together-kc.com';
 
 export const metadata: Metadata = {
   title:
-    'Where to Vote in Cass County - Polling Places & Early Voting | April 7, 2026',
+    'Where to Vote in Cass County - Polling Places & Early Voting | August 4, 2026',
   description:
-    'Find Cass County polling places for the April 7, 2026 Kansas City earnings tax election. Early voting in Harrisonville, Election Day information, hours, and how to find your assigned polling place.',
+    'Find Cass County polling places for the August 4, 2026 Kansas City ballot. Vote YES on all five Kansas City measures. Early voting in Harrisonville, Election Day information, hours, and how to find your assigned polling place.',
   alternates: {
     canonical: `${BASE_URL}/vote/${SLUG}`,
   },
@@ -31,24 +32,24 @@ export const metadata: Metadata = {
     'absentee voting Cass County Missouri',
   ],
   openGraph: {
-    title: 'Cass County Polling Places | KC Earnings Tax Election 2026',
+    title: 'Cass County Polling Places | KC August 4, 2026 Ballot',
     description:
-      'Find early voting and Election Day polling locations in Cass County for the Kansas City earnings tax election on April 7, 2026.',
+      'Find early voting and Election Day polling locations in Cass County for the August 4, 2026 Kansas City ballot. Vote YES on all five.',
     url: `${BASE_URL}/vote/${SLUG}`,
     images: [
       {
         url: '/images/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Together KC - Vote YES to renew the earnings tax',
+        alt: 'Together KC - Vote YES on all five Kansas City measures',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cass County Polling Places | KC Election 2026',
+    title: 'Cass County Polling Places | KC August 4, 2026 Ballot',
     description:
-      'Find early voting and Election Day information for Cass County in the Kansas City earnings tax election.',
+      'Find early voting and Election Day information for Cass County in the August 4, 2026 Kansas City ballot.',
     images: ['/images/og-image.png'],
   },
 };
@@ -61,13 +62,13 @@ const electionBoard = COUNTY_ELECTION_BOARDS[COUNTY];
 const COUNTY_FAQS = [
   {
     question: 'Where can I vote early in Cass County?',
-    answer: `Cass County has one early voting location: the ${electionBoard.name} at ${electionBoard.address} in Harrisonville. Early voting is available weekdays from March 24 through April 6, 2026, 8:00 AM to 4:30 PM.`,
+    answer: `The verified early in-person voting site is the ${electionBoard.name} at ${electionBoard.address} in Harrisonville. No-excuse early voting runs ${AUGUST_BALLOT.earlyVotingDate} through August 3, 2026. Confirm exact hours with the Cass County Clerk Election Office or the Kansas City Election Board at kceb.org.`,
   },
   {
     question:
       'Do many Kansas City residents live in the Cass County portion?',
     answer:
-      'Very few Kansas City residents live in the Cass County portion of Kansas City. If you live in this area and are within Kansas City city limits, you still vote on the earnings tax renewal.',
+      'Very few Kansas City residents live in the Cass County portion of Kansas City. If you live in this area and are within Kansas City city limits, you still vote on the five Kansas City measures on the August 4, 2026 ballot.',
   },
   {
     question: 'What are the Election Day hours for Cass County?',
@@ -76,12 +77,12 @@ const COUNTY_FAQS = [
   {
     question:
       'How do I find my assigned polling place in Cass County?',
-    answer: `Contact the Cass County Clerk Election Office at ${electionBoard.phone} or visit ${electionBoard.website}. You can also use the Missouri Secretary of State voter lookup at voteroutreach.sos.mo.gov.`,
+    answer: `Contact the Cass County Clerk Election Office at ${electionBoard.phone} or visit ${electionBoard.website}. You can also use the Missouri Secretary of State voter lookup at voteroutreach.sos.mo.gov. The voter registration deadline is about July 8, 2026; confirm the exact date with the county election office.`,
   },
   {
     question: 'What is on the ballot for Cass County KC residents?',
     answer:
-      'Kansas City residents in Cass County will vote on the renewal of the Kansas City earnings tax (e-tax), a 1% tax on income earned in Kansas City that funds 47% of city services including fire, police, EMS, roads, and trash collection. Voting YES renews the tax at the same rate -- it is not a tax increase.',
+      'Kansas City residents in Cass County will vote on the five Kansas City measures on the August 4, 2026 ballot. Four are city-wide bond questions for clean drinking water, river and sewer cleanup, affordable housing, and repairs to the convention center and City Hall; the fifth renews the Central City Economic Development sales tax on the East Side. Together KC urges a YES vote on all five, and none of them raises your tax rate.',
   },
 ] as const;
 
@@ -89,9 +90,9 @@ function generateCivicStructureSchemas() {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Cass County Polling Places - April 7, 2026 Kansas City Election',
+    name: 'Cass County Polling Places - August 4, 2026 Kansas City Election',
     description:
-      'Early voting location in Cass County for the Kansas City earnings tax renewal election.',
+      'Early voting location in Cass County for the August 4, 2026 Kansas City ballot of five measures.',
     numberOfItems: earlyLocations.length,
     itemListElement: earlyLocations.map((loc, i) => ({
       '@type': 'ListItem',
@@ -152,15 +153,15 @@ export default function CassCountyVotePage() {
       <JsonLd data={generateFaqSchema(COUNTY_FAQS)} />
       <JsonLd data={generateBreadcrumbSchema()} />
       <div className="sr-only">
-        <h1>Where to Vote in Cass County - Kansas City April 7, 2026 Election</h1>
-        <p>Find Cass County polling places for the April 7, 2026 Kansas City earnings tax election. Very few Kansas City residents live in the Cass County portion of Kansas City.</p>
+        <h1>Where to Vote in Cass County - Kansas City August 4, 2026 Election</h1>
+        <p>Find Cass County polling places for the August 4, 2026 Kansas City ballot. Vote YES on all five Kansas City measures. Very few Kansas City residents live in the Cass County portion of Kansas City.</p>
         <h2>Cass County Early Voting</h2>
         <ul>
           {earlyLocations.map((loc) => (
             <li key={loc.id}>{loc.name}, {loc.address}, {loc.city}, {loc.state} {loc.zip}</li>
           ))}
         </ul>
-        <h2>Election Day - April 7, 2026</h2>
+        <h2>Election Day - August 4, 2026</h2>
         <p>Polls open {ELECTION_DAY_INFO.hours.open} to {ELECTION_DAY_INFO.hours.close}. You must vote at your assigned precinct location.</p>
         <h2>Cass County Election Office</h2>
         <p>{electionBoard.name}, {electionBoard.address}, Phone: {electionBoard.phone}</p>

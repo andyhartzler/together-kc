@@ -6,6 +6,7 @@ import {
   ELECTION_DAY_INFO,
 } from '@/lib/polling-data';
 import { CLAY_COUNTY_LOCATIONS } from '@/lib/clay-county-data';
+import { AUGUST_BALLOT } from '@/lib/constants';
 
 const COUNTY = 'Clay' as const;
 const SLUG = 'clay-county';
@@ -13,9 +14,9 @@ const BASE_URL = 'https://together-kc.com';
 
 export const metadata: Metadata = {
   title:
-    'Where to Vote in Clay County - Polling Places & Early Voting | April 7, 2026',
+    'Where to Vote in Clay County - Polling Places & Early Voting | August 4, 2026',
   description:
-    'Find Clay County polling places for the April 7, 2026 Kansas City earnings tax election. Early voting location in Liberty, Election Day sites across Clay County, hours, and directions.',
+    'Find Clay County polling places for the August 4, 2026 Kansas City ballot. Vote YES on all five Kansas City measures. Early voting in Liberty, Election Day sites across Clay County, hours, and directions.',
   alternates: {
     canonical: `${BASE_URL}/vote/${SLUG}`,
   },
@@ -27,29 +28,29 @@ export const metadata: Metadata = {
     'Clay County early voting',
     'Kansas City Northland voting',
     'Clay County Election Day polling',
-    'KC earnings tax Clay County',
+    'Kansas City August ballot Clay County',
     'Clay County voter registration',
     'absentee voting Clay County Missouri',
   ],
   openGraph: {
-    title: 'Clay County Polling Places | KC Earnings Tax Election 2026',
+    title: 'Clay County Polling Places | KC August 4, 2026 Ballot',
     description:
-      'Find early voting and Election Day polling locations in Clay County for the Kansas City earnings tax election on April 7, 2026.',
+      'Find early voting and Election Day polling locations in Clay County for the August 4, 2026 Kansas City ballot. Vote YES on all five.',
     url: `${BASE_URL}/vote/${SLUG}`,
     images: [
       {
         url: '/images/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Together KC - Vote YES to renew the earnings tax',
+        alt: 'Together KC - Vote YES on all five Kansas City measures',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Clay County Polling Places | KC Election 2026',
+    title: 'Clay County Polling Places | KC August 4, 2026 Ballot',
     description:
-      'Find early voting and Election Day polling locations in Clay County for the Kansas City earnings tax election.',
+      'Find early voting and Election Day polling locations in Clay County for the August 4, 2026 Kansas City ballot.',
     images: ['/images/og-image.png'],
   },
 };
@@ -61,7 +62,7 @@ const electionBoard = COUNTY_ELECTION_BOARDS[COUNTY];
 const COUNTY_FAQS = [
   {
     question: 'Where can I vote early in Clay County?',
-    answer: `Clay County has one early voting location: the ${electionBoard.name} at ${electionBoard.address} in Liberty. Early voting is available weekdays from March 24 through April 6, 2026, 8:00 AM to 5:00 PM.`,
+    answer: `The verified early in-person voting site is the ${electionBoard.name} at ${electionBoard.address} in Liberty. No-excuse early voting runs ${AUGUST_BALLOT.earlyVotingDate} through August 3, 2026. Confirm exact hours with the county election board or the Kansas City Election Board at kceb.org.`,
   },
   {
     question:
@@ -76,13 +77,13 @@ const COUNTY_FAQS = [
   {
     question:
       'How do I find my assigned polling place in Clay County?',
-    answer: `Visit the Clay County Board of Election Commissioners website at ${electionBoard.website} or call ${electionBoard.phone}. You can also use the Missouri Secretary of State voter lookup at voteroutreach.sos.mo.gov.`,
+    answer: `Visit the Clay County Board of Election Commissioners website at ${electionBoard.website} or call ${electionBoard.phone}. You can also use the Missouri Secretary of State voter lookup at voteroutreach.sos.mo.gov. The voter registration deadline is about July 8, 2026; confirm the exact date with your county election board.`,
   },
   {
     question:
-      'Do Kansas City residents in Clay County vote on the earnings tax?',
+      'What do Kansas City residents in Clay County vote on this August?',
     answer:
-      'Yes. If you live within Kansas City city limits in Clay County (the Northland), you vote on the earnings tax renewal. This includes neighborhoods in Gladstone, Liberty, and North Kansas City areas that are within KC city limits.',
+      'If you live within Kansas City city limits in Clay County (the Northland), you vote on the five Kansas City measures on the August 4, 2026 ballot. Four are city-wide bond questions for clean drinking water, river and sewer cleanup, affordable housing, and repairs to the convention center and City Hall; the fifth renews the Central City Economic Development sales tax on the East Side. Together KC urges a YES vote on all five, and none of them raises your tax rate.',
   },
 ] as const;
 
@@ -111,9 +112,9 @@ function generateCivicStructureSchemas() {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Clay County Polling Places - April 7, 2026 Kansas City Election',
+    name: 'Clay County Polling Places - August 4, 2026 Kansas City Election',
     description:
-      'All early voting and Election Day polling locations in Clay County for the Kansas City earnings tax renewal election.',
+      'All early voting and Election Day polling locations in Clay County for the August 4, 2026 Kansas City ballot of five measures.',
     numberOfItems: allLocations.length,
     itemListElement: allLocations.map((loc, i) => ({
       '@type': 'ListItem',
@@ -174,8 +175,8 @@ export default function ClayCountyVotePage() {
       <JsonLd data={generateFaqSchema(COUNTY_FAQS)} />
       <JsonLd data={generateBreadcrumbSchema()} />
       <div className="sr-only">
-        <h1>Where to Vote in Clay County - Kansas City April 7, 2026 Election</h1>
-        <p>Find Clay County polling places for the April 7, 2026 Kansas City earnings tax election.</p>
+        <h1>Where to Vote in Clay County - Kansas City August 4, 2026 Election</h1>
+        <p>Find Clay County polling places for the August 4, 2026 Kansas City ballot. Vote YES on all five Kansas City measures.</p>
         <h2>Clay County Early Voting</h2>
         <ul>
           {earlyLocations.map((loc) => (

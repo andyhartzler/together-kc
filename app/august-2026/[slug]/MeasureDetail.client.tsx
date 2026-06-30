@@ -118,7 +118,9 @@ export default function MeasureDetail({
         animate={{ y: showBar ? 0 : -72, opacity: showBar ? 1 : 0 }}
         transition={{ duration: reduce ? 0 : 0.35, ease: EASE }}
         className={cn(
-          'fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm',
+          // Sits directly below the fixed AugustNav (h-16 / md:h-20) and stays
+          // beneath it in the stack (nav is z-[60]).
+          'fixed top-16 md:top-20 inset-x-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm',
           showBar ? 'pointer-events-auto' : 'pointer-events-none'
         )}
       >

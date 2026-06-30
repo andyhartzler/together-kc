@@ -291,8 +291,8 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
   <tr><td style="padding:24px 32px 24px;">
     <div style="background:#fff8f0;border:1px solid #f5a623;border-radius:12px;padding:16px;text-align:center;">
       <p style="margin:0 0 4px;font-size:13px;color:#666;text-transform:uppercase;letter-spacing:0.5px;">Election Day</p>
-      <p style="margin:0;font-size:22px;color:#1e3a5f;font-weight:700;">April 7, 2026</p>
-      <p style="margin:4px 0 0;font-size:13px;color:#666;">Early voting begins March 24</p>
+      <p style="margin:0;font-size:22px;color:#1e3a5f;font-weight:700;">August 4, 2026</p>
+      <p style="margin:4px 0 0;font-size:13px;color:#666;">Early voting begins July 21</p>
     </div>
   </td></tr>
 
@@ -326,7 +326,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
           <a href="${BASE}/donate" style="display:block;text-align:center;padding:14px 8px;background:#2e7d32;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Donate</a>
         </td>
         <td class="btn-col" width="48%" style="padding-left:8px;">
-          <a href="${BASE}/find-polling" style="display:block;text-align:center;padding:14px 8px;background:#f5a623;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Find Your Polling Location</a>
+          <a href="${BASE}/vote" style="display:block;text-align:center;padding:14px 8px;background:#f5a623;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Find Your Polling Location</a>
         </td>
       </tr>
     </table>
@@ -360,9 +360,9 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
 
   await sendGmail({
     to: email,
-    subject: 'Your E-Tax Yard Sign is Confirmed!',
+    subject: 'Your Yard Sign is Confirmed!',
     html,
-    text: `Thanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Thursday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is April 7, 2026. Early voting begins March 24.\n\nAdd Your Endorsement: https://together-kc.com/endorse\nRemind Me to Vote: https://together-kc.com/api/calendar\nDonate: https://together-kc.com/donate\nFind Your Polling Location: https://together-kc.com/find-polling\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
+    text: `Thanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Thursday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is August 4, 2026. Early voting begins July 21.\n\nAdd Your Endorsement: https://together-kc.com/endorse\nRemind Me to Vote: https://together-kc.com/api/calendar\nDonate: https://together-kc.com/donate\nFind Your Polling Location: https://together-kc.com/vote\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
   });
 }
 

@@ -1,4 +1,4 @@
-// Platte County Election Day Polling Sites - April 7, 2026
+// Platte County Election Day Polling Sites - August 4, 2026
 // 45 Precincts across 29 Polling Sites
 // Source: Platte County Board of Elections (2/21/2025)
 // Coordinates: Google Places API

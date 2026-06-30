@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import AugustNav from '@/components/august/AugustNav';
 
 export const metadata: Metadata = {
   title: 'Vote YES on All Five | August 4, 2026 Kansas City Ballot',
@@ -43,5 +44,10 @@ export default function AugustBallotLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <AugustNav />
+      {children}
+    </>
+  );
 }

@@ -77,10 +77,12 @@ const nextConfig: NextConfig = {
   // Redirects for common URL variants
   async redirects() {
     return [
-      // Victory landing page redirect (post-election)
+      // Apex landing: the August 4, 2026 ballot is the live campaign. The e-tax
+      // victory page and the rest of the e-tax site stay reachable by direct URL.
+      // 307 (temporary) so the apex can be repointed after the August election.
       {
         source: '/',
-        destination: '/victory',
+        destination: '/august-2026',
         permanent: false,
       },
       // FAQ variants

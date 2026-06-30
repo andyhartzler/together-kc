@@ -7,9 +7,9 @@ interface CalendarEventOptions {
 }
 
 export function generateCalendarEvent(options?: CalendarEventOptions): string {
-  const eventTitle = options?.title || 'Vote YES for Kansas City Earnings Tax Renewal';
+  const eventTitle = options?.title || 'Vote YES on all five (Kansas City, August 4)';
   const location = options?.location || 'Kansas City, MO';
-  const eventDescription = options?.description || `Don't forget to vote!
+  const eventDescription = options?.description || `Don't forget to vote! Vote YES on all five Kansas City measures.
 
 Check your registration: https://voteroutreach.sos.mo.gov/portal/
 
@@ -21,11 +21,11 @@ Find your polling location by county:
 - Platte County: https://www.plattecountymovotes.gov
 - Cass County: https://casscounty.com/2355/Absentee-Information`;
 
-  // April 7, 2026 - CDT (UTC-6)
-  // 6:00 AM CDT = 12:00 UTC
-  // 7:00 PM CDT = 01:00 UTC (April 8)
-  const startDate = '20260407T120000Z';
-  const endDate = '20260408T010000Z';
+  // August 4, 2026 - CDT (UTC-5)
+  // 6:00 AM CDT = 11:00 UTC
+  // 7:00 PM CDT = 00:00 UTC (August 5)
+  const startDate = '20260804T110000Z';
+  const endDate = '20260805T000000Z';
 
   // Generate a unique ID
   const uid = `vote-yes-kc-${Date.now()}@together-kc.com`;
@@ -81,7 +81,7 @@ export function downloadCalendarEvent(options?: CalendarEventOptions) {
 
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'vote-yes-kc-april-7-2026.ics';
+  link.download = 'vote-yes-kc-august-4-2026.ics';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -141,7 +141,7 @@ DTSTAMP:${now}
 DTSTART:${startDate}
 DTEND:${endDate}
 SUMMARY:${escapeICS(`Vote Early at ${locationName}`)}
-DESCRIPTION:${escapeICS(`Time to vote early!\n\nLocation: ${locationName}\n${locationAddress}\n\nRemember to bring a valid photo ID.\n\nVote YES to renew the KC earnings tax!`)}
+DESCRIPTION:${escapeICS(`Time to vote early!\n\nLocation: ${locationName}\n${locationAddress}\n\nRemember to bring a valid photo ID.\n\nVote YES on all five Kansas City measures!`)}
 LOCATION:${escapeICS(`${locationName}, ${locationAddress}`)}
 ${alarms.join('\n')}
 END:VEVENT
@@ -165,9 +165,9 @@ export function generateElectionDayEvent(
   pollingPlace: string,
   pollingAddress: string
 ): string {
-  // April 7, 2026, 6:00 AM - 7:00 PM CDT (UTC-6)
-  const startDate = '20260407T120000Z'; // 6 AM CDT
-  const endDate = '20260408T010000Z';   // 7 PM CDT
+  // August 4, 2026, 6:00 AM - 7:00 PM CDT (UTC-5)
+  const startDate = '20260804T110000Z'; // 6 AM CDT
+  const endDate = '20260805T000000Z';   // 7 PM CDT
 
   const uid = `election-day-${Date.now()}@together-kc.com`;
   const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -184,7 +184,7 @@ DTSTAMP:${now}
 DTSTART:${startDate}
 DTEND:${endDate}
 SUMMARY:${escapeICS(`Vote at ${pollingPlace} - Election Day`)}
-DESCRIPTION:${escapeICS(`Election Day! Polls open 6:00 AM - 7:00 PM.\n\nYour polling place: ${pollingPlace}\n${pollingAddress}\n\nRemember to bring a valid photo ID.\n\nVote YES to renew the KC earnings tax!`)}
+DESCRIPTION:${escapeICS(`Election Day! Polls open 6:00 AM - 7:00 PM.\n\nYour polling place: ${pollingPlace}\n${pollingAddress}\n\nRemember to bring a valid photo ID.\n\nVote YES on all five Kansas City measures!`)}
 LOCATION:${escapeICS(`${pollingPlace}, ${pollingAddress}`)}
 BEGIN:VALARM
 TRIGGER:-P1D

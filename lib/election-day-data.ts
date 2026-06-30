@@ -1,4 +1,4 @@
-// Election Day Polling Location Data - April 7, 2026
+// Election Day Polling Location Data - August 4, 2026
 // Auto-generated with geocoded coordinates from Google Maps API
 
 export interface ElectionDayLocation {

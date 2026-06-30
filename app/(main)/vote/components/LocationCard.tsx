@@ -8,10 +8,11 @@ import {
   getDirectionsUrl,
   getDistanceMiles,
   fullAddress,
+  getCentralDateStr,
   type LocationStatus,
 } from '@/lib/voting-utils';
 import { downloadEarlyVoteEvent } from '@/lib/calendar';
-import type { EarlyVotingLocation } from '@/lib/polling-data';
+import { EARLY_VOTING_INFO, type EarlyVotingLocation } from '@/lib/polling-data';
 import type { ElectionDayLocation } from '@/lib/election-day-data';
 import SendToPhone from './SendToPhone';
 
@@ -35,7 +36,7 @@ function getAvailableDateSet(loc: EarlyVotingLocation): Set<string> {
   const available = new Set<string>();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const end = new Date('2026-04-06T23:59:59');
+  const end = new Date('2026-08-03T23:59:59');
 
   for (let d = new Date(today); d <= end; d.setDate(d.getDate() + 1)) {
     const iso = d.toISOString().split('T')[0];
@@ -51,9 +52,9 @@ function getAvailableDateSet(loc: EarlyVotingLocation): Set<string> {
   return available;
 }
 
-/** Generate calendar weeks covering the early voting period: Mar 22 (Sun) - Apr 11 (Sat) */
+/** Generate calendar weeks covering the early voting period: Jul 19 (Sun) - Aug 8 (Sat) */
 function getCalendarWeeks(): string[][] {
-  const start = new Date('2026-03-22T12:00:00');
+  const start = new Date('2026-07-19T12:00:00');
   const weeks: string[][] = [];
   let week: string[] = [];
   for (let i = 0; i < 21; i++) {
@@ -68,6 +69,18 @@ function getCalendarWeeks(): string[][] {
   return weeks;
 }
 
+/** True when the board only has a verified date window, with no confirmed daily clock times. */
+function hasUnverifiedHours(loc: EarlyVotingLocation): boolean {
+  return loc.hours.some((h) => !h.closed && (h.unverifiedHours || !h.open || !h.close));
+}
+
+/** Honest, non-clock status for window-only boards (never asserts a closing time). */
+function windowStatus(todayCentral: string): LocationStatus {
+  if (todayCentral > EARLY_VOTING_INFO.endDate) return { isOpen: false, status: 'Early voting has ended' };
+  if (todayCentral < EARLY_VOTING_INFO.startDate) return { isOpen: false, status: 'Opens July 21' };
+  return { isOpen: true, status: 'Open July 21 to Aug 3' };
+}
+
 /** Get open/close times in 24h format for a given date at a location */
 function getOpenHours(loc: EarlyVotingLocation, date: string): { min: string; max: string } | null {
   const d = new Date(date + 'T12:00:00');
@@ -76,6 +89,8 @@ function getOpenHours(loc: EarlyVotingLocation, date: string): { min: string; ma
     if (entry.closed) continue;
     if (date < entry.startDate || date > entry.endDate) continue;
     if (entry.daysOfWeek && !entry.daysOfWeek.includes(dayOfWeek)) continue;
+    // Unverified window entry: no confirmed clock times to constrain the picker.
+    if (entry.unverifiedHours || !entry.open || !entry.close) return null;
     const toTime24 = (s: string) => {
       const m = s.match(/(\d+):(\d+)\s*(AM|PM)/i);
       if (!m) return '00:00';
@@ -110,14 +125,18 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
-  const status: LocationStatus | null = isEarlyVotingLoc(loc) ? getLocationStatus(loc) : null;
+  // Boards with only a verified date window get an honest window status instead
+  // of the clock-derived one (which would otherwise compute a misleading time).
+  const unverifiedHours = isEarlyVotingLoc(loc) && hasUnverifiedHours(loc);
+  const status: LocationStatus | null = isEarlyVotingLoc(loc)
+    ? (unverifiedHours ? windowStatus(getCentralDateStr()) : getLocationStatus(loc))
+    : null;
 
   const distance = userLat !== undefined && userLng !== undefined && loc.lat !== 0
     ? getDistanceMiles(userLat, userLng, loc.lat, loc.lng) : null;
 
   const addr = fullAddress(loc);
   const isKCEB = isEarlyVotingLoc(loc) && loc.isElectionBoard;
-  const isCass = loc.county === 'Cass';
   const ward = 'ward' in loc ? loc.ward : undefined;
   const room = 'room' in loc ? loc.room : undefined;
 
@@ -287,14 +306,14 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
 
                           {/* Month labels */}
                           <div className="flex justify-between mt-1.5 px-1">
-                            <span className="text-[10px] text-white/30 font-medium">March 2026</span>
-                            <span className="text-[10px] text-white/30 font-medium">April 2026</span>
+                            <span className="text-[10px] text-white/30 font-medium">July 2026</span>
+                            <span className="text-[10px] text-white/30 font-medium">August 2026</span>
                           </div>
                         </div>
 
                         {/* Time picker - native input */}
                         <AnimatePresence>
-                          {selectedDate && openHours && (
+                          {selectedDate && isEarlyVotingLoc(loc) && (
                             <motion.div
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
@@ -308,12 +327,12 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
                                   value={selectedTime || ''}
                                   onChange={handleTimeChange}
                                   onClick={(e) => e.stopPropagation()}
-                                  min={openHours.min}
-                                  max={openHours.max}
+                                  min={openHours?.min}
+                                  max={openHours?.max}
                                   className="flex-1 px-4 py-2.5 rounded-lg bg-white/10 border border-white/10 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-coral/50 focus:border-coral/50 transition-all [color-scheme:dark]"
                                 />
                                 <span className="text-white/40 text-xs whitespace-nowrap">
-                                  {formatTime(openHours.min)} - {formatTime(openHours.max)}
+                                  {openHours ? `${formatTime(openHours.min)} - ${formatTime(openHours.max)}` : 'Confirm hours at kceb.org'}
                                 </span>
                               </div>
                             </motion.div>
@@ -374,8 +393,8 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
                 </div>
               )}
 
-              {/* Today's hours */}
-              {status?.todayHours && (
+              {/* Today's hours (only when verified clock times exist) */}
+              {status?.todayHours?.open && status?.todayHours?.close && (
                 <p className="text-white/40 text-xs">Today: {status.todayHours.open} - {status.todayHours.close}</p>
               )}
 
@@ -383,20 +402,38 @@ export default function LocationCard({ location: loc, userLat, userLng, isEarlyV
               {isEarlyVotingLoc(loc) && (
                 <div>
                   <p className="text-white/40 text-[10px] uppercase tracking-wider font-semibold mb-1">Hours</p>
-                  {loc.hours.map((h, i) => (
-                    <div key={i} className="flex justify-between text-xs py-0.5">
-                      <span className="text-white/60">{h.label} <span className="text-white/30">({h.dates})</span></span>
-                      <span className={h.closed ? 'text-red-400' : 'text-white/80'}>{h.closed ? 'Closed' : `${h.open} - ${h.close}`}</span>
-                    </div>
-                  ))}
+                  {loc.hours.map((h, i) => {
+                    const unverified = !h.closed && (h.unverifiedHours || !h.open || !h.close);
+                    return (
+                      <div key={i} className="flex justify-between text-xs py-0.5">
+                        <span className="text-white/60">{h.label} <span className="text-white/30">({h.dates})</span></span>
+                        <span className={h.closed ? 'text-red-400' : 'text-white/80'}>
+                          {h.closed ? 'Closed' : unverified ? 'Confirm hours' : `${h.open} - ${h.close}`}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  {hasUnverifiedHours(loc) && (
+                    <p className="text-white/40 text-[11px] mt-1.5">
+                      Confirm exact hours at the Kansas City Election Board (
+                      <a
+                        href={EARLY_VOTING_INFO.kcebUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-sky underline"
+                      >
+                        kceb.org
+                      </a>
+                      ).
+                    </p>
+                  )}
                 </div>
               )}
 
               {!isEarlyVoting && (
                 <p className="text-white/50 text-xs">Election Day polls: 6:00 AM - 7:00 PM</p>
               )}
-
-              {isCass && isEarlyVoting && <p className="text-amber-400 text-[11px] font-medium">Closes at 4:30 PM (earlier than other locations)</p>}
 
 
               {'precincts' in loc && loc.precincts.length > 0 && (
