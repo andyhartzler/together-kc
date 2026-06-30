@@ -11,6 +11,8 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { Marquee } from '@/components/ui/Marquee';
 import { fadeUp, EASE } from '@/components/ui/Reveal';
 import MeasureCard from '@/components/august/MeasureCard';
+import BallotSnapshot from '@/components/august/BallotSnapshot';
+import BarChartReveal from '@/components/august/BarChartReveal';
 import Footer from '@/components/layout/Footer';
 
 const { hero, measures, questionsSection, costsShort, voteSteps, howToVote, faqsSection, faqs, closing, exploreLinks } =
@@ -25,6 +27,13 @@ const HUB_FAQ_QUESTIONS = [
   'When and where do I vote?',
 ];
 const shortFaqs = faqs.filter((f) => HUB_FAQ_QUESTIONS.includes(f.question));
+
+// Render the hub cards in official ballot order (Question 1 to 5) so they match
+// the BallotSnapshot scorecard above. The source measures array keeps its own
+// order for detail-page prev/next, so we sort a copy here for display only.
+const ballotOrderNum = (m: (typeof measures)[number]) =>
+  parseInt(m.officialQuestion.number.replace(/\D/g, ''), 10);
+const cardMeasures = [...measures].sort((a, b) => ballotOrderNum(a) - ballotOrderNum(b));
 
 // ===========================================================================
 export default function AugustBallotPage() {
@@ -137,6 +146,26 @@ export default function AugustBallotPage() {
       </div>
 
       {/* ================================================================= */}
+      {/* BALLOT SNAPSHOT (kinetic centerpiece, leads into the card grid)    */}
+      {/* ================================================================= */}
+      <section className="relative py-16 sm:py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-10 sm:mb-12">
+            <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
+              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
+              Sample ballot
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Here is what your YES looks like</h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-5 leading-relaxed">
+              Five questions, in the order you will see them. Tap any one for the full breakdown below.
+            </p>
+          </motion.div>
+
+          <BallotSnapshot measures={measures} />
+        </div>
+      </section>
+
+      {/* ================================================================= */}
       {/* THE FIVE MEASURES (clickable hub cards -> detail pages)            */}
       {/* ================================================================= */}
       <section id="questions" className="relative py-16 sm:py-24 bg-gradient-to-b from-white via-light-gray/40 to-white scroll-mt-4">
@@ -153,7 +182,7 @@ export default function AugustBallotPage() {
           </motion.div>
 
           <div className="space-y-6 sm:space-y-8">
-            {measures.map((m, i) => (
+            {cardMeasures.map((m, i) => (
               <MeasureCard key={m.slug} measure={m} index={i} />
             ))}
           </div>
@@ -195,6 +224,25 @@ export default function AugustBallotPage() {
                 {chip}
               </span>
             ))}
+          </motion.div>
+
+          <motion.div
+            {...fadeUp}
+            transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
+            className="mt-12 sm:mt-14 rounded-3xl bg-white p-6 sm:p-9 text-left shadow-2xl shadow-black/30"
+          >
+            <BarChartReveal
+              heading="Where the $1.7 billion goes"
+              rows={[
+                { label: 'Clean Water (Question 4)', value: 750_000_000 },
+                { label: 'Sewers (Question 5)', value: 750_000_000 },
+                { label: 'Affordable Housing (Question 1)', value: 100_000_000 },
+                { label: 'Civic Buildings (Question 2)', value: 100_000_000 },
+              ]}
+              total={1_700_000_000}
+              accent="#e53935"
+              caption="The four bond questions total $1.7 billion. Question 3 (Central City) is a sales-tax renewal, not a bond, so it carries no new authorization."
+            />
           </motion.div>
         </div>
       </section>

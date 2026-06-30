@@ -11,6 +11,11 @@ import { Marquee } from '@/components/ui/Marquee';
 import { fadeUp, EASE } from '@/components/ui/Reveal';
 import Accordion from '@/components/ui/Accordion';
 import Footer from '@/components/layout/Footer';
+import FinancingLadder from '@/components/august/FinancingLadder';
+import BarChartReveal from '@/components/august/BarChartReveal';
+import ProjectShowcase from '@/components/august/ProjectShowcase';
+import TrendChart from '@/components/august/TrendChart';
+import DistrictMap from '@/components/august/DistrictMap';
 
 type Measure = (typeof AUGUST_BALLOT)['measures'][number];
 
@@ -78,6 +83,20 @@ export default function MeasureDetail({
   const showTimeline = TIMELINE_SLUGS.has(measure.slug) && measure.timeline.length > 0;
   const hasExamples = measure.realExamples.length > 0;
   const isSupermajority = measure.voteThreshold !== 'Simple majority';
+  // Collect the optional viz payloads in an array so the presence check does not
+  // progressively narrow `measure` down to `never` across a long || chain.
+  const vizFlags = [
+    measure.financingLadder,
+    measure.cipBreakdown,
+    measure.srfNote,
+    measure.bondHistory,
+    measure.completedProjects,
+    measure.civicProjects,
+    measure.ccedRevenue,
+    measure.ccedProjects,
+    measure.ccedDistrict,
+  ];
+  const hasViz = measure.srfApplications.length > 0 || vizFlags.some(Boolean);
 
   const narrative = [
     { kicker: 'The problem', body: measure.narrative.problem },
@@ -317,13 +336,14 @@ export default function MeasureDetail({
             className="relative rounded-3xl bg-white border border-gray-100 shadow-xl shadow-navy/5 p-7 sm:p-10 overflow-hidden"
           >
             <span className="absolute top-0 left-0 h-full w-1.5" style={{ backgroundColor: swatch }} />
-            <div className="flex items-center gap-2 mb-5">
+            <div className="flex flex-wrap items-center gap-2.5 mb-5">
               <span
                 className="inline-flex items-center rounded-full text-xs font-bold px-3 py-1"
                 style={{ backgroundColor: swatch, color: onSwatchText }}
               >
                 {measure.officialQuestion.number}
               </span>
+              <span className="text-xs font-medium text-gray-400">{measure.ordinance}</span>
             </div>
             <blockquote className="space-y-4">
               {officialParagraphs.map((para, i) => (
@@ -406,6 +426,168 @@ export default function MeasureDetail({
           </div>
         </div>
       </section>
+
+      {/* ================================================================= */}
+      {/* MEASURE VISUALS (per-measure data, each block gated on presence)   */}
+      {/* ================================================================= */}
+      {hasViz && (
+        <section className="relative bg-white py-16 sm:py-24 border-b border-gray-100">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-20">
+            {/* Financing ladder (water + sewer): cheapest money sits lowest */}
+            {measure.financingLadder && (
+              <FinancingLadder
+                rungs={[...measure.financingLadder.rungs]}
+                accent={swatch}
+                heading="How the financing stays cheap"
+              />
+            )}
+
+            {/* Capital plan breakdown with the share this question authorizes */}
+            {measure.cipBreakdown && (
+              <BarChartReveal
+                heading={measure.cipBreakdown.heading}
+                rows={[...measure.cipBreakdown.rows]}
+                total={measure.cipBreakdown.total}
+                asking={measure.cipBreakdown.asking}
+                accent={swatch}
+                caption={measure.cipBreakdown.note}
+              />
+            )}
+
+            {/* State Revolving Fund draws (sewers) and the SRF note (water + sewer) */}
+            {(measure.srfApplications.length > 0 || measure.srfNote) && (
+              <div className="space-y-6">
+                {measure.srfApplications.length > 0 && (
+                  <ProjectShowcase
+                    heading="State Revolving Fund applications drawing on this authorization"
+                    items={measure.srfApplications.map((a) => ({
+                      name: a.name,
+                      meta: a.amount,
+                      detail: a.detail,
+                    }))}
+                    accent={swatch}
+                  />
+                )}
+                {measure.srfNote && (
+                  <div className="rounded-2xl bg-light-gray/70 border border-gray-100 p-6 flex items-start gap-3">
+                    <span style={{ color: swatch }} className="mt-0.5">
+                      <Check />
+                    </span>
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{measure.srfNote}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Prior-authorization track record, with issuance trend where we have it */}
+            {measure.bondHistory && (
+              <div>
+                <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-6">
+                  <Kicker swatch={swatch}>The track record</Kicker>
+                  <h2 className="text-2xl sm:text-4xl font-bold text-navy mt-3">{measure.bondHistory.heading}</h2>
+                </motion.div>
+                <motion.div
+                  {...fadeUp}
+                  transition={{ duration: 0.6, ease: EASE, delay: 0.05 }}
+                  className="rounded-3xl bg-navy text-white p-7 sm:p-9 shadow-xl shadow-navy/10"
+                >
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-full text-sm font-bold px-3.5 py-1.5"
+                    style={{ backgroundColor: swatch, color: onSwatchText }}
+                  >
+                    <Check />
+                    {measure.bondHistory.approval}
+                  </span>
+                  <p className="mt-5 text-base sm:text-lg text-white/90 leading-relaxed">{measure.bondHistory.note}</p>
+                </motion.div>
+                {measure.bondHistory.points.length > 0 && (
+                  <div className="mt-8">
+                    <TrendChart
+                      heading="Water revenue bonds issued, by series"
+                      caption="Dollars issued from the prior authorization, by bond series."
+                      points={[...measure.bondHistory.points]}
+                      accent={swatch}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Housing Trust Fund completed developments, with the 365-unit tally */}
+            {measure.completedProjects && (
+              <ProjectShowcase
+                heading={measure.completedProjects.heading}
+                items={measure.completedProjects.items.map((p) => ({
+                  name: p.name,
+                  meta: `${p.units} ${p.units === 1 ? 'unit' : 'units'}`,
+                  detail: p.address,
+                }))}
+                accent={swatch}
+                footer={{ label: measure.completedProjects.totalLabel, value: measure.completedProjects.total }}
+              />
+            )}
+
+            {/* Civic buildings: costed line items (in $M) plus the City Hall list */}
+            {measure.civicProjects && (
+              <div>
+                <BarChartReveal
+                  heading={measure.civicProjects.heading}
+                  rows={measure.civicProjects.costed.map((c) => ({ label: c.name, value: c.amountM * 1_000_000 }))}
+                  accent={swatch}
+                  caption={measure.civicProjects.note}
+                />
+                <div className="mt-9">
+                  <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-5">
+                    <Kicker swatch={swatch}>City Hall</Kicker>
+                    <h3 className="text-xl sm:text-2xl font-bold text-navy mt-3">City Hall improvements</h3>
+                  </motion.div>
+                  <div className="flex flex-wrap gap-2.5">
+                    {measure.civicProjects.cityHall.map((item, i) => (
+                      <motion.span
+                        key={item}
+                        initial={reduce ? false : { opacity: 0, y: 12 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-40px' }}
+                        transition={{ duration: 0.4, ease: EASE, delay: Math.min(i * 0.06, 0.3) }}
+                        className="inline-flex items-center gap-2 rounded-full bg-light-gray border border-gray-200 text-navy text-sm font-medium px-4 py-2"
+                      >
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: swatch }} />
+                        {item}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Central City: sales-tax revenue trend, funded projects, district map */}
+            {measure.ccedRevenue && (
+              <TrendChart
+                heading={measure.ccedRevenue.heading}
+                caption={measure.ccedRevenue.note}
+                points={[...measure.ccedRevenue.points]}
+                total={measure.ccedRevenue.total}
+                accent={swatch}
+              />
+            )}
+            {measure.ccedProjects && (
+              <ProjectShowcase
+                heading={measure.ccedProjects.heading}
+                items={measure.ccedProjects.items.map((p) => ({ name: p.name, detail: p.summary }))}
+                accent={swatch}
+              />
+            )}
+            {measure.ccedDistrict && (
+              <DistrictMap
+                {...measure.ccedDistrict}
+                accent={swatch}
+                heading="The CCED corridor"
+                caption="A tall, narrow district on the East Side."
+              />
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ================================================================= */}
       {/* TIMELINE (only where a real dated record exists)                  */}
