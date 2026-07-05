@@ -56,7 +56,7 @@ export default function YardSignBanner() {
         >
           <div className="h-full max-w-6xl mx-auto px-4 flex items-center">
             <Link
-              href="/sign"
+              href="/etax/sign"
               onClick={dismiss}
               className="flex items-center gap-3 flex-1 min-w-0"
             >

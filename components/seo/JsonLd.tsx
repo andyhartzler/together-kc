@@ -17,7 +17,7 @@ export const organizationSchema = {
   '@type': 'PoliticalOrganization',
   name: 'Together KC',
   url: 'https://together-kc.com',
-  logo: 'https://together-kc.com/images/og-image.png',
+  logo: 'https://together-kc.com/images/og-august.png',
   description:
     'Together KC is a Kansas City civic campaign urging voters to vote YES on all five Kansas City questions on the August 4, 2026 ballot.',
   email: 'action@together-kc.com',
@@ -49,7 +49,7 @@ export const websiteSchema = {
   },
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://together-kc.com/faqs?q={search_term_string}',
+    target: 'https://together-kc.com/etax/faqs?q={search_term_string}',
     'query-input': 'required name=search_term_string',
   },
 };
@@ -90,7 +90,7 @@ export const electionEventSchema = {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'USD',
-    url: 'https://together-kc.com',
+    url: 'https://together-kc.com/etax',
     availability: 'https://schema.org/InStock',
     validFrom: '2026-01-01',
   },

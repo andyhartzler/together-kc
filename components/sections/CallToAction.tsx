@@ -10,7 +10,7 @@ import { downloadCalendarEvent } from '@/lib/calendar';
 const shareData = {
   title: 'Vote YES to Renew the KC Earnings Tax',
   text: 'The earnings tax funds nearly half of KC\'s essential services. Vote YES on April 7, 2026 to keep Kansas City strong.',
-  url: 'https://together-kc.com',
+  url: 'https://together-kc.com/etax',
 };
 
 const socialLinks = [

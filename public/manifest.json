@@ -1,7 +1,7 @@
 {
   "name": "Together KC - Vote YES",
   "short_name": "Together KC",
-  "description": "Find your polling place for the Kansas City earnings tax election",
+  "description": "Find your polling place for the August 4, 2026 Kansas City ballot",
   "start_url": "/vote",
   "display": "standalone",
   "background_color": "#1e3a5f",

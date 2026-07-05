@@ -15,7 +15,7 @@ export default function Navigation() {
   const router = useRouter();
 
   // Pages with dark hero backgrounds where we need white text
-  const hasDarkHero = pathname === '/' || pathname === '/home' || pathname === '/endorsements' || pathname === '/vote';
+  const hasDarkHero = pathname === '/etax' || pathname === '/etax/home' || pathname === '/etax/endorsements';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,16 +25,9 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // The /vote polling tool is part of the August front door, which has its own
-  // nav (AugustNav, mounted by app/(main)/vote/layout.tsx). Hide the e-tax nav
-  // there so the two never stack.
-  if (pathname === '/vote' || pathname.startsWith('/vote/')) {
-    return null;
-  }
-
   // Determine active nav item based on pathname
   const getIsActive = (href: string) => {
-    if (href === '/') return pathname === '/';
+    if (href === '/etax') return pathname === '/etax';
     return pathname.startsWith(href);
   };
 
@@ -54,7 +47,7 @@ export default function Navigation() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0">
+            <Link href="/etax" className="flex-shrink-0">
               <Image
                 src={!isScrolled && hasDarkHero ? "/images/renew-kc-logo-white.png" : "/images/renew kc logo.png"}
                 alt="Renew KC Earnings Tax"
@@ -69,7 +62,7 @@ export default function Navigation() {
             <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
               {NAV_LINKS.map((link) => {
                 const isActive = getIsActive(link.href);
-                const showLamp = isActive && link.href !== '/';
+                const showLamp = isActive && link.href !== '/etax';
 
                 return (
                   <Link
@@ -118,7 +111,7 @@ export default function Navigation() {
                 }}
                 className={cn(
                   "ml-1 lg:ml-2 px-3 lg:px-5 py-2 lg:py-2.5 text-sm lg:text-base text-white font-semibold bg-coral rounded-full transition-all duration-300 hover:scale-105 hover:bg-coral/90 shadow-lg whitespace-nowrap",
-                  pathname === '/' && !isScrolled
+                  pathname === '/etax' && !isScrolled
                     ? 'opacity-0 scale-90 pointer-events-none'
                     : 'opacity-100 scale-100'
                 )}

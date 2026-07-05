@@ -10,7 +10,7 @@ import { fadeUp, EASE } from '@/components/ui/Reveal';
 
 export type Measure = (typeof AUGUST_BALLOT.measures)[number];
 
-// Hub: a full-card Next Link to /august-2026/[slug]. The accent block (motif +
+// Hub: a full-card Next Link to /questions/[slug]. The accent block (motif +
 // animated big stat + measure name) is shared identity with the detail hero, so
 // the card looks like a small version of the page it opens. The whole card is a
 // single focusable link, so nothing inside is its own interactive element; the
@@ -29,7 +29,7 @@ export default function MeasureCard({ measure, index = 0 }: { measure: Measure; 
       className="rounded-3xl"
     >
       <Link
-        href={`/august-2026/${measure.slug}`}
+        href={`/questions/${measure.slug}`}
         aria-label={`${measure.name}: ${measure.cardPunch} Vote YES. See the full question.`}
         className="group block rounded-3xl overflow-hidden bg-white border border-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       >

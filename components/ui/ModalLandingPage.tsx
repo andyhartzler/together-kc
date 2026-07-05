@@ -12,7 +12,7 @@ export default function ModalLandingPage({ view }: { view: ModalView }) {
     <div className="min-h-screen bg-gradient-to-br from-navy via-navy/95 to-sky/80">
       <VoteYesModal
         isOpen={true}
-        onClose={() => router.push('/')}
+        onClose={() => router.push('/etax')}
         initialView={view}
       />
     </div>

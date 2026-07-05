@@ -36,11 +36,11 @@ export const SITE_CONFIG = {
 } as const;
 
 export const NAV_LINKS = [
-  { href: '/', label: 'Home' },
+  { href: '/etax', label: 'Home' },
   { href: '/vote', label: 'Find Your Polling Place' },
-  { href: '/faqs', label: 'FAQs' },
-  { href: '/endorsements', label: 'Endorsements' },
-  { href: '/donate', label: 'Donate' },
+  { href: '/etax/faqs', label: 'FAQs' },
+  { href: '/etax/endorsements', label: 'Endorsements' },
+  { href: '/etax/donate', label: 'Donate' },
 ] as const;
 
 export const SERVICES = [
@@ -527,13 +527,13 @@ export const AUGUST_BALLOT = {
     cta: 'Vote YES on all five',
   },
   exploreLinks: [
-    { label: 'E-Tax Victory', href: '/victory' },
-    { label: 'Home', href: '/home' },
-    { label: 'Endorsements', href: '/endorsements' },
-    { label: 'FAQs', href: '/faqs' },
+    { label: 'E-Tax Victory', href: '/etax/victory' },
+    { label: 'E-Tax Home', href: '/etax' },
+    { label: 'Endorsements', href: '/etax/endorsements' },
+    { label: 'FAQs', href: '/etax/faqs' },
   ],
   // =========================================================================
-  // PER-MEASURE DETAIL DATA (single source of truth for /august-2026/[slug]).
+  // PER-MEASURE DETAIL DATA (single source of truth for /questions/[slug]).
   // Order defines the prev/next cycle. Each measure carries everything both the
   // hub card and the bespoke detail page need. Official question numbers are
   // included because they are confirmed verbatim from the KCEB Issues-Only

@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     siteName: 'Together KC',
     images: [
       {
-        url: '/images/og-image.png',
+        url: '/images/og-august.png',
         width: 1200,
         height: 630,
         alt: 'Together KC - Vote YES on all five August 4, 2026 ballot questions',
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     title: 'Together KC | Vote YES on All Five',
     description:
       'Five Kansas City ballot questions, none raising your tax rate. Vote YES on all five on August 4, 2026.',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-august.png'],
   },
   robots: {
     index: true,

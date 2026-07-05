@@ -91,7 +91,7 @@ export default function Services() {
               </p>
               <InteractiveHoverButton
                 text="Read the FAQs"
-                href="/faqs"
+                href="/etax/faqs"
                 variant="secondary"
               />
             </div>

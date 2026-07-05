@@ -77,29 +77,82 @@ const nextConfig: NextConfig = {
   // Redirects for common URL variants
   async redirects() {
     return [
-      // Apex landing: the August 4, 2026 ballot is the live campaign. The e-tax
-      // victory page and the rest of the e-tax site stay reachable by direct URL.
-      // 307 (temporary) so the apex can be repointed after the August election.
+      // The August 4, 2026 ballot campaign now lives AT the apex (no redirect).
+      // The old /august-2026 URLs that were shared publicly forward to the new
+      // canonical locations.
       {
-        source: '/',
-        destination: '/august-2026',
-        permanent: false,
+        source: '/august-2026',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/august-2026/:slug',
+        destination: '/questions/:slug',
+        permanent: true,
+      },
+      // Bare /questions has no page of its own; send it to the hub section.
+      {
+        source: '/questions',
+        destination: '/#questions',
+        permanent: true,
+      },
+      // The e-tax campaign (April 7, 2026 - won) is archived under /etax.
+      // Old root-level e-tax URLs forward there so shared links keep working.
+      {
+        source: '/victory',
+        destination: '/etax/victory',
+        permanent: true,
+      },
+      {
+        source: '/home',
+        destination: '/etax/home',
+        permanent: true,
+      },
+      {
+        source: '/donate',
+        destination: '/etax/donate',
+        permanent: true,
+      },
+      {
+        source: '/faqs',
+        destination: '/etax/faqs',
+        permanent: true,
+      },
+      {
+        source: '/endorse',
+        destination: '/etax/endorse',
+        permanent: true,
+      },
+      {
+        source: '/endorsements',
+        destination: '/etax/endorsements',
+        permanent: true,
+      },
+      {
+        source: '/sign',
+        destination: '/etax/sign',
+        permanent: true,
+      },
+      {
+        source: '/press-kit',
+        destination: '/etax/press-kit',
+        permanent: true,
+      },
+      {
+        source: '/social',
+        destination: '/etax/social',
+        permanent: true,
       },
       // FAQ variants
       {
         source: '/faq',
-        destination: '/faqs',
-        permanent: true,
-      },
-      {
-        source: '/questions',
-        destination: '/faqs',
+        destination: '/etax/faqs',
         permanent: true,
       },
       // Old site ghost pages still in Google's index
       {
         source: '/facts',
-        destination: '/faqs',
+        destination: '/etax/faqs',
         permanent: true,
       },
       {
@@ -112,37 +165,32 @@ const nextConfig: NextConfig = {
         destination: '/',
         permanent: true,
       },
-      // E-tax/etax variants redirect to home
-      {
-        source: '/etax',
-        destination: '/',
-        permanent: true,
-      },
+      // E-tax name variants
       {
         source: '/e-tax',
-        destination: '/',
+        destination: '/etax',
         permanent: true,
       },
       {
         source: '/earnings-tax',
-        destination: '/',
+        destination: '/etax',
         permanent: true,
       },
       // Support/contribute redirect to donate
       {
         source: '/support',
-        destination: '/donate',
+        destination: '/etax/donate',
         permanent: true,
       },
       {
         source: '/contribute',
-        destination: '/donate',
+        destination: '/etax/donate',
         permanent: true,
       },
       // Endorsement singular redirect
       {
         source: '/endorsement',
-        destination: '/endorsements',
+        destination: '/etax/endorsements',
         permanent: true,
       },
       // Vote-yes variant redirects to /vote

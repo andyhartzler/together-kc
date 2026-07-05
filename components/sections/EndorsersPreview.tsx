@@ -72,7 +72,7 @@ export default function EndorsersPreview() {
           </div>
 
           <div className="text-center">
-            <Link href="/endorsements">
+            <Link href="/etax/endorsements">
               <Button variant="outline" size="md">
                 See All Endorsements
                 <svg

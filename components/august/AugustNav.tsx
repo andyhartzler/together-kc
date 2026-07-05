@@ -8,13 +8,13 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 // August-section navigation. Intentionally standalone: it does NOT use the
-// shared NAV_LINKS (those serve the live April e-tax pages). Absolute hrefs so
-// the anchors resolve from the [slug] detail pages too.
+// shared NAV_LINKS (those serve the archived e-tax pages under /etax).
+// Absolute hrefs so the anchors resolve from the /questions detail pages too.
 const AUGUST_NAV_LINKS = [
-  { label: 'The Five Questions', href: '/august-2026#questions' },
-  { label: 'How to Vote', href: '/august-2026#vote' },
+  { label: 'The Five Questions', href: '/#questions' },
+  { label: 'How to Vote', href: '/#vote' },
   { label: 'Find Your Polling Place', href: '/vote' },
-  { label: 'FAQs', href: '/august-2026#faqs' },
+  { label: 'FAQs', href: '/#faqs' },
 ] as const;
 
 export default function AugustNav() {
@@ -68,29 +68,22 @@ export default function AugustNav() {
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         >
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo: the white Together KC wordmark. Over the dark hero it sits
-                bare; once the bar turns white it gets a navy badge so the white
-                mark stays legible. */}
+            {/* Logo: the Vote Yes On All 5 campaign mark. All-white over the
+                dark hero, full color once the bar turns white on scroll (same
+                treatment the e-tax nav used). */}
             <Link
-              href="/august-2026"
-              aria-label="Together KC, August 2026 ballot home"
+              href="/"
+              aria-label="Vote Yes On All 5, August 2026 ballot home"
               className="flex-shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             >
-              <span
-                className={cn(
-                  'inline-flex items-center rounded-lg transition-all duration-300',
-                  onLight ? 'bg-navy px-3 py-1.5' : 'px-0 py-0'
-                )}
-              >
-                <Image
-                  src="/images/together-kc-footer.png"
-                  alt="Together KC"
-                  width={240}
-                  height={92}
-                  className="h-8 md:h-10 w-auto"
-                  priority
-                />
-              </span>
+              <Image
+                src={onLight ? '/images/august-logo.png' : '/images/august-logo-white.png'}
+                alt="Vote Yes On All 5"
+                width={269}
+                height={80}
+                className="h-8 md:h-10 w-auto transition-all duration-300"
+                priority
+              />
             </Link>
 
             {/* Desktop links */}
@@ -177,15 +170,13 @@ export default function AugustNav() {
               className="absolute top-0 right-0 bottom-0 w-[80vw] max-w-72 bg-white shadow-xl"
             >
               <div className="p-6 pt-6 flex items-center justify-between">
-                <span className="inline-flex items-center rounded-lg bg-navy px-3 py-1.5">
-                  <Image
-                    src="/images/together-kc-footer.png"
-                    alt="Together KC"
-                    width={200}
-                    height={76}
-                    className="h-7 w-auto"
-                  />
-                </span>
+                <Image
+                  src="/images/august-logo.png"
+                  alt="Vote Yes On All 5"
+                  width={235}
+                  height={70}
+                  className="h-7 w-auto"
+                />
                 <button
                   type="button"
                   onClick={() => setIsMobileMenuOpen(false)}

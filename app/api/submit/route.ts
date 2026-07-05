@@ -309,7 +309,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td class="btn-col" width="48%" style="padding-right:8px;">
-          <a href="${BASE}/endorse" style="display:block;text-align:center;padding:14px 8px;background:#e53935;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Add Your Endorsement</a>
+          <a href="${BASE}/etax/endorse" style="display:block;text-align:center;padding:14px 8px;background:#e53935;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Add Your Endorsement</a>
         </td>
         <td class="btn-col" width="48%" style="padding-left:8px;">
           <a href="${BASE}/api/calendar" style="display:block;text-align:center;padding:14px 8px;background:#4a90d9;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Remind Me to Vote</a>
@@ -323,7 +323,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td class="btn-col" width="48%" style="padding-right:8px;">
-          <a href="${BASE}/donate" style="display:block;text-align:center;padding:14px 8px;background:#2e7d32;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Donate</a>
+          <a href="${BASE}/etax/donate" style="display:block;text-align:center;padding:14px 8px;background:#2e7d32;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Donate</a>
         </td>
         <td class="btn-col" width="48%" style="padding-left:8px;">
           <a href="${BASE}/vote" style="display:block;text-align:center;padding:14px 8px;background:#f5a623;color:#ffffff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Find Your Polling Location</a>
@@ -362,7 +362,7 @@ async function sendYardSignConfirmation(name: string, email: string, isPickup: b
     to: email,
     subject: 'Your Yard Sign is Confirmed!',
     html,
-    text: `Thanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Thursday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is August 4, 2026. Early voting begins July 21.\n\nAdd Your Endorsement: https://together-kc.com/endorse\nRemind Me to Vote: https://together-kc.com/api/calendar\nDonate: https://together-kc.com/donate\nFind Your Polling Location: https://together-kc.com/vote\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
+    text: `Thanks for requesting a Vote Yes yard sign!\n\n${isPickup ? 'Pick up your sign at Next Page KC, 1216 Brooklyn Ave, Kansas City, MO. Monday - Thursday, 9:00 AM - 4:00 PM.' : "We'll deliver your sign as soon as possible."}\n\nElection Day is August 4, 2026. Early voting begins July 21.\n\nAdd Your Endorsement: https://together-kc.com/etax/endorse\nRemind Me to Vote: https://together-kc.com/api/calendar\nDonate: https://together-kc.com/etax/donate\nFind Your Polling Location: https://together-kc.com/vote\n\nPaid for by Together KC, Dan Kopp, Treasurer.\nNot authorized by any candidate or candidate committee.`,
   });
 }
 

@@ -141,7 +141,7 @@ export default function BallotSnapshot({ measures, className }: BallotSnapshotPr
             return (
               <motion.li key={measure.slug} variants={rowVariants}>
                 <Link
-                  href={`/august-2026/${measure.slug}`}
+                  href={`/questions/${measure.slug}`}
                   aria-label={`${measure.officialQuestion.number}, ${measure.name}: ${measure.cardPunch} Vote YES. See the full question.`}
                   className="group relative grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl px-4 py-4 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:grid-cols-[auto_auto_1fr_auto] sm:gap-5 sm:px-5"
                 >
