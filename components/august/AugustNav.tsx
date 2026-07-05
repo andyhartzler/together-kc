@@ -81,7 +81,7 @@ export default function AugustNav() {
                 alt="Vote Yes On All 5"
                 width={269}
                 height={80}
-                className="h-8 md:h-10 w-auto transition-all duration-300"
+                className="h-10 md:h-14 w-auto transition-all duration-300"
                 priority
               />
             </Link>
