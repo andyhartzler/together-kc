@@ -1,18 +1,25 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import { AUGUST_BALLOT } from '@/lib/constants';
-import Accordion from '@/components/ui/Accordion';
-import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
-import { FlipText } from '@/components/ui/FlipText';
-import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
-import { Marquee } from '@/components/ui/Marquee';
-import { fadeUp, EASE } from '@/components/ui/Reveal';
-import MeasureCard from '@/components/august/MeasureCard';
-import BallotSnapshot from '@/components/august/BallotSnapshot';
-import BarChartReveal from '@/components/august/BarChartReveal';
-import Footer from '@/components/layout/Footer';
+import { NAVY, PAPER, accentInk } from '@/components/august/accent';
+import {
+  AugustFooter,
+  KickerRule,
+  LedgerRow,
+  PaperButton,
+  PAPER_EASE,
+  VIEWPORT_ONCE,
+  riseVariants,
+  ruleDrawVariants,
+  staggerContainer,
+  useRevealFailsafe,
+} from '@/components/august/paper';
+import BallotSheet from '@/components/august/BallotSheet';
+import BriefStrip from '@/components/august/BriefStrip';
 
 const { hero, measures, questionsSection, costsShort, voteSteps, howToVote, faqsSection, faqs, closing, exploreLinks } =
   AUGUST_BALLOT;
@@ -27,254 +34,497 @@ const HUB_FAQ_QUESTIONS = [
 ];
 const shortFaqs = faqs.filter((f) => HUB_FAQ_QUESTIONS.includes(f.question));
 
-// Render the hub cards in official ballot order (Question 1 to 5) so they match
-// the BallotSnapshot scorecard above. The source measures array keeps its own
-// order for detail-page prev/next, so we sort a copy here for display only.
+// Render everything in official ballot order (Question 1 to 5). The source
+// measures array keeps its own order for detail-page prev/next, so we sort a
+// copy here for display only.
 const ballotOrderNum = (m: (typeof measures)[number]) =>
   parseInt(m.officialQuestion.number.replace(/\D/g, ''), 10);
 const cardMeasures = [...measures].sort((a, b) => ballotOrderNum(a) - ballotOrderNum(b));
 
 // ===========================================================================
-export default function AugustBallotPage() {
+// Derived figures. Every number below is read or computed from AUGUST_BALLOT.
+// ===========================================================================
+
+// Hero ledger figures from hero.hook ($1.7B invested / $0 new tax rates).
+const heroInvested = `${hero.hook[0].prefix}${hero.hook[0].target}${hero.hook[0].suffix}`;
+const heroZero = hero.hook[1].display;
+
+// The four bond questions (the ones with dollar amounts); Central City is a
+// rate renewal and carries no new authorization. Ledger bars run largest
+// first, widths relative to the largest authorization.
+const bondRows = cardMeasures
+  .filter((m) => m.amount.startsWith('$'))
+  .map((m) => ({
+    label: `${m.name} (${m.officialQuestion.number})`,
+    value: Number(m.amount.replace(/[^0-9]/g, '')),
+  }))
+  .sort((a, b) => b.value - a.value);
+const bondTotal = bondRows.reduce((sum, r) => sum + r.value, 0);
+const maxBond = bondRows[0]?.value ?? 1;
+const formatM = (v: number) => `$${Math.round(v / 1_000_000)}M`;
+
+// The Honest Part: costsShort copy tightened to tax RATE language per the
+// design spec ($0 always means the rate, never the bills).
+const honestFigure = `${costsShort.big}.00`;
+const honestSub = costsShort.sub.replace('taxes', 'tax rates');
+const honestHeadline = costsShort.headline.replace('new taxes', 'new tax rates');
+
+// Three mechanism entries pairing measure names with the costsShort chips.
+const nameOf = (slug: string) => measures.find((m) => m.slug === slug)?.name ?? '';
+const honestRows = [
+  { label: `${nameOf('clean-water')} and ${nameOf('sewers')}`, sub: costsShort.chips[0] },
+  { label: `${nameOf('housing')} and ${nameOf('civic-buildings')}`, sub: costsShort.chips[1] },
+  { label: nameOf('central-city'), sub: costsShort.chips[2] },
+];
+
+// ===========================================================================
+// Hero oval choreography: the coral ink fill sweeps in, the YES flips to
+// paper ink with it, then the check draws. Reduced motion renders final.
+// ===========================================================================
+const ovalFillVariants: Variants = {
+  hidden: { scaleX: 0, opacity: 0 },
+  show: { scaleX: 1, opacity: 1, transition: { duration: 0.45, ease: PAPER_EASE, delay: 0.25 } },
+};
+const yesInkVariants: Variants = {
+  hidden: { color: NAVY },
+  show: { color: PAPER, transition: { duration: 0.3, ease: PAPER_EASE, delay: 0.35 } },
+};
+const checkDrawVariants: Variants = {
+  hidden: { pathLength: 0, opacity: 0 },
+  show: { pathLength: 1, opacity: 1, transition: { duration: 0.4, ease: PAPER_EASE, delay: 0.62 } },
+};
+const barGrowVariants: Variants = {
+  hidden: { scaleX: 0 },
+  show: { scaleX: 1, transition: { duration: 0.7, ease: PAPER_EASE, delay: 0.15 } },
+};
+
+// Dotted leader recolored for the navy band (the shared .leader utility dots
+// are navy and would vanish on ink).
+const paperLeaderStyle = {
+  backgroundImage: 'linear-gradient(90deg, rgba(244, 239, 228, 0.45) 1px, transparent 1px)',
+  backgroundSize: '5px 1px',
+  backgroundRepeat: 'repeat-x',
+} as const;
+
+// Paper-ink double rule for closing the navy band (the shared .rule-total is
+// navy on navy).
+const paperRuleTotalStyle = {
+  backgroundImage: `linear-gradient(${PAPER}, ${PAPER}), linear-gradient(${PAPER}, ${PAPER})`,
+  backgroundSize: '100% 1px, 100% 1px',
+  backgroundPosition: 'top, bottom',
+  backgroundRepeat: 'no-repeat',
+  opacity: 0.8,
+} as const;
+
+// ---------------------------------------------------------------------------
+// Ruled FAQ: hairline dividers, no cards, plus glyph rotating to an x.
+// ---------------------------------------------------------------------------
+function RuledFaq({ items }: { items: readonly { question: string; answer: string }[] }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const reduce = useReducedMotion();
+
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
-      {/* ================================================================= */}
-      {/* HERO                                                               */}
-      {/* ================================================================= */}
-      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy to-[#16314f]" />
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/4 -left-1/4 w-[55%] h-[55%] bg-coral/25 rounded-full blur-3xl animate-drift motion-reduce:animate-none" />
-          <div className="absolute top-1/4 -right-1/4 w-2/3 h-2/3 bg-sky/25 rounded-full blur-3xl animate-drift motion-reduce:animate-none" style={{ animationDelay: '-7s' }} />
-          <div className="absolute -bottom-1/4 left-1/4 w-1/2 h-1/2 bg-golden/15 rounded-full blur-3xl animate-drift motion-reduce:animate-none" style={{ animationDelay: '-14s' }} />
-        </div>
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)',
-            backgroundSize: '54px 54px',
-          }}
-        />
-        <div className="noise-overlay absolute inset-0 z-[1]" />
+    <div className="rule-heavy">
+      {items.map((item, i) => {
+        const open = openIndex === i;
+        const panelId = `hub-faq-panel-${i}`;
+        return (
+          <div key={item.question} className={cn(i > 0 && 'rule-hair')}>
+            <h3>
+              <button
+                type="button"
+                aria-expanded={open}
+                aria-controls={panelId}
+                onClick={() => setOpenIndex(open ? null : i)}
+                className="flex w-full items-center justify-between gap-5 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              >
+                <span className="text-base font-bold text-ink sm:text-lg">{item.question}</span>
+                <motion.span
+                  aria-hidden="true"
+                  animate={reduce ? undefined : { rotate: open ? 45 : 0 }}
+                  transition={{ duration: 0.25, ease: PAPER_EASE }}
+                  className="shrink-0 text-2xl font-medium leading-none text-coral-press"
+                  style={reduce && open ? { transform: 'rotate(45deg)' } : undefined}
+                >
+                  +
+                </motion.span>
+              </button>
+            </h3>
+            <AnimatePresence initial={false}>
+              {open && (
+                <motion.div
+                  id={panelId}
+                  initial={reduce ? false : { height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={reduce ? undefined : { height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: PAPER_EASE }}
+                  className="overflow-hidden"
+                >
+                  <p className="type-body max-w-[42rem] pb-6 text-ink/80">{item.answer}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
-        {/* Top padding clears the fixed transparent nav (h-16 / md:h-20); the
-            nav now carries the Together KC wordmark, so the hero no longer
-            repeats it. */}
+// ===========================================================================
+export default function AugustBallotPage() {
+  const reduce = useReducedMotion();
+  // No animation is load-bearing: after the load choreography window every
+  // whileInView orchestrator below also receives animate={failsafe}, so the
+  // whole document settles to its printed state even if IntersectionObserver
+  // never fires (full-page captures, embeds, odd browsers).
+  const failsafe = useRevealFailsafe();
+
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-paper text-ink">
+      {/* ================================================================= */}
+      {/* HERO: the front page of the voter's dossier                        */}
+      {/* ================================================================= */}
+      <section className="px-4 pb-12 pt-24 sm:px-6 sm:pb-14 sm:pt-32 lg:px-8">
         <motion.div
-          className="relative z-20 text-center px-4 pt-28 pb-28 sm:pt-32 sm:pb-32 max-w-4xl mx-auto"
-          initial="hidden"
-          animate="visible"
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } } }}
+          className="mx-auto max-w-6xl"
+          initial={reduce ? false : 'hidden'}
+          animate="show"
+          variants={staggerContainer(0.09, 0.05)}
         >
-          <motion.div
-            variants={{ hidden: { opacity: 0, scale: 0.85 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5, type: 'spring', stiffness: 200 } } }}
-            className="flex justify-center mb-7 sm:mb-9"
-          >
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm text-white px-4 py-2 text-xs sm:text-sm font-semibold border border-white/20">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
-              {hero.eyebrow}
-            </span>
-          </motion.div>
+          {/* Document header line between hairline rules */}
+          <motion.div variants={ruleDrawVariants} aria-hidden="true" className="rule-hair origin-left" />
+          <motion.p variants={riseVariants} className="type-doc-label py-2.5 text-ink-soft">
+            City of Kansas City, Missouri &middot; Special Election &middot; Tuesday, August 4, 2026
+          </motion.p>
+          <motion.div variants={ruleDrawVariants} aria-hidden="true" className="rule-hair origin-left" />
 
-          <motion.h1
-            variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6 } } }}
-            className="text-5xl sm:text-7xl md:text-8xl font-bold text-white leading-[0.98] tracking-tight"
-          >
+          {/* Headline: YES inside the giant ballot oval */}
+          <motion.h1 variants={riseVariants} className="type-display-xl mt-10 text-ink sm:mt-14">
             Vote{' '}
-            <span className="text-coral" style={{ textShadow: '0 0 40px rgba(229,57,53,0.55), 0 0 80px rgba(229,57,53,0.3)' }}>
-              YES
+            <span className="relative inline-flex items-center whitespace-nowrap rounded-full border-[4px] border-ink px-[0.26em] align-[-0.04em] sm:border-[6px]">
+              <motion.span
+                aria-hidden="true"
+                variants={ovalFillVariants}
+                className="absolute inset-0 origin-left rounded-full bg-coral"
+              />
+              <motion.span variants={yesInkVariants} className="relative">
+                YES
+              </motion.span>
+              <svg
+                className="relative ml-[0.12em] h-[0.52em] w-[0.5em]"
+                viewBox="0 0 44 34"
+                fill="none"
+                aria-hidden="true"
+              >
+                <motion.path
+                  variants={checkDrawVariants}
+                  d="M6 18l12 11L38 5"
+                  stroke={PAPER}
+                  strokeWidth={6}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </span>
-            <br />
-            on all five.
+            {/* Block second line: the oval's border needs breathing room that
+                the 0.92 display leading alone does not give it. */}
+            <span className="mt-[0.08em] block">on all five.</span>
           </motion.h1>
 
-          <motion.div
-            variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6 } } }}
-            className="mt-5 sm:mt-7 flex justify-center"
-          >
-            <FlipText words={[...hero.flipWords]} duration={1800} className="text-2xl sm:text-3xl md:text-4xl text-coral" />
-          </motion.div>
+          <div className="lg:grid lg:grid-cols-12 lg:gap-12">
+            <div className="lg:col-span-8">
+              <motion.p variants={riseVariants} className="type-lede mt-7 max-w-[42rem] text-ink/80">
+                {hero.subhead}
+              </motion.p>
 
-          <motion.div
-            variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6 } } }}
-            className="mt-7 sm:mt-9 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
-          >
-            {hero.hook.map((h) => (
-              <div key={h.label} className="glass rounded-2xl px-5 py-3 border border-white/15 flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold text-white tabular-nums">
-                  {h.display ? h.display : <AnimatedCounter end={h.target} prefix={h.prefix} suffix={h.suffix} decimals={h.decimals} />}
-                </span>
-                <span className="text-white/70 text-xs sm:text-sm">{h.label}</span>
-              </div>
-            ))}
-          </motion.div>
+              {/* The two hero ledger lines (mobile; desktop carries the rail instead) */}
+              <motion.div variants={riseVariants} className="mt-9 max-w-md space-y-3 lg:hidden">
+                <LedgerRow size="lg" label="Invested back into Kansas City" figure={heroInvested} />
+                <LedgerRow size="lg" label="New tax rates" figure={heroZero} />
+              </motion.div>
 
-          <motion.div
-            variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6 } } }}
-            className="mt-9 sm:mt-11 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
-          >
-            <InteractiveHoverButton text="See the five" href="#questions" variant="primary" size="lg" arrowDirection="down" />
-            <InteractiveHoverButton text="How to vote" href="#vote" variant="outline" size="lg" />
+              <motion.div variants={riseVariants} className="mt-9 flex flex-wrap items-center gap-4">
+                <PaperButton href="#questions">See the five questions</PaperButton>
+                <PaperButton href="#vote" variant="secondary">
+                  How to vote
+                </PaperButton>
+              </motion.div>
+
+              <motion.p variants={riseVariants} className="type-fine mt-7 max-w-[42rem]">
+                The August 4 ballot includes other races beyond these five questions. Read your whole
+                ballot.
+              </motion.p>
+            </div>
+
+            {/* By the numbers rail (desktop): fills the front page's right column */}
+            <motion.aside
+              variants={riseVariants}
+              className="hidden lg:col-span-4 lg:mt-4 lg:block"
+              aria-label="The August 4 ballot by the numbers"
+            >
+              <div className="rule-heavy" />
+              <p className="type-doc-label pt-3 text-ink-soft">By the numbers</p>
+              <dl>
+                {[
+                  { figure: heroInvested, label: 'invested back into Kansas City' },
+                  { figure: heroZero, label: 'new tax rates' },
+                  { figure: '5', label: 'questions on the Kansas City portion of the ballot' },
+                ].map((entry) => (
+                  <div key={entry.label} className="rule-hair py-5 first-of-type:border-t-0">
+                    <dt className="sr-only">{entry.label}</dt>
+                    <dd>
+                      <span className="block text-5xl font-extrabold tracking-[-0.03em] text-ink tabular-nums">
+                        {entry.figure}
+                      </span>
+                      <span className="type-fine mt-1.5 block">{entry.label}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </motion.aside>
+          </div>
+
+          {/* Hero base: the ruled index of the five questions */}
+          <motion.div variants={ruleDrawVariants} aria-hidden="true" className="rule-heavy mt-12 origin-left sm:mt-16" />
+          <nav aria-label="The five ballot questions">
+            <motion.ul
+              variants={staggerContainer(0.07)}
+              className="scrollbar-none flex w-full max-w-full list-none items-center gap-x-8 overflow-x-auto py-4 lg:justify-between"
+            >
+              {cardMeasures.map((m) => (
+                <motion.li key={m.slug} variants={riseVariants} className="shrink-0">
+                  <Link
+                    href={`/questions/${m.slug}`}
+                    className="group flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                  >
+                    <span aria-hidden="true" className="h-3 w-3 shrink-0" style={{ backgroundColor: m.accent.swatch }} />
+                    <span className="sr-only">{m.officialQuestion.number}:</span>
+                    <span className="type-doc-label whitespace-nowrap text-ink decoration-2 underline-offset-[3px] group-hover:underline">
+                      {m.name}
+                    </span>
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </nav>
+          <motion.div variants={riseVariants} aria-hidden="true" className="relative">
+            <div className="perforation" />
+            <span className="type-doc-label absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-paper px-3 text-ink-soft">
+              below the fold
+            </span>
           </motion.div>
         </motion.div>
-
-        <motion.a
-          href="#questions"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 0.5 }}
-          className="absolute bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-20"
-          aria-label="Scroll to the five questions"
-        >
-          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center animate-bounce motion-reduce:animate-none">
-            <div className="w-1.5 h-3 bg-white/50 rounded-full mt-2" />
-          </div>
-        </motion.a>
       </section>
 
       {/* ================================================================= */}
-      {/* MARQUEE BAND                                                       */}
+      {/* THE SAMPLE BALLOT                                                  */}
       {/* ================================================================= */}
-      <div className="bg-coral text-white py-3 sm:py-3.5 border-y border-white/10">
-        <Marquee items={['Vote Yes', 'August 4, 2026', 'No New Taxes', 'Five Questions', 'Five Yeses']} />
-      </div>
-
-      {/* ================================================================= */}
-      {/* BALLOT SNAPSHOT (kinetic centerpiece, leads into the card grid)    */}
-      {/* ================================================================= */}
-      <section className="relative py-16 sm:py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-10 sm:mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
-              Sample ballot
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Here is what your YES looks like</h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-5 leading-relaxed">
-              Five questions, in the order you will see them. Tap any one for the full breakdown below.
-            </p>
-          </motion.div>
-
-          <BallotSnapshot measures={measures} />
-        </div>
-      </section>
-
-      {/* ================================================================= */}
-      {/* THE FIVE MEASURES (clickable hub cards -> detail pages)            */}
-      {/* ================================================================= */}
-      <section id="questions" className="relative py-16 sm:py-24 bg-gradient-to-b from-white via-light-gray/40 to-white scroll-mt-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-11 sm:mb-14">
-            <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
-              {questionsSection.eyebrow}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Five questions. Five yeses.</h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-5 leading-relaxed">
-              Tap any question for the full breakdown, the official ballot language, and the sources behind it.
-            </p>
-          </motion.div>
-
-          <div className="space-y-6 sm:space-y-8">
-            {cardMeasures.map((m, i) => (
-              <MeasureCard key={m.slug} measure={m} index={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================= */}
-      {/* THE $0 MOMENT                                                      */}
-      {/* ================================================================= */}
-      <section className="relative py-20 sm:py-28 bg-navy overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/4 right-0 w-1/2 h-2/3 bg-sky/15 rounded-full blur-3xl animate-drift motion-reduce:animate-none" />
-          <div className="absolute -bottom-1/3 -left-1/4 w-1/2 h-2/3 bg-coral/15 rounded-full blur-3xl animate-drift motion-reduce:animate-none" style={{ animationDelay: '-9s' }} />
-        </div>
-
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section id="questions" className="scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-6xl">
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, type: 'spring', stiffness: 130, damping: 16 }}
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={staggerContainer(0.09)}
+            className="mb-10 max-w-[44rem] sm:mb-14"
           >
-            <div className="text-7xl sm:text-8xl md:text-9xl font-bold text-white leading-none" style={{ textShadow: '0 0 50px rgba(229,57,53,0.45)' }}>
-              {costsShort.big}
-            </div>
-            <p className="text-lg sm:text-xl text-white/60 font-medium mt-2 uppercase tracking-widest">{costsShort.sub}</p>
+            <motion.div variants={riseVariants}>
+              <KickerRule label={questionsSection.eyebrow} />
+            </motion.div>
+            <motion.h2 variants={riseVariants} className="type-h2 mt-4 text-ink">
+              {questionsSection.heading}
+            </motion.h2>
+            <motion.p variants={riseVariants} className="type-lede mt-4 text-ink/80">
+              {questionsSection.sub}
+            </motion.p>
           </motion.div>
 
-          <motion.h2 {...fadeUp} transition={{ duration: 0.7, delay: 0.1, ease: EASE }} className="text-2xl sm:text-4xl font-bold text-white mt-8 sm:mt-10 leading-tight">
-            {costsShort.headline}
-          </motion.h2>
-
-          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.2, ease: EASE }} className="mt-9 sm:mt-11 flex flex-wrap justify-center gap-3">
-            {costsShort.chips.map((chip) => (
-              <span key={chip} className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white/90 text-sm font-medium px-4 py-2">
-                <svg className="w-4 h-4 text-coral shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-                {chip}
-              </span>
-            ))}
-          </motion.div>
-
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
-            className="mt-12 sm:mt-14 rounded-3xl bg-white p-6 sm:p-9 text-left shadow-2xl shadow-black/30"
-          >
-            <BarChartReveal
-              heading="Where the $1.7 billion goes"
-              rows={[
-                { label: 'Clean Water (Question 4)', value: 750_000_000 },
-                { label: 'Sewers (Question 5)', value: 750_000_000 },
-                { label: 'Affordable Housing (Question 1)', value: 100_000_000 },
-                { label: 'Civic Buildings (Question 2)', value: 100_000_000 },
-              ]}
-              total={1_700_000_000}
-              accent="#e53935"
-              caption="The four bond questions total $1.7 billion. Question 3 (Central City) is a sales-tax renewal, not a bond, so it carries no new authorization."
-            />
-          </motion.div>
+          <BallotSheet measures={cardMeasures} />
         </div>
       </section>
 
       {/* ================================================================= */}
-      {/* HOW TO VOTE                                                        */}
+      {/* THE FIVE BRIEFS                                                    */}
       {/* ================================================================= */}
-      <section id="vote" className="relative py-16 sm:py-24 bg-white scroll-mt-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-11 sm:mb-14">
-            <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
-              {howToVote.eyebrow}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Make your plan to vote</h2>
+      <section className="bg-paper-deep px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <motion.div
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={riseVariants}
+            className="mb-14"
+          >
+            <KickerRule label="The briefs, question by question" />
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-11 sm:mb-12">
-            {voteSteps.map((s, i) => (
-              <motion.div
-                key={s.date}
-                {...fadeUp}
-                transition={{ duration: 0.5, delay: i * 0.1, ease: EASE }}
-                className="relative bg-white rounded-2xl p-6 sm:p-7 shadow-xl shadow-navy/5 border border-gray-100 overflow-hidden text-center sm:text-left"
-              >
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-coral via-golden to-sky" />
-                <p className="text-[0.7rem] uppercase tracking-widest font-semibold text-coral mb-2">{s.kicker}</p>
-                <p className="text-2xl sm:text-3xl font-bold text-navy leading-tight">{s.date}</p>
-                <p className="text-sm sm:text-base text-gray-600 mt-1">{s.title}</p>
-                {'sub' in s && s.sub ? <p className="text-xs text-gray-400 mt-1.5">{s.sub}</p> : null}
+          <BriefStrip measures={cardMeasures} />
+        </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* THE HONEST PART (navy band)                                        */}
+      {/* ================================================================= */}
+      <section className="relative overflow-hidden bg-navy px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div aria-hidden="true" className="noise-overlay absolute inset-0" />
+        <div className="relative mx-auto max-w-6xl">
+          <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
+            {/* Left: the $0.00 affidavit and the mechanism ledger */}
+            <motion.div
+              initial={reduce ? false : 'hidden'}
+              animate={failsafe}
+              whileInView="show"
+              viewport={VIEWPORT_ONCE}
+              variants={staggerContainer(0.09)}
+              className="lg:col-span-7"
+            >
+              <motion.div variants={riseVariants}>
+                <KickerRule label="The honest part" ink={PAPER} />
               </motion.div>
-            ))}
-          </div>
+              <motion.p variants={riseVariants} className="type-figure mt-7 text-paper">
+                {honestFigure}
+              </motion.p>
+              <motion.p variants={riseVariants} className="type-doc-label-lg mt-3 text-paper/70">
+                {honestSub}
+              </motion.p>
+              <motion.div variants={ruleDrawVariants} aria-hidden="true" className="mt-6 h-[3px] w-24 origin-left bg-coral" />
+              <motion.h2 variants={riseVariants} className="type-h2 mt-7 max-w-[36rem] text-paper">
+                {honestHeadline}
+              </motion.h2>
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center">
-            <InteractiveHoverButton text="Find your polling place" href="/vote" variant="secondary" size="lg" />
-            <p className="text-xs sm:text-sm text-gray-400 max-w-xl mx-auto mt-5 leading-relaxed">{howToVote.pollingNote}</p>
+              <motion.div variants={riseVariants} className="mt-10 max-w-[36rem]">
+                <p className="type-doc-label text-paper/70">Change to your tax rates</p>
+                <div className="mt-3 border-t border-paper/25">
+                  {honestRows.map((row) => (
+                    <div key={row.label} className="flex items-end gap-2 border-b border-paper/15 py-4">
+                      <span className="min-w-0 text-[0.9375rem] font-medium text-paper">
+                        {row.label}
+                        <span className="block text-[0.8125rem] font-normal leading-relaxed text-paper/70">
+                          {row.sub}
+                        </span>
+                      </span>
+                      <span aria-hidden="true" className="mb-[0.4em] h-px min-w-8 flex-1 self-end" style={paperLeaderStyle} />
+                      <span className="shrink-0 whitespace-nowrap text-[1.0625rem] font-bold text-paper tabular-nums">
+                        $0.00
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Right: where the bond money goes, as flat paper-ink ledger bars */}
+            <motion.div
+              initial={reduce ? false : 'hidden'}
+              animate={failsafe}
+              whileInView="show"
+              viewport={VIEWPORT_ONCE}
+              variants={staggerContainer(0.1)}
+              className="lg:col-span-5 lg:pt-12"
+            >
+              <motion.h3 variants={riseVariants} className="text-lg font-bold text-paper">
+                Where the ${(bondTotal / 1_000_000_000).toFixed(1)} billion goes
+              </motion.h3>
+              <ul className="mt-7 list-none space-y-6">
+                {bondRows.map((row) => (
+                  <motion.li key={row.label} variants={riseVariants}>
+                    <div className="flex items-end gap-2">
+                      <span className="min-w-0 text-[0.9375rem] font-medium text-paper">{row.label}</span>
+                      <span aria-hidden="true" className="mb-[0.4em] h-px min-w-8 flex-1 self-end" style={paperLeaderStyle} />
+                      <span className="shrink-0 whitespace-nowrap font-bold text-paper tabular-nums">
+                        {formatM(row.value)}
+                      </span>
+                    </div>
+                    <div className="mt-2 h-2.5 w-full bg-paper/15">
+                      <motion.div
+                        variants={barGrowVariants}
+                        className="h-full origin-left bg-paper"
+                        style={{ width: `${(row.value / maxBond) * 100}%` }}
+                      />
+                    </div>
+                  </motion.li>
+                ))}
+              </ul>
+              <motion.p variants={riseVariants} className="mt-7 text-[0.8125rem] leading-relaxed text-paper/70">
+                The four bond questions total $1.7 billion. Question 3 (Central City) is a sales-tax
+                renewal, not a bond, so it carries no new authorization.
+              </motion.p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* MAKE YOUR PLAN                                                     */}
+      {/* ================================================================= */}
+      <section id="vote" className="scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <motion.div
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={staggerContainer(0.09)}
+            className="max-w-[44rem]"
+          >
+            <motion.div variants={riseVariants}>
+              <KickerRule label={howToVote.eyebrow} />
+            </motion.div>
+            <motion.h2 variants={riseVariants} className="type-h2 mt-4 text-ink">
+              {howToVote.heading}
+            </motion.h2>
+          </motion.div>
+
+          {/* The ruled schedule: one heavy rule, three square nodes */}
+          <motion.div
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={staggerContainer(0.12)}
+            className="relative mt-14 sm:mt-16"
+          >
+            <div
+              aria-hidden="true"
+              className="absolute bottom-1 left-0 top-1 w-[3px] bg-ink sm:inset-x-0 sm:bottom-auto sm:top-0 sm:h-[3px] sm:w-auto"
+            />
+            <ol className="grid list-none gap-10 pl-8 sm:grid-cols-3 sm:gap-8 sm:pl-0 sm:pt-9">
+              {voteSteps.map((s, i) => {
+                const isElectionDay = i === voteSteps.length - 1;
+                return (
+                  <motion.li key={s.date} variants={riseVariants} className="relative">
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        'absolute -left-9 top-1 h-3 w-3 sm:-top-10 sm:left-0',
+                        isElectionDay ? 'bg-coral' : 'bg-ink'
+                      )}
+                    />
+                    <p className="text-3xl font-extrabold uppercase leading-none tracking-tight text-ink tabular-nums sm:text-4xl">
+                      {s.date}
+                    </p>
+                    <p className="type-doc-label mt-3 text-ink-soft">{s.kicker}</p>
+                    <p className="mt-1.5 text-base font-semibold text-ink">{s.title}</p>
+                    {'sub' in s && s.sub ? <p className="type-fine mt-1">{s.sub}</p> : null}
+                  </motion.li>
+                );
+              })}
+            </ol>
+          </motion.div>
+
+          <motion.div
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={riseVariants}
+            className="mt-12 sm:mt-14"
+          >
+            <PaperButton href="/vote">Find your polling place</PaperButton>
+            <p className="type-fine mt-5 max-w-xl">{howToVote.pollingNote}</p>
           </motion.div>
         </div>
       </section>
@@ -282,25 +532,45 @@ export default function AugustBallotPage() {
       {/* ================================================================= */}
       {/* SHORT FAQ (deep answers live on each measure page)                 */}
       {/* ================================================================= */}
-      <section id="faqs" className="relative py-16 sm:py-24 bg-gradient-to-b from-light-gray/40 to-white scroll-mt-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mb-10 sm:mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full bg-coral/10 text-coral text-sm font-semibold border border-coral/20 px-4 py-1.5 mb-5">
-              <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
-              {faqsSection.eyebrow}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">{faqsSection.heading}</h2>
+      <section id="faqs" className="scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <motion.div
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={staggerContainer(0.09)}
+            className="max-w-[44rem]"
+          >
+            <motion.div variants={riseVariants}>
+              <KickerRule label={faqsSection.eyebrow} />
+            </motion.div>
+            <motion.h2 variants={riseVariants} className="type-h2 mt-4 text-ink">
+              {faqsSection.heading}
+            </motion.h2>
           </motion.div>
-          <Accordion items={shortFaqs} />
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-center mt-9 sm:mt-10">
+          <div className="mt-10 max-w-[46rem] sm:mt-12">
+            <RuledFaq items={shortFaqs} />
+          </div>
+
+          <motion.div
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={riseVariants}
+            className="mt-10"
+          >
             <Link
               href="#questions"
-              className="inline-flex items-center gap-2 text-sm font-bold text-coral hover:text-navy transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-bold text-coral-press decoration-2 underline-offset-[3px] transition-colors hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               See every measure in detail
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+              {/* Rightward arrow: forward-navigation grammar, matching the
+                  briefs' "Read the full question" link (never an up caret). */}
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
               </svg>
             </Link>
           </motion.div>
@@ -308,42 +578,65 @@ export default function AugustBallotPage() {
       </section>
 
       {/* ================================================================= */}
-      {/* CLOSING + EXPLORE                                                  */}
+      {/* CLOSING (navy band)                                                */}
       {/* ================================================================= */}
-      <section className="relative pt-20 sm:pt-28 pb-12 sm:pb-16 bg-navy overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/4 left-1/4 w-1/2 h-2/3 bg-coral/15 rounded-full blur-3xl animate-drift motion-reduce:animate-none" />
-          <div className="absolute -bottom-1/4 right-0 w-1/2 h-2/3 bg-sky/15 rounded-full blur-3xl animate-drift motion-reduce:animate-none" style={{ animationDelay: '-10s' }} />
-        </div>
-
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.h2 {...fadeUp} transition={{ duration: 0.7, ease: EASE }} className="text-3xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
+      <section className="relative overflow-hidden bg-navy px-4 pb-10 pt-20 sm:px-6 sm:pb-12 sm:pt-28 lg:px-8">
+        <div aria-hidden="true" className="noise-overlay absolute inset-0" />
+        <div className="relative mx-auto max-w-6xl">
+          <motion.h2
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={riseVariants}
+            className="type-display max-w-5xl text-paper"
+          >
             {closing.heading}
           </motion.h2>
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.12, ease: EASE }} className="mt-9 flex justify-center">
-            <InteractiveHoverButton text={closing.cta} href="/vote" variant="primary" size="lg" />
+          <motion.div
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={riseVariants}
+            className="mt-10"
+          >
+            <PaperButton href="/vote" variant="paper">
+              {closing.cta}
+            </PaperButton>
           </motion.div>
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.2, ease: EASE }} className="mt-16 sm:mt-20">
-            <p className="text-white/40 text-xs sm:text-sm font-medium uppercase tracking-widest mb-5 sm:mb-6">Explore the Full Website</p>
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+          <motion.div
+            initial={reduce ? false : 'hidden'}
+            animate={failsafe}
+            whileInView="show"
+            viewport={VIEWPORT_ONCE}
+            variants={riseVariants}
+            className="mt-16 sm:mt-20"
+          >
+            <p className="type-doc-label text-paper/70">Elsewhere from Together KC</p>
+            <ul className="mt-4 flex list-none flex-wrap gap-x-8 gap-y-3">
               {exploreLinks.map((link) => (
-                <motion.div key={link.href} whileHover={{ y: -3, scale: 1.03 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
+                <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="inline-block px-6 py-3 sm:px-7 sm:py-3.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold text-sm sm:text-base rounded-full hover:bg-white hover:text-navy transition-all duration-200"
+                    className="font-semibold text-paper underline decoration-paper/40 decoration-2 underline-offset-[3px] transition-colors hover:decoration-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
                   >
                     {link.label}
                   </Link>
-                </motion.div>
+                </li>
               ))}
-            </div>
+            </ul>
           </motion.div>
+
+          <div aria-hidden="true" className="mt-14 h-[5px] sm:mt-16" style={paperRuleTotalStyle} />
         </div>
       </section>
 
-      <Footer />
+      {/* Text-only footer: the shared layout Footer carries the skyline
+          lockup, which the spec bans on the August pages. */}
+      <AugustFooter />
     </div>
   );
 }

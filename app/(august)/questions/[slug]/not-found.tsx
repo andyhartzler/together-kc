@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Footer from '@/components/layout/Footer';
+import AugustFooter from '@/components/august/paper/AugustFooter';
 
 // Branded 404 for an unknown /questions/<slug>. Sends people back to the hub
 // where all five real measures live.
@@ -40,7 +40,7 @@ export default function MeasureNotFound() {
           </div>
         </div>
       </section>
-      <Footer />
+      <AugustFooter />
     </div>
   );
 }
