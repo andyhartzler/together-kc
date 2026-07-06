@@ -1,9 +1,8 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
+import { fadeUp, EASE } from '@/components/ui/Reveal';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
-import { accentInk } from '@/components/august/accent';
-import { PAPER_EASE, VIEWPORT_ONCE, ledgerDelay } from '@/components/august/paper';
 import { cn } from '@/lib/utils';
 
 export interface ProjectShowcaseItem {
@@ -21,13 +20,11 @@ export interface ProjectShowcaseProps {
   className?: string;
 }
 
-// PAPER TRAIL restyle: a true ruled register. One component still serves
-// three jobs (housing Trust Fund completions, CCED East Side projects, sewer
-// SRF docket entries) but as ledger rows on paper: name in w700 ink with the
-// detail as fine print beneath, the meta figure leader-dotted to the right,
-// hairlines between rows, and the footer total printed under the double
-// rule. Rows post top-down with the capped ledger stagger; reduced motion
-// renders the register fully posted.
+// Staggered, responsive grid of real project cards. One component serves three
+// jobs: housing Trust Fund completions, CCED East Side projects, and sewer SRF
+// applications. Every value shown is plain text, so the grid is fully legible
+// without motion or color. The accent is always a prop (the golden swatch flips
+// to navy text on filled surfaces, mirroring onSwatchText in MeasureDetail).
 export default function ProjectShowcase({
   heading,
   items,
@@ -36,66 +33,103 @@ export default function ProjectShowcase({
   className,
 }: ProjectShowcaseProps) {
   const reduce = useReducedMotion();
-  const inks = accentInk(accent);
+
+  // Golden (#f5a623) is too light under white and too pale as text on white.
+  const isGolden = accent.trim().toLowerCase() === '#f5a623';
+  const onAccentText = isGolden ? '#1e3a5f' : '#ffffff'; // text painted ON the accent fill
+  const accentInk = isGolden ? '#9a6b0f' : accent; // accent-colored text on a light surface
+
+  const gridLines =
+    'linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)';
 
   return (
     <section className={cn('w-full', className)}>
       {heading ? (
-        <h3 className="mb-5 flex items-center gap-3 text-lg font-extrabold leading-snug text-ink sm:mb-6 sm:text-xl">
-          <span
-            aria-hidden="true"
-            className="inline-block h-[3px] w-6 shrink-0"
-            style={{ backgroundColor: inks.field }}
-          />
-          {heading}
-        </h3>
+        <motion.div
+          initial={reduce ? false : fadeUp.initial}
+          whileInView={reduce ? undefined : fadeUp.whileInView}
+          viewport={fadeUp.viewport}
+          transition={reduce ? undefined : { duration: 0.5, ease: EASE }}
+          className="mb-6 sm:mb-8 flex items-center gap-2.5"
+        >
+          <span aria-hidden className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: accent }} />
+          <h3 className="text-xl sm:text-2xl font-bold text-navy leading-snug">{heading}</h3>
+        </motion.div>
       ) : null}
 
-      <ul className="m-0 list-none p-0">
+      <ul className="m-0 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
         {items.map((item, i) => (
           <motion.li
             key={`${item.name}-${i}`}
-            initial={reduce ? false : { opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VIEWPORT_ONCE}
-            transition={{ duration: 0.45, delay: reduce ? 0 : ledgerDelay(i, 0.07), ease: PAPER_EASE }}
-            className="rule-hair py-3 first:border-t-0 first:pt-0 sm:py-3.5"
+            initial={reduce ? false : fadeUp.initial}
+            whileInView={reduce ? undefined : fadeUp.whileInView}
+            viewport={fadeUp.viewport}
+            transition={
+              reduce ? undefined : { duration: 0.5, delay: Math.min(i, 8) * 0.06, ease: EASE }
+            }
+            whileHover={reduce ? undefined : { y: -5, boxShadow: `0 26px 50px -22px ${accent}66` }}
+            style={{ boxShadow: '0 10px 30px -20px rgba(30,58,95,0.25)' }}
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white transition-shadow duration-300 hover:shadow-lg motion-reduce:transition-none"
           >
-            <div className="flex items-end gap-2">
-              <span className="min-w-0 text-[0.9375rem] font-bold leading-snug text-ink sm:text-base">
-                {item.name}
-              </span>
-              {item.meta ? (
-                <>
-                  <span aria-hidden="true" className="leader" />
+            {/* left accent rail (decorative) */}
+            <span
+              aria-hidden
+              className="absolute inset-y-0 left-0 w-1"
+              style={{ backgroundColor: accent }}
+            />
+            {/* soft accent glow, warms on hover */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-[0.06] blur-2xl transition-opacity duration-500 group-hover:opacity-[0.16] motion-reduce:transition-none"
+              style={{ backgroundColor: accent }}
+            />
+
+            <div className="relative flex h-full flex-col p-6 pl-7">
+              <div className="flex items-start justify-between gap-3">
+                <h4 className="flex-1 text-lg font-bold leading-snug text-navy">{item.name}</h4>
+                {item.meta ? (
                   <span
-                    className="shrink-0 whitespace-nowrap text-[0.9375rem] font-bold tabular-nums sm:text-[1.0625rem]"
-                    style={{ color: inks.inkOnPaper }}
+                    className="inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold"
+                    style={{ backgroundColor: `${accent}14`, color: accentInk }}
                   >
                     {item.meta}
                   </span>
-                </>
-              ) : null}
+                ) : null}
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-gray-600">{item.detail}</p>
             </div>
-            <p className="type-fine mt-1 max-w-prose">{item.detail}</p>
           </motion.li>
         ))}
       </ul>
 
       {footer ? (
         <motion.div
-          initial={reduce ? false : { opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={VIEWPORT_ONCE}
-          transition={{ duration: 0.5, delay: reduce ? 0 : 0.15, ease: PAPER_EASE }}
-          className="mt-5"
+          initial={reduce ? false : fadeUp.initial}
+          whileInView={reduce ? undefined : fadeUp.whileInView}
+          viewport={fadeUp.viewport}
+          transition={reduce ? undefined : { duration: 0.55, delay: 0.1, ease: EASE }}
+          className="relative mt-8 overflow-hidden rounded-2xl p-7 sm:p-8"
+          style={{
+            backgroundColor: accent,
+            color: onAccentText,
+            backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.14), rgba(0,0,0,0.20))',
+          }}
         >
-          <span aria-hidden="true" className="rule-total block" />
-          <div className="flex items-end gap-2 pt-2">
-            <span className="type-doc-label-lg min-w-0 text-ink">{footer.label}</span>
-            <span aria-hidden="true" className="leader" />
-            <span className="shrink-0 whitespace-nowrap text-2xl font-extrabold text-ink tabular-nums sm:text-3xl">
+          {/* faint grid for depth (decorative) */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.12]"
+            style={{ backgroundImage: gridLines, backgroundSize: '32px 32px' }}
+          />
+          <div className="relative flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <span className="text-5xl font-bold leading-none tracking-tight sm:text-6xl">
               <AnimatedCounter end={footer.value} />
+            </span>
+            <span
+              className="text-sm font-semibold uppercase tracking-wide sm:text-base"
+              style={{ opacity: 0.85 }}
+            >
+              {footer.label}
             </span>
           </div>
         </motion.div>
