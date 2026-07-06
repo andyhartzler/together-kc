@@ -7,14 +7,13 @@ import Accordion from '@/components/ui/Accordion';
 import { InteractiveHoverButton } from '@/components/ui/InteractiveHoverButton';
 import { FlipText } from '@/components/ui/FlipText';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
-import { Marquee } from '@/components/ui/Marquee';
 import { fadeUp, EASE } from '@/components/ui/Reveal';
 import MeasureCard from '@/components/august/MeasureCard';
 import BallotSnapshot from '@/components/august/BallotSnapshot';
 import BarChartReveal from '@/components/august/BarChartReveal';
 import Footer from '@/components/layout/Footer';
 
-const { hero, measures, questionsSection, costsShort, voteSteps, howToVote, faqsSection, faqs, closing, exploreLinks } =
+const { hero, measures, questionsSection, costsShort, voteSteps, howToVote, faqsSection, faqs, closing } =
   AUGUST_BALLOT;
 
 // Short FAQ on the hub stays to the three top-level questions; the deep,
@@ -134,10 +133,17 @@ export default function AugustBallotPage() {
       </section>
 
       {/* ================================================================= */}
-      {/* MARQUEE BAND                                                       */}
+      {/* ELECTION STRIP (static, quiet)                                     */}
       {/* ================================================================= */}
-      <div className="bg-coral text-white py-3 sm:py-3.5 border-y border-white/10">
-        <Marquee items={['Vote Yes', 'August 4, 2026', 'No New Tax Rates', 'Five Questions', 'Five Yeses']} />
+      <div className="bg-coral text-white border-y border-white/10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex flex-col items-center gap-1 text-center sm:flex-row sm:justify-between sm:text-left">
+          <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.16em]">
+            Vote YES on all five
+          </p>
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.16em] text-white/85">
+            Election Day &middot; Tuesday, August 4, 2026
+          </p>
+        </div>
       </div>
 
       {/* ================================================================= */}
@@ -325,21 +331,6 @@ export default function AugustBallotPage() {
             <InteractiveHoverButton text={closing.cta} href="/vote" variant="primary" size="lg" />
           </motion.div>
 
-          <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.2, ease: EASE }} className="mt-16 sm:mt-20">
-            <p className="text-white/40 text-xs sm:text-sm font-medium uppercase tracking-widest mb-5 sm:mb-6">Explore the Full Website</p>
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-              {exploreLinks.map((link) => (
-                <motion.div key={link.href} whileHover={{ y: -3, scale: 1.03 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
-                  <Link
-                    href={link.href}
-                    className="inline-block px-6 py-3 sm:px-7 sm:py-3.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold text-sm sm:text-base rounded-full hover:bg-white hover:text-navy transition-all duration-200"
-                  >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </section>
 

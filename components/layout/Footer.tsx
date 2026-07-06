@@ -12,6 +12,16 @@ const SOCIAL_LINKS = [
   { name: 'TikTok', href: 'https://www.tiktok.com/@togetherkcmo', icon: '/images/social/tiktok.png' },
 ];
 
+// The won April 2026 e-tax campaign lives on under /etax; this is its home in
+// the footer, so the August pages stay focused on the five questions.
+const ETAX_LINKS = [
+  { label: 'Victory', href: '/etax/victory' },
+  { label: 'Home', href: '/etax' },
+  { label: 'FAQs', href: '/etax/faqs' },
+  { label: 'Endorsements', href: '/etax/endorsements' },
+  { label: 'Donate', href: '/etax/donate' },
+];
+
 export default function Footer() {
   const pathname = usePathname();
   const isVotePage = pathname === '/vote' || pathname.startsWith('/vote?');
@@ -32,35 +42,60 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Social Links */}
-      <div className="flex justify-center gap-5 pt-4 pb-2">
-        {SOCIAL_LINKS.map((social) => (
-          <Link
-            key={social.name}
-            href={social.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="opacity-70 hover:opacity-100 transition-opacity"
-            aria-label={`Follow us on ${social.name}`}
-          >
-            <Image
-              src={social.icon}
-              alt={social.name}
-              width={28}
-              height={28}
-              className="w-7 h-7 object-contain"
-            />
-          </Link>
-        ))}
+      {/* E-tax archive (left) + social links (right) */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-3">
+        <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <nav aria-label="Kansas City Earnings Tax campaign" className="text-center sm:text-left">
+            <p className="text-white/80 text-xs font-semibold uppercase tracking-[0.18em]">
+              Kansas City Earnings Tax
+            </p>
+            <div className="mt-2 h-px w-full bg-gradient-to-r from-coral via-golden to-sky opacity-80" />
+            <ul className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1.5 sm:justify-start">
+              {ETAX_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-white/60 hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex gap-5">
+            {SOCIAL_LINKS.map((social) => (
+              <Link
+                key={social.name}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="opacity-70 hover:opacity-100 transition-opacity"
+                aria-label={`Follow us on ${social.name}`}
+              >
+                <Image
+                  src={social.icon}
+                  alt={social.name}
+                  width={28}
+                  height={28}
+                  className="w-7 h-7 object-contain"
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Bottom disclaimer - centered */}
-      <div className="px-4 sm:px-6 lg:px-8 pb-4 pt-2">
-        <p className="text-white/60 text-xs text-center leading-tight">
-          <span className="whitespace-nowrap">Paid for by Together KC, Dan Kopp, Treasurer.</span>
-          <br />
-          Not authorized by any candidate or candidate committee.
-        </p>
+      <div className="px-4 sm:px-6 lg:px-8 pb-4 pt-3">
+        <div className="max-w-5xl mx-auto border-t border-white/10 pt-3">
+          <p className="text-white/60 text-xs text-center leading-tight">
+            <span className="whitespace-nowrap">Paid for by Together KC, Dan Kopp, Treasurer.</span>
+            <br />
+            Not authorized by any candidate or candidate committee.
+          </p>
+        </div>
       </div>
     </footer>
   );

@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import type { AUGUST_BALLOT } from '@/lib/constants';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { TopicIcon } from '@/components/ui/TopicIcon';
-import { Marquee } from '@/components/ui/Marquee';
 import { fadeUp, EASE } from '@/components/ui/Reveal';
 import Accordion from '@/components/ui/Accordion';
 import Footer from '@/components/layout/Footer';
@@ -289,10 +288,17 @@ export default function MeasureDetail({
       </section>
 
       {/* ================================================================= */}
-      {/* ACCENT MARQUEE BAND                                                */}
+      {/* ACCENT ELECTION STRIP (static, quiet)                              */}
       {/* ================================================================= */}
-      <div className="py-3 sm:py-3.5 border-y border-white/10" style={{ backgroundColor: swatch, color: onSwatchText }}>
-        <Marquee items={[measure.name, 'Vote Yes', 'August 4, 2026', measure.costChip, measure.officialQuestion.number]} />
+      <div className="border-y border-white/10" style={{ backgroundColor: swatch, color: onSwatchText }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex flex-col items-center gap-1 text-center sm:flex-row sm:justify-between sm:text-left">
+          <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.16em]">
+            Vote YES on {measure.name}
+          </p>
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.16em] opacity-85">
+            {measure.officialQuestion.number} &middot; Election Day August 4, 2026
+          </p>
+        </div>
       </div>
 
       {/* ================================================================= */}
@@ -738,60 +744,6 @@ export default function MeasureDetail({
             </h2>
           </motion.div>
           <Accordion items={faqItems} />
-        </div>
-      </section>
-
-      {/* ================================================================= */}
-      {/* SOURCES                                                            */}
-      {/* ================================================================= */}
-      <section className="relative bg-light-gray/50 py-16 sm:py-20 border-y border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-8">
-            <Kicker swatch={swatch}>Where this comes from</Kicker>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-navy mt-3 [text-wrap:balance]">Sources</h2>
-          </motion.div>
-
-          <ul className="space-y-3 mb-8">
-            {measure.sources.map((src, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <span style={{ color: swatch }} className="mt-1.5 shrink-0">
-                  <span className="block w-1.5 h-1.5 rounded-full bg-current" />
-                </span>
-                <a
-                  href={src.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm sm:text-base text-navy/80 hover:text-coral underline decoration-gray-300 hover:decoration-coral underline-offset-2 transition-colors leading-relaxed"
-                >
-                  {src.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          {measure.relatedLinks.length > 0 && (
-            <div className="flex flex-wrap gap-2.5 mb-7">
-              {measure.relatedLinks.map((link) => (
-                <a
-                  key={link.url}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-white border border-gray-200 text-navy/80 text-sm font-medium px-4 py-2 hover:border-coral hover:text-coral transition-colors"
-                >
-                  {link.label}
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              ))}
-            </div>
-          )}
-
-          <p className="text-xs text-gray-400 leading-relaxed">
-            Always confirm the final wording and official question order on your authenticated sample
-            ballot from the Kansas City Election Board.
-          </p>
         </div>
       </section>
 
