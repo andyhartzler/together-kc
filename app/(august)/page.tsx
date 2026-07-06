@@ -79,7 +79,7 @@ export default function AugustBallotPage() {
 
           <motion.h1
             variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6 } } }}
-            className="text-5xl sm:text-7xl md:text-8xl font-bold text-white leading-[0.98] tracking-tight"
+            className="text-5xl sm:text-7xl md:text-8xl font-extrabold text-white leading-[0.98] tracking-tight [text-wrap:balance]"
           >
             Vote{' '}
             <span className="text-coral" style={{ textShadow: '0 0 40px rgba(229,57,53,0.55), 0 0 80px rgba(229,57,53,0.3)' }}>
@@ -137,7 +137,7 @@ export default function AugustBallotPage() {
       {/* MARQUEE BAND                                                       */}
       {/* ================================================================= */}
       <div className="bg-coral text-white py-3 sm:py-3.5 border-y border-white/10">
-        <Marquee items={['Vote Yes', 'August 4, 2026', 'No New Taxes', 'Five Questions', 'Five Yeses']} />
+        <Marquee items={['Vote Yes', 'August 4, 2026', 'No New Tax Rates', 'Five Questions', 'Five Yeses']} />
       </div>
 
       {/* ================================================================= */}
@@ -150,7 +150,7 @@ export default function AugustBallotPage() {
               <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
               Sample ballot
             </span>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Here is what your YES looks like</h2>
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-navy leading-tight [text-wrap:balance]">Here is what your YES looks like</h2>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-5 leading-relaxed">
               Five questions, in the order you will see them. Tap any one for the full breakdown below.
             </p>
@@ -170,7 +170,7 @@ export default function AugustBallotPage() {
               <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
               {questionsSection.eyebrow}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Five questions. Five yeses.</h2>
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-navy leading-tight [text-wrap:balance]">Five questions. Five yeses.</h2>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-5 leading-relaxed">
               Tap any question for the full breakdown, the official ballot language, and the sources behind it.
             </p>
@@ -206,7 +206,7 @@ export default function AugustBallotPage() {
             <p className="text-lg sm:text-xl text-white/60 font-medium mt-2 uppercase tracking-widest">{costsShort.sub}</p>
           </motion.div>
 
-          <motion.h2 {...fadeUp} transition={{ duration: 0.7, delay: 0.1, ease: EASE }} className="text-2xl sm:text-4xl font-bold text-white mt-8 sm:mt-10 leading-tight">
+          <motion.h2 {...fadeUp} transition={{ duration: 0.7, delay: 0.1, ease: EASE }} className="text-2xl sm:text-4xl font-extrabold text-white mt-8 sm:mt-10 leading-tight [text-wrap:balance]">
             {costsShort.headline}
           </motion.h2>
 
@@ -252,7 +252,7 @@ export default function AugustBallotPage() {
               <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
               {howToVote.eyebrow}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">Make your plan to vote</h2>
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-navy leading-tight [text-wrap:balance]">Make your plan to vote</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-11 sm:mb-12">
@@ -265,7 +265,7 @@ export default function AugustBallotPage() {
               >
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-coral via-golden to-sky" />
                 <p className="text-[0.7rem] uppercase tracking-widest font-semibold text-coral mb-2">{s.kicker}</p>
-                <p className="text-2xl sm:text-3xl font-bold text-navy leading-tight">{s.date}</p>
+                <p className="text-2xl sm:text-3xl font-extrabold text-navy leading-tight [text-wrap:balance]">{s.date}</p>
                 <p className="text-sm sm:text-base text-gray-600 mt-1">{s.title}</p>
                 {'sub' in s && s.sub ? <p className="text-xs text-gray-400 mt-1.5">{s.sub}</p> : null}
               </motion.div>
@@ -289,7 +289,7 @@ export default function AugustBallotPage() {
               <span className="w-2 h-2 rounded-full bg-coral animate-pulse motion-reduce:animate-none" />
               {faqsSection.eyebrow}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight">{faqsSection.heading}</h2>
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-navy leading-tight [text-wrap:balance]">{faqsSection.heading}</h2>
           </motion.div>
           <Accordion items={shortFaqs} />
 
@@ -317,7 +317,7 @@ export default function AugustBallotPage() {
         </div>
 
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.h2 {...fadeUp} transition={{ duration: 0.7, ease: EASE }} className="text-3xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
+          <motion.h2 {...fadeUp} transition={{ duration: 0.7, ease: EASE }} className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight [text-wrap:balance]">
             {closing.heading}
           </motion.h2>
 

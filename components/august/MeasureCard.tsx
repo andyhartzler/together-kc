@@ -31,7 +31,8 @@ export default function MeasureCard({ measure, index = 0 }: { measure: Measure; 
       <Link
         href={`/questions/${measure.slug}`}
         aria-label={`${measure.name}: ${measure.cardPunch} Vote YES. See the full question.`}
-        className="group block rounded-3xl overflow-hidden bg-white border border-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        style={{ ['--card-accent' as string]: accent.swatch }}
+        className="group block rounded-3xl overflow-hidden bg-white border border-gray-100 transition-colors duration-300 hover:border-[color-mix(in_srgb,var(--card-accent)_35%,white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       >
         <div className="grid sm:grid-cols-[42%_1fr]">
           {/* ACCENT BLOCK (shared identity with the detail hero) */}
@@ -67,7 +68,7 @@ export default function MeasureCard({ measure, index = 0 }: { measure: Measure; 
 
             <div className="relative z-10 mt-6">
               <div
-                className="text-white font-bold leading-[0.95] text-5xl sm:text-6xl md:text-7xl"
+                className="text-white font-extrabold leading-[0.95] text-5xl sm:text-6xl md:text-7xl"
                 style={{ textShadow: '0 2px 30px rgba(0,0,0,0.28)' }}
               >
                 {showCounter ? (
@@ -104,7 +105,7 @@ export default function MeasureCard({ measure, index = 0 }: { measure: Measure; 
               ) : null}
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-bold text-navy leading-snug mt-4">{measure.cardPunch}</h3>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-navy leading-snug [text-wrap:balance] mt-4">{measure.cardPunch}</h3>
 
             <p className="text-sm sm:text-base text-gray-600 leading-relaxed mt-3">{measure.cardSub}</p>
 

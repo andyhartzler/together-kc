@@ -222,7 +222,7 @@ export default function MeasureDetail({
               transition={{ duration: 0.6, ease: EASE, delay: 0.05 }}
             >
               <h1
-                className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white leading-[0.98] tracking-tight"
+                className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[0.98] tracking-tight [text-wrap:balance]"
                 style={{ textShadow: '0 2px 40px rgba(0,0,0,0.25)' }}
               >
                 {measure.cardPunch}
@@ -258,7 +258,7 @@ export default function MeasureDetail({
               className="shrink-0"
             >
               <div
-                className="text-white font-bold leading-[0.9] text-6xl sm:text-7xl lg:text-8xl tabular-nums"
+                className="text-white font-extrabold leading-[0.9] text-6xl sm:text-7xl lg:text-8xl tabular-nums"
                 style={{ textShadow: '0 2px 36px rgba(0,0,0,0.3)' }}
               >
                 {showCounter ? (
@@ -327,7 +327,7 @@ export default function MeasureDetail({
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-7">
             <Kicker swatch={swatch}>On your ballot</Kicker>
-            <h2 className="text-2xl sm:text-3xl font-bold text-navy mt-3">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-navy mt-3 [text-wrap:balance]">
               The official ballot language
             </h2>
           </motion.div>
@@ -367,7 +367,7 @@ export default function MeasureDetail({
       {/* ================================================================= */}
       <section className="relative bg-white py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.h2 {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-3xl sm:text-5xl font-bold text-navy leading-tight mb-12 sm:mb-14">
+          <motion.h2 {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="text-3xl sm:text-5xl font-extrabold text-navy leading-tight [text-wrap:balance] mb-12 sm:mb-14">
             {measure.title}
           </motion.h2>
 
@@ -405,7 +405,7 @@ export default function MeasureDetail({
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-9">
             <Kicker swatch={swatch}>The details</Kicker>
-            <h2 className="text-2xl sm:text-4xl font-bold text-navy mt-3">Key facts</h2>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-navy mt-3 [text-wrap:balance]">Key facts</h2>
           </motion.div>
           <div className="rounded-3xl bg-white border border-gray-100 shadow-xl shadow-navy/5 p-6 sm:p-9">
             <ul className="space-y-4">
@@ -486,7 +486,7 @@ export default function MeasureDetail({
               <div>
                 <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-6">
                   <Kicker swatch={swatch}>The track record</Kicker>
-                  <h2 className="text-2xl sm:text-4xl font-bold text-navy mt-3">{measure.bondHistory.heading}</h2>
+                  <h2 className="text-2xl sm:text-4xl font-extrabold text-navy mt-3 [text-wrap:balance]">{measure.bondHistory.heading}</h2>
                 </motion.div>
                 <motion.div
                   {...fadeUp}
@@ -541,7 +541,7 @@ export default function MeasureDetail({
                 <div className="mt-9">
                   <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-5">
                     <Kicker swatch={swatch}>City Hall</Kicker>
-                    <h3 className="text-xl sm:text-2xl font-bold text-navy mt-3">City Hall improvements</h3>
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-navy mt-3 [text-wrap:balance]">City Hall improvements</h3>
                   </motion.div>
                   <div className="flex flex-wrap gap-2.5">
                     {measure.civicProjects.cityHall.map((item, i) => (
@@ -605,7 +605,7 @@ export default function MeasureDetail({
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: swatch }} />
                 How we got here
               </span>
-              <h2 className="text-2xl sm:text-4xl font-bold text-white mt-3">The record</h2>
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-white mt-3 [text-wrap:balance]">The record</h2>
             </motion.div>
 
             <div className="relative pl-8 sm:pl-10">
@@ -653,7 +653,7 @@ export default function MeasureDetail({
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-9">
               <Kicker swatch={swatch}>On the ground</Kicker>
-              <h2 className="text-2xl sm:text-4xl font-bold text-navy mt-3">What it is already doing</h2>
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-navy mt-3 [text-wrap:balance]">What it is already doing</h2>
             </motion.div>
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-5">
               {measure.realExamples.map((ex, i) => (
@@ -681,7 +681,7 @@ export default function MeasureDetail({
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-9">
             <Kicker swatch={swatch}>The honest part</Kicker>
-            <h2 className="text-2xl sm:text-4xl font-bold text-navy mt-3">What it costs you</h2>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-navy mt-3 [text-wrap:balance]">What it costs you</h2>
           </motion.div>
 
           <motion.div
@@ -733,7 +733,7 @@ export default function MeasureDetail({
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-10 sm:mb-12">
             <Kicker swatch={swatch}>Questions and answers</Kicker>
-            <h2 className="text-3xl sm:text-5xl font-bold text-navy leading-tight mt-3">
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-navy leading-tight [text-wrap:balance] mt-3">
               {measure.name}, answered
             </h2>
           </motion.div>
@@ -748,7 +748,7 @@ export default function MeasureDetail({
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE }} className="mb-8">
             <Kicker swatch={swatch}>Where this comes from</Kicker>
-            <h2 className="text-2xl sm:text-4xl font-bold text-navy mt-3">Sources</h2>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-navy mt-3 [text-wrap:balance]">Sources</h2>
           </motion.div>
 
           <ul className="space-y-3 mb-8">
@@ -860,7 +860,7 @@ export default function MeasureDetail({
         <div className="noise-overlay absolute inset-0 z-[1]" />
 
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
-          <motion.h2 {...fadeUp} transition={{ duration: 0.7, ease: EASE }} className="text-3xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
+          <motion.h2 {...fadeUp} transition={{ duration: 0.7, ease: EASE }} className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight [text-wrap:balance]">
             {measure.yesCta}
           </motion.h2>
           <motion.p {...fadeUp} transition={{ duration: 0.6, ease: EASE, delay: 0.1 }} className="text-white/85 text-base sm:text-lg mt-5 leading-relaxed">
