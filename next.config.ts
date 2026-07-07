@@ -138,11 +138,6 @@ const nextConfig: NextConfig = {
         destination: '/etax/press-kit',
         permanent: true,
       },
-      {
-        source: '/social',
-        destination: '/etax/social',
-        permanent: true,
-      },
       // FAQ variants
       {
         source: '/faq',
