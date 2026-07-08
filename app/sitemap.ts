@@ -77,6 +77,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.95,
     },
+    // Press / media kit for the August ballot
+    {
+      url: `${baseUrl}/press`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
     // Archived e-tax campaign (April 7, 2026 - won)
     {
       url: `${baseUrl}/etax`,

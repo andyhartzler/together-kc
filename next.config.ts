@@ -133,10 +133,20 @@ const nextConfig: NextConfig = {
         destination: '/etax/sign',
         permanent: true,
       },
+      // The press kit now covers the August 4, 2026 ballot and lives at /press.
+      // The old /press-kit URL (and a /media-kit variant) forward to it.
+      // Intentionally non-permanent (307): this URL's target changes each
+      // election cycle (it previously pointed at the e-tax kit), so we avoid a
+      // 308 that browsers hard-cache and that would be hard to repoint later.
       {
         source: '/press-kit',
-        destination: '/etax/press-kit',
-        permanent: true,
+        destination: '/press',
+        permanent: false,
+      },
+      {
+        source: '/media-kit',
+        destination: '/press',
+        permanent: false,
       },
       // FAQ variants
       {
