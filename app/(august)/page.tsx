@@ -10,6 +10,7 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { fadeUp, EASE } from '@/components/ui/Reveal';
 import MeasureCard from '@/components/august/MeasureCard';
 import BallotSnapshot from '@/components/august/BallotSnapshot';
+import { OnePagerButton } from '@/components/august/OnePagerViewer';
 import BarChartReveal from '@/components/august/BarChartReveal';
 import Footer from '@/components/layout/Footer';
 
@@ -115,6 +116,7 @@ export default function AugustBallotPage() {
           >
             <InteractiveHoverButton text="See the five" href="#questions" variant="primary" size="lg" arrowDirection="down" />
             <InteractiveHoverButton text="How to vote" href="#vote" variant="outline" size="lg" />
+            <OnePagerButton />
           </motion.div>
         </motion.div>
 

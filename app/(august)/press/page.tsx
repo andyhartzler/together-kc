@@ -46,6 +46,7 @@ const KEY_POINTS = [
 ];
 
 const ONE_PAGER = '/press-kit/August-One-Pager.pdf';
+const ONE_PAGER_EMPLOYER = '/press-kit/August-One-Pager-Employer.pdf';
 
 // Downloadable brand + document assets. No per-question FAQ documents: the
 // question-by-question answers live inline on this page and in full on each
@@ -57,7 +58,16 @@ const DOWNLOADS = [
     href: ONE_PAGER,
     filename: 'Together-KC-August-One-Pager.pdf',
     kind: 'pdf' as const,
-    preview: null as string | null,
+    preview: '/press-kit/august-one-pager-preview.png' as string | null,
+  },
+  {
+    title: 'August One-Pager, Employer Edition',
+    description:
+      'The same five questions, written for informational purposes only with no vote advocacy, so employers can share it with their teams. Print-ready PDF.',
+    href: ONE_PAGER_EMPLOYER,
+    filename: 'Together-KC-August-One-Pager-Employer.pdf',
+    kind: 'pdf' as const,
+    preview: '/press-kit/august-one-pager-employer-preview.png' as string | null,
   },
   {
     title: 'Vote Yes On All 5 logo',
@@ -84,7 +94,7 @@ function PreviewModal({
   item,
   onClose,
 }: {
-  item: { title: string; href: string; filename: string; kind: 'pdf' | 'image' };
+  item: { title: string; href: string; filename: string; kind: 'pdf' | 'image'; preview: string | null };
   onClose: () => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -152,7 +162,18 @@ function PreviewModal({
           </div>
         </div>
         <div className="h-[72vh] overflow-auto bg-light-gray">
-          {item.kind === 'pdf' ? (
+          {item.kind === 'pdf' && item.preview ? (
+            // Pre-rendered page image instead of an embedded PDF: iOS Safari
+            // cannot scroll or zoom PDFs inside <object>, an image works everywhere.
+            <Image
+              src={item.preview}
+              alt={item.title}
+              width={1600}
+              height={2071}
+              sizes="(max-width: 896px) 100vw, 896px"
+              className="w-full h-auto"
+            />
+          ) : item.kind === 'pdf' ? (
             <object data={item.href} type="application/pdf" className="w-full h-full">
               <div className="flex flex-col items-center justify-center h-full p-8 text-center">
                 <p className="text-gray-600 mb-4">Preview is not available in this browser.</p>
@@ -363,7 +384,7 @@ function DownloadTile({
 
 // ===========================================================================
 export default function PressKitPage() {
-  const [preview, setPreview] = useState<null | { title: string; href: string; filename: string; kind: 'pdf' | 'image' }>(null);
+  const [preview, setPreview] = useState<null | { title: string; href: string; filename: string; kind: 'pdf' | 'image'; preview: string | null }>(null);
   const closePreview = useCallback(() => setPreview(null), []);
 
   return (
@@ -598,7 +619,7 @@ export default function PressKitPage() {
               <motion.div key={item.title} {...fadeUp} transition={{ duration: 0.5, delay: i * 0.06, ease: EASE }}>
                 <DownloadTile
                   item={item}
-                  onPreview={() => setPreview({ title: item.title, href: item.href, filename: item.filename, kind: item.kind })}
+                  onPreview={() => setPreview({ title: item.title, href: item.href, filename: item.filename, kind: item.kind, preview: item.preview })}
                 />
               </motion.div>
             ))}

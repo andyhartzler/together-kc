@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 interface InteractiveHoverButtonProps {
   text?: string;
   href?: string;
+  onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'default' | 'lg';
   className?: string;
@@ -16,6 +17,7 @@ interface InteractiveHoverButtonProps {
 const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
   text = 'Button',
   href,
+  onClick,
   variant = 'primary',
   size = 'default',
   className,
@@ -75,7 +77,7 @@ const InteractiveHoverButton: React.FC<InteractiveHoverButtonProps> = ({
   }
 
   return (
-    <button className={baseClasses}>
+    <button type="button" onClick={onClick} className={baseClasses}>
       {content}
     </button>
   );
