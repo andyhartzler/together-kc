@@ -165,10 +165,20 @@ const nextConfig: NextConfig = {
         destination: '/',
         permanent: true,
       },
+      // NOTE: /privacy previously 308-redirected to / as an old-site ghost
+      // page. It is now a real page again (app/(august)/privacy) because the
+      // voter-outreach call and text programs need a published policy URL, so
+      // no redirect here. Browsers that cached the old 308 may still forward
+      // until their cache expires; fresh visitors get the page.
       {
-        source: '/privacy',
-        destination: '/',
-        permanent: true,
+        source: '/privacy-policy',
+        destination: '/privacy',
+        permanent: false,
+      },
+      {
+        source: '/terms',
+        destination: '/privacy',
+        permanent: false,
       },
       // E-tax name variants
       {

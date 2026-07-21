@@ -12,14 +12,27 @@ const SOCIAL_LINKS = [
   { name: 'TikTok', href: 'https://www.tiktok.com/@togetherkcmo', icon: '/images/social/tiktok.png' },
 ];
 
+// Through the August 4, 2026 election the footer stays focused on the five
+// ballot questions, so the e-tax archive block is hidden (not deleted). Flip
+// this to true after the election to bring the archive links back.
+const SHOW_ETAX_ARCHIVE = false;
+
 // The won April 2026 e-tax campaign lives on under /etax; this is its home in
-// the footer, so the August pages stay focused on the five questions.
+// the footer whenever SHOW_ETAX_ARCHIVE is on.
 const ETAX_LINKS = [
   { label: 'Victory', href: '/etax/victory' },
   { label: 'Home', href: '/etax' },
   { label: 'FAQs', href: '/etax/faqs' },
   { label: 'Endorsements', href: '/etax/endorsements' },
   { label: 'Donate', href: '/etax/donate' },
+];
+
+// August 4, 2026 ballot links: the footer's primary nav for this cycle.
+const AUGUST_LINKS = [
+  { label: 'The Five Questions', href: '/#questions' },
+  { label: 'Where to Vote', href: '/vote' },
+  { label: 'Press & Media', href: '/press' },
+  { label: 'Share', href: '/social' },
 ];
 
 export default function Footer() {
@@ -42,16 +55,16 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* E-tax archive (left) + social links (right) */}
+      {/* August ballot links (left) + social links (right) */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-3">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <nav aria-label="Kansas City Earnings Tax campaign" className="text-center sm:text-left">
+          <nav aria-label="August 4, 2026 ballot" className="text-center sm:text-left">
             <p className="text-white/80 text-xs font-semibold uppercase tracking-[0.18em]">
-              Kansas City Earnings Tax
+              August 4, 2026 Ballot
             </p>
             <div className="mt-2 h-px w-full bg-gradient-to-r from-coral via-golden to-sky opacity-80" />
             <ul className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1.5 sm:justify-start">
-              {ETAX_LINKS.map((link) => (
+              {AUGUST_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -63,6 +76,27 @@ export default function Footer() {
               ))}
             </ul>
           </nav>
+
+          {SHOW_ETAX_ARCHIVE && (
+            <nav aria-label="Kansas City Earnings Tax campaign" className="text-center sm:text-left">
+              <p className="text-white/80 text-xs font-semibold uppercase tracking-[0.18em]">
+                Kansas City Earnings Tax
+              </p>
+              <div className="mt-2 h-px w-full bg-gradient-to-r from-coral via-golden to-sky opacity-80" />
+              <ul className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1.5 sm:justify-start">
+                {ETAX_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-white/60 hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
 
           <div className="flex gap-5">
             {SOCIAL_LINKS.map((social) => (
@@ -94,6 +128,14 @@ export default function Footer() {
             <span className="whitespace-nowrap">Paid for by Together KC, Dan Kopp, Treasurer.</span>
             <br />
             Not authorized by any candidate or candidate committee.
+          </p>
+          <p className="mt-2 text-center">
+            <Link
+              href="/privacy"
+              className="text-white/50 hover:text-white text-xs underline underline-offset-2 transition-colors"
+            >
+              Privacy Policy &amp; Terms
+            </Link>
           </p>
         </div>
       </div>

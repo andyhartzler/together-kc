@@ -84,6 +84,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.6,
     },
+    // Committee privacy policy + call/text program terms
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
     // Archived e-tax campaign (April 7, 2026 - won)
     {
       url: `${baseUrl}/etax`,
