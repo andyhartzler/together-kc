@@ -7,7 +7,7 @@ const TITLE = 'Kansas City Voted YES on All Five | Together KC';
 const DESCRIPTION =
   'Kansas City passed all five questions on the August 4, 2026 ballot: affordable housing 74.6%, civic buildings 68.4%, Central City 68.1%, clean water 80.5%, and sewers 81.2%. About 97,000 ballots cast.';
 const SHORT_DESCRIPTION =
-  'All five August 4, 2026 ballot questions passed, from 68.1% to 81.2% YES. About $1.7 billion in bonds authorized. Thank you, Kansas City.';
+  'All five August 4, 2026 ballot questions passed, authorizing about $1.7 billion for clean water, sewers, affordable housing, and the civic buildings we share. None of the five raises your tax rate. Thank you, Kansas City.';
 
 // Its own card, not the pre-election /images/og-august.png. The apex redirects
 // here, so every share of together-kc.com renders this: a "voted YES on all

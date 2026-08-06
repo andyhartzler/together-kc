@@ -392,6 +392,7 @@ function MeasureRow({
         onClick={onToggle}
         aria-expanded={open}
         aria-controls={panelId}
+        aria-label={`${measure.name}: show what this question was`}
         className="group block w-full cursor-pointer rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-4 sm:rounded-2xl"
       >
         <div className="mb-2 flex flex-wrap items-end justify-between gap-x-3 gap-y-1 px-1 sm:mb-3">
@@ -434,19 +435,6 @@ function MeasureRow({
           </motion.div>
         </div>
 
-        <div className="mt-1.5 flex items-center gap-1.5 px-1 text-[11px] font-semibold text-navy/60 sm:text-xs">
-          <svg
-            viewBox="0 0 20 20"
-            className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            aria-hidden="true"
-          >
-            <path d="M5 8l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {open ? 'Hide the details' : 'What this question was'}
-        </div>
       </button>
 
       <motion.div
@@ -783,7 +771,7 @@ export default function AugustVictoryPage() {
               >
                 <p className="text-6xl font-bold leading-none tracking-tight text-white sm:text-8xl md:text-9xl">
                   <AnimatedCounter end={5} duration={1.2} />
-                  <span className="text-white/40"> / 5</span>
+                  <span> / 5</span>
                 </p>
                 <p className="mt-2 text-base font-medium text-white/70 sm:mt-3 sm:text-xl">
                   KC Ballot Questions
@@ -860,15 +848,11 @@ export default function AugustVictoryPage() {
                   id="results-heading"
                   className="text-2xl font-bold text-navy sm:text-4xl md:text-5xl"
                 >
-                  The five questions
+                  The Five Questions
                 </h2>
-                <p className="mx-auto mt-3 max-w-2xl text-base text-gray-600 sm:mt-4 sm:text-lg">
-                  Two of the five needed a four-sevenths supermajority, not a simple majority.
-                  Both cleared it with room to spare.
-                </p>
               </motion.div>
 
-              <div className="space-y-7 sm:space-y-10">
+              <div className="space-y-4 sm:space-y-5">
                 {ORDERED_MEASURES.map((m, i) => (
                   <MeasureRow
                     key={m.slug}
@@ -904,15 +888,8 @@ export default function AugustVictoryPage() {
                   id="counties-heading"
                   className="text-2xl font-bold text-navy sm:text-4xl md:text-5xl"
                 >
-                  Results by county
+                  Results By County
                 </h2>
-                {/* Says which boards reported, not how many counties the city is
-                    in. A sliver of Kansas City is in Cass County, which the
-                    attribution below this section spells out. */}
-                <p className="mx-auto mt-3 max-w-2xl text-base text-gray-600 sm:mt-4 sm:text-lg">
-                  Three county election boards reported these results. Every question won a
-                  majority in all three.
-                </p>
               </motion.div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
@@ -921,18 +898,6 @@ export default function AugustVictoryPage() {
                 ))}
               </div>
 
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="mx-auto mt-10 max-w-3xl text-center text-xs leading-relaxed text-gray-600 sm:mt-14 sm:text-sm"
-              >
-                Results as reported by the Jackson County, Clay County, and Platte
-                County election boards. Platte County reported 13 of 13 precincts. These totals
-                are not yet certified. A small portion of Kansas City lies in Cass County and is
-                not included in the figures on this page.
-              </motion.p>
             </div>
           </section>
 
@@ -964,7 +929,7 @@ export default function AugustVictoryPage() {
                   id="thanks-heading"
                   className="mb-8 text-3xl font-bold leading-tight text-navy sm:mb-10 sm:text-5xl md:text-6xl"
                 >
-                  Thank you,
+                  Thank You,
                   <br />
                   <span className="gradient-text">Kansas City</span>
                 </h2>
