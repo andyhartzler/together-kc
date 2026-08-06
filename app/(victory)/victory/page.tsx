@@ -786,7 +786,7 @@ export default function AugustVictoryPage() {
                   <span className="text-white/40"> / 5</span>
                 </p>
                 <p className="mt-2 text-base font-medium text-white/70 sm:mt-3 sm:text-xl">
-                  ballot questions passed
+                  KC Ballot Questions
                 </p>
               </motion.div>
 
