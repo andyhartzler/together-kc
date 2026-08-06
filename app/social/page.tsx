@@ -13,6 +13,7 @@ import {
   SUPERMAJORITY,
   BOND_TOTAL_BILLIONS,
   type MeasureSlug,
+  type CountyKey,
 } from '@/lib/august-results';
 
 // ---------------------------------------------------------------------------
@@ -50,13 +51,6 @@ const EXPLORE_LINKS = [
 
 // The highest single-question total, which is the honest "ballots cast" figure.
 const BALLOTS_CAST = Math.max(...ORDERED_MEASURES.map((m) => RESULTS[m.slug].total));
-
-// Each county said yes to all five. Carry the range rather than one number,
-// since a single percentage cannot stand for five questions.
-const COUNTY_RANGES = COUNTIES.map((c) => {
-  const shares = ORDERED_MEASURES.map((m) => RESULTS[m.slug].counties[c.key].yesPercent);
-  return { ...c, low: Math.min(...shares), high: Math.max(...shares) };
-});
 
 // ---------------------------------------------------------------------------
 // Page-load confetti. Positions come from a seeded hash rather than
@@ -211,9 +205,95 @@ function QuestionBar({
   );
 }
 
+// ---------------------------------------------------------------------------
+// One county: the name, and on tap all five questions inside it.
+// ---------------------------------------------------------------------------
+function CountyRow({
+  county,
+  index,
+  open,
+  onToggle,
+}: {
+  county: (typeof COUNTIES)[number];
+  index: number;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const panelId = `social-county-${county.key}`;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.08, ease: EASE_OUT }}
+      className="overflow-hidden rounded-xl border border-white/10 bg-white/5"
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label={`${county.name}: show all five questions`}
+        className="flex w-full items-center justify-between px-4 py-3.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
+      >
+        <span className="text-base font-bold text-white">{county.name}</span>
+        <span
+          className={`text-white/40 transition-transform duration-200 ${open ? 'rotate-45' : ''}`}
+          aria-hidden="true"
+        >
+          <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4">
+            <path d="M10 4v12M4 10h12" strokeLinecap="round" />
+          </svg>
+        </span>
+      </button>
+
+      <motion.div
+        id={panelId}
+        initial={false}
+        animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+        transition={{ duration: 0.32, ease: EASE_OUT }}
+        className="overflow-hidden"
+      >
+        <div className="space-y-3 border-t border-white/10 px-4 pb-4 pt-3.5">
+          {ORDERED_MEASURES.map((m) => {
+            const cell = RESULTS[m.slug].counties[county.key];
+            const accent = ON_NAVY[m.slug];
+            return (
+              <div key={m.slug}>
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="truncate text-[13px] font-semibold text-white/85">
+                    {m.name}
+                  </span>
+                  <span
+                    className="shrink-0 text-sm font-bold tabular-nums"
+                    style={{ color: accent }}
+                  >
+                    {cell.yesPercent.toFixed(1)}%
+                  </span>
+                </div>
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${cell.yesPercent}%`, backgroundColor: accent }}
+                  />
+                </div>
+                <div className="mt-1 text-[11px] tabular-nums text-white/40">
+                  {cell.yes.toLocaleString()} yes of {cell.total.toLocaleString()} total votes
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // ===========================================================================
 export default function SocialLandingPage() {
   const [openMeasure, setOpenMeasure] = useState<MeasureSlug | null>(null);
+  const [openCounty, setOpenCounty] = useState<CountyKey | null>(null);
   const reduce = useReducedMotion();
 
   return (
@@ -358,28 +438,18 @@ export default function SocialLandingPage() {
               Results By County
             </h2>
             <p className="mb-6 text-center text-xs text-white/40">
-              Yes on all five, in all three.
+              Tap a county for all five.
             </p>
 
-            <div className="grid grid-cols-3 gap-2">
-              {COUNTY_RANGES.map((c, i) => (
-                <motion.div
+            <div className="space-y-3">
+              {COUNTIES.map((c, i) => (
+                <CountyRow
                   key={c.key}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="rounded-xl border border-white/10 bg-white/5 p-3 text-center"
-                >
-                  <div className="mb-1 text-[11px] text-white/50">
-                    {c.name.replace(' County', '')}
-                  </div>
-                  <div className="text-lg font-bold tabular-nums text-white">
-                    {c.low.toFixed(1)}
-                    <span className="text-white/40">to</span>
-                    {c.high.toFixed(1)}%
-                  </div>
-                </motion.div>
+                  county={c}
+                  index={i}
+                  open={openCounty === c.key}
+                  onToggle={() => setOpenCounty((cur) => (cur === c.key ? null : c.key))}
+                />
               ))}
             </div>
           </section>
