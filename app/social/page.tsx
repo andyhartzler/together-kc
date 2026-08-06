@@ -1,16 +1,38 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { AUGUST_BALLOT } from '@/lib/constants';
+import { motion, useReducedMotion, MotionConfig } from 'framer-motion';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
+import {
+  RESULTS,
+  BRIEFS,
+  COUNTIES,
+  ORDERED_MEASURES,
+  SUPERMAJORITY,
+  BOND_TOTAL_BILLIONS,
+  type MeasureSlug,
+} from '@/lib/august-results';
 
-const { hero, measures, voteSteps } = AUGUST_BALLOT;
+// ---------------------------------------------------------------------------
+// The link-in-bio version of /victory. Same story, same numbers, one thumb
+// column. /social is to /victory exactly what /etax/social is to /etax/victory.
+// ---------------------------------------------------------------------------
 
-// Official ballot order (Question 1 to 5), same display sort as the hub.
-const ballotOrderNum = (m: (typeof measures)[number]) =>
-  parseInt(m.officialQuestion.number.replace(/\D/g, ''), 10);
-const orderedMeasures = [...measures].sort((a, b) => ballotOrderNum(a) - ballotOrderNum(b));
+const EASE_OUT = [0.25, 0.46, 0.45, 0.94] as const;
+const EASE_EXPO = [0.22, 1, 0.36, 1] as const;
+
+// The victory page runs on white, so it uses darkened accents. This page runs
+// on navy, where those same hexes go muddy, so each measure gets its light
+// variant instead. Same five accents, tuned for a dark field.
+const ON_NAVY: Record<MeasureSlug, string> = {
+  housing: '#ff6b67',
+  'civic-buildings': '#ffc861',
+  'central-city': '#f0855a',
+  'clean-water': '#7db8ea',
+  sewers: '#57c9e0',
+};
 
 const SOCIAL_LINKS = [
   { name: 'Facebook', href: 'https://www.facebook.com/TogetherKC/', icon: '/images/social/facebook.png' },
@@ -20,221 +42,434 @@ const SOCIAL_LINKS = [
   { name: 'Threads', href: 'https://www.threads.com/@togetherkcmo', icon: '/images/social/threads.png' },
 ];
 
-// ===========================================================================
-// Social landing page (link in bio) - August 4, 2026 five questions edition
-// ===========================================================================
-export default function SocialLandingPage() {
+const EXPLORE_LINKS = [
+  { label: 'Home', href: '/ballot' },
+  { label: 'The Five Questions', href: '/ballot#questions' },
+  { label: 'FAQs', href: '/ballot#faqs' },
+];
+
+// The highest single-question total, which is the honest "ballots cast" figure.
+const BALLOTS_CAST = Math.max(...ORDERED_MEASURES.map((m) => RESULTS[m.slug].total));
+
+// Each county said yes to all five. Carry the range rather than one number,
+// since a single percentage cannot stand for five questions.
+const COUNTY_RANGES = COUNTIES.map((c) => {
+  const shares = ORDERED_MEASURES.map((m) => RESULTS[m.slug].counties[c.key].yesPercent);
+  return { ...c, low: Math.min(...shares), high: Math.max(...shares) };
+});
+
+// ---------------------------------------------------------------------------
+// Page-load confetti. Positions come from a seeded hash rather than
+// Math.random so the server and client render identical markup.
+// ---------------------------------------------------------------------------
+const CONFETTI_COLORS = ['#e53935', '#f5a623', '#4a90d9', '#d2561e', '#ffffff'];
+
+function seeded(n: number) {
+  const v = Math.sin(n * 12.9898) * 43758.5453;
+  return v - Math.floor(v);
+}
+
+const CONFETTI = Array.from({ length: 30 }, (_, i) => ({
+  id: i,
+  color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+  left: `${seeded(i + 1) * 100}%`,
+  size: 3 + seeded(i + 2) * 5,
+  delay: seeded(i + 3) * 2,
+  duration: 2.5 + seeded(i + 4) * 2.5,
+  drift: (seeded(i + 5) - 0.5) * 80,
+  spin: (seeded(i + 6) * 360 + 180) * (i % 2 === 0 ? 1 : -1),
+  round: i % 3 === 0,
+}));
+
+function ConfettiFall() {
   return (
-    <div className="min-h-screen bg-navy relative overflow-hidden">
-      {/* Background orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-64 h-64 rounded-full bg-coral/20 blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 w-64 h-64 rounded-full bg-sky/20 blur-3xl" />
-        <div className="absolute top-1/2 right-0 w-48 h-48 rounded-full bg-golden/10 blur-3xl" />
-      </div>
-
-      <div className="relative z-10 min-h-screen flex flex-col px-4 py-8 max-w-md mx-auto">
-        {/* ---- Logo ---- */}
+    <div
+      className="pointer-events-none absolute inset-0 z-10 overflow-hidden motion-reduce:hidden"
+      aria-hidden="true"
+    >
+      {CONFETTI.map((p) => (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="text-center mb-6"
-        >
-          <Image
-            src="/images/august-logo-white.png"
-            alt="Vote YES on all 5"
-            width={220}
-            height={80}
-            className="h-16 w-auto object-contain mx-auto"
-            priority
-          />
-        </motion.div>
+          key={p.id}
+          initial={{ y: -12, opacity: 1, rotate: 0 }}
+          animate={{ y: '110vh', x: p.drift, opacity: [1, 1, 0.6, 0], rotate: p.spin }}
+          transition={{ duration: p.duration, delay: p.delay, ease: 'easeIn' }}
+          className="absolute"
+          style={{
+            left: p.left,
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+            borderRadius: p.round ? '50%' : '2px',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
-        {/* ---- Social Links ---- */}
-        <div className="flex justify-center gap-3 mb-5">
-          {SOCIAL_LINKS.map((social, i) => (
-            <motion.a
-              key={social.name}
-              href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.2, delay: 0.3 + i * 0.05 }}
-              className="w-11 h-11 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center active:scale-95 transition-transform"
-              aria-label={`Follow us on ${social.name}`}
+// ---------------------------------------------------------------------------
+// One question: a bar you can tap open for the brief. Same content model as
+// the victory page's rows, sized for a thumb.
+// ---------------------------------------------------------------------------
+function QuestionBar({
+  measure,
+  index,
+  open,
+  onToggle,
+}: {
+  measure: (typeof ORDERED_MEASURES)[number];
+  index: number;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const result = RESULTS[measure.slug];
+  const brief = BRIEFS[measure.slug];
+  const accent = ON_NAVY[measure.slug];
+  const panelId = `social-panel-${measure.slug}`;
+  const supermajority = measure.voteThreshold === SUPERMAJORITY;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -12 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.08, ease: EASE_OUT }}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label={`${measure.name}: show what this question was`}
+        className="block w-full rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
+      >
+        <div className="mb-1.5 flex items-baseline justify-between gap-2">
+          <span className="flex items-baseline gap-2 min-w-0">
+            <span className="truncate text-base font-bold text-white">{measure.name}</span>
+            <span
+              className="shrink-0 text-[10px] font-bold uppercase tracking-[0.14em]"
+              style={{ color: accent }}
             >
-              <Image src={social.icon} alt={social.name} width={22} height={22} className="w-5.5 h-5.5 object-contain" />
-            </motion.a>
-          ))}
+              {measure.officialQuestion.number}
+            </span>
+          </span>
+          <span className="shrink-0 text-[11px] tabular-nums text-white/35">
+            {result.total.toLocaleString()} votes
+          </span>
         </div>
 
-        {/* ---- Divider ---- */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.5, duration: 0.3 }}
-          className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8"
-        />
+        <div className="relative h-11 w-full overflow-hidden rounded-xl">
+          <div className="absolute inset-0 rounded-xl bg-white/[0.06]" />
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: `${result.yesPercent}%` }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.3, delay: index * 0.12 + 0.15, ease: EASE_EXPO }}
+            className="absolute inset-y-0 left-0 rounded-xl"
+            style={{ background: `linear-gradient(90deg, ${accent}cc 0%, ${accent} 100%)` }}
+          >
+            <div className="absolute inset-0 flex items-center justify-end px-3">
+              <span className="text-lg font-bold tabular-nums text-navy">
+                {result.yesPercent.toFixed(1)}%
+              </span>
+              <span className="ml-1 text-[9px] font-bold uppercase tracking-wider text-navy/60">
+                Yes
+              </span>
+            </div>
+          </motion.div>
+        </div>
+      </button>
 
-        {/* ---- HERO ---- */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-center mb-8"
+      <motion.div
+        id={panelId}
+        initial={false}
+        animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+        transition={{ duration: 0.32, ease: EASE_OUT }}
+        className="overflow-hidden"
+      >
+        <div
+          className="mt-2.5 rounded-xl bg-white/[0.05] p-4 text-[13px] leading-relaxed text-white/80"
+          style={{ borderLeft: `3px solid ${accent}` }}
         >
-          <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 px-4 py-2 rounded-full text-xs font-semibold mb-5 border border-white/20">
-            <span className="w-2 h-2 bg-coral rounded-full animate-pulse motion-reduce:animate-none" />
-            Election Day &middot; Tuesday, August 4, 2026
-          </div>
-
-          <h1 className="text-4xl font-extrabold text-white leading-tight [text-wrap:balance]">
-            Vote{' '}
-            <span className="text-coral" style={{ textShadow: '0 0 40px rgba(229, 57, 53, 0.5)' }}>
-              YES
+          <p>{brief.about}</p>
+          <p className="mt-2.5">{brief.stake}</p>
+          <p className="mt-2.5 text-white/60">
+            <span className="font-semibold text-white tabular-nums">
+              {result.yes.toLocaleString()}
             </span>{' '}
-            on all five.
-          </h1>
-
-          <div className="flex justify-center gap-6 text-white/50 mt-5">
-            <div className="text-center">
-              <div className="text-lg font-bold text-white tabular-nums">$1.7B</div>
-              <div className="text-[11px]">{hero.hook[0].label}</div>
-            </div>
-            <div className="w-px h-8 bg-white/20" />
-            <div className="text-center">
-              <div className="text-lg font-bold text-white tabular-nums">$0</div>
-              <div className="text-[11px]">new tax rates</div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ---- THE FIVE QUESTIONS ---- */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mb-8"
-        >
-          <p className="text-white/50 text-xs font-medium uppercase tracking-widest mb-3 text-center">
-            The five Kansas City questions
+            yes of{' '}
+            <span className="tabular-nums">{result.total.toLocaleString()}</span> total votes.{' '}
+            {result.thresholdLine}
+            {supermajority
+              ? ', because general obligation bonds cannot pass on a simple majority'
+              : ''}
+            . Cleared it by {result.marginPoints} points.
           </p>
-          <div className="space-y-2.5">
-            {orderedMeasures.map((m, i) => (
-              <motion.div
-                key={m.slug}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + i * 0.08 }}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ===========================================================================
+export default function SocialLandingPage() {
+  const [openMeasure, setOpenMeasure] = useState<MeasureSlug | null>(null);
+  const reduce = useReducedMotion();
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <div className="relative min-h-screen overflow-hidden bg-navy">
+        {/* Background orbs */}
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div className="absolute -left-32 -top-32 h-64 w-64 rounded-full bg-coral/20 blur-3xl" />
+          <div className="absolute -bottom-32 -right-32 h-64 w-64 rounded-full bg-sky/20 blur-3xl" />
+          <div className="absolute right-0 top-1/2 h-48 w-48 rounded-full bg-golden/10 blur-3xl" />
+        </div>
+
+        <ConfettiFall />
+
+        <main className="relative z-20 mx-auto flex min-h-screen max-w-md flex-col px-4 py-8">
+          {/* ---- Logo ---- */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="mb-6 text-center"
+          >
+            <Image
+              src="/images/together-kc-footer.png"
+              alt="Together KC"
+              width={220}
+              height={84}
+              className="mx-auto h-14 w-auto object-contain"
+              priority
+            />
+          </motion.div>
+
+          {/* ---- Social links ---- */}
+          <div className="mb-5 flex justify-center gap-3">
+            {SOCIAL_LINKS.map((social, i) => (
+              <motion.a
+                key={social.name}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2, delay: 0.3 + i * 0.05 }}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-sm transition-transform active:scale-95"
+                aria-label={`Follow us on ${social.name}`}
               >
-                <Link
-                  href={`/questions/${m.slug}`}
-                  className="group flex items-center gap-3.5 bg-white/5 rounded-2xl px-4 py-3.5 border border-white/10 active:bg-white/10 transition-colors"
-                >
-                  <span
-                    className="w-3 h-3 rounded-full shrink-0"
-                    style={{ backgroundColor: m.accent.swatch }}
-                  />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[10px] font-bold uppercase tracking-wider text-white/40">
-                      {m.officialQuestion.number}
-                    </span>
-                    <span className="block text-base font-bold text-white leading-snug">
-                      {m.name}
-                    </span>
-                    <span className="block text-xs text-white/55 leading-snug mt-0.5">
-                      {m.cardPunch}
-                    </span>
-                  </span>
-                  <svg
-                    className="w-4 h-4 shrink-0 text-white/30 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </motion.div>
+                <Image
+                  src={social.icon}
+                  alt=""
+                  width={22}
+                  height={22}
+                  className="h-[22px] w-[22px] object-contain"
+                />
+              </motion.a>
             ))}
           </div>
-          <p className="text-[11px] text-white/35 text-center leading-relaxed mt-3">
-            August 4 is a primary election; your ballot will include other races too.
-          </p>
-        </motion.div>
 
-        {/* ---- KEY DATES ---- */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
-          <p className="text-white/50 text-xs font-medium uppercase tracking-widest mb-3 text-center">
-            Make your plan
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
+            className="mb-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+            aria-hidden="true"
+          />
+
+          {/* ---- Hero result ---- */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: EASE_OUT }}
+            className="mb-9 text-center"
+            aria-labelledby="social-hero-heading"
+          >
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white/90">
+              <span className="h-2 w-2 rounded-full bg-green-400 motion-safe:animate-pulse" />
+              Results &middot; August 4, 2026
+            </div>
+
+            <h1
+              id="social-hero-heading"
+              className="mb-4 text-[32px] font-bold leading-tight text-white"
+            >
+              Kansas City said{' '}
+              <span className="text-coral" style={{ textShadow: '0 0 40px rgba(229,57,53,.5)' }}>
+                YES
+              </span>{' '}
+              to all five
+            </h1>
+
+            <div className="my-4 text-7xl font-bold leading-none tracking-tight text-white">
+              <AnimatedCounter end={5} duration={1.2} />
+              <span> / 5</span>
+            </div>
+            <p className="text-sm font-medium text-white/70">KC Ballot Questions</p>
+
+            <div className="mt-6 flex justify-center gap-6 text-white/50">
+              <div className="text-center">
+                <div className="text-lg font-bold text-white">${BOND_TOTAL_BILLIONS}B</div>
+                <div className="text-[11px]">In bonds authorized</div>
+              </div>
+              <div className="w-px bg-white/20" aria-hidden="true" />
+              <div className="text-center">
+                <div className="text-lg font-bold text-white/70 tabular-nums">
+                  {BALLOTS_CAST.toLocaleString()}
+                </div>
+                <div className="text-[11px]">Ballots cast</div>
+              </div>
+            </div>
+          </motion.section>
+
+          {/* ---- The five questions ---- */}
+          <section className="mb-9" aria-labelledby="social-questions-heading">
+            <h2
+              id="social-questions-heading"
+              className="mb-1 text-center text-xl font-bold text-white"
+            >
+              The Five Questions
+            </h2>
+            <p className="mb-6 text-center text-xs text-white/40">
+              Tap any question for the brief.
+            </p>
+
+            <div className="space-y-4">
+              {ORDERED_MEASURES.map((m, i) => (
+                <QuestionBar
+                  key={m.slug}
+                  measure={m}
+                  index={i}
+                  open={openMeasure === m.slug}
+                  onToggle={() => setOpenMeasure((cur) => (cur === m.slug ? null : m.slug))}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* ---- Counties ---- */}
+          <section className="mb-9" aria-labelledby="social-counties-heading">
+            <h2
+              id="social-counties-heading"
+              className="mb-1 text-center text-xl font-bold text-white"
+            >
+              Results By County
+            </h2>
+            <p className="mb-6 text-center text-xs text-white/40">
+              Yes on all five, in all three.
+            </p>
+
+            <div className="grid grid-cols-3 gap-2">
+              {COUNTY_RANGES.map((c, i) => (
+                <motion.div
+                  key={c.key}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="rounded-xl border border-white/10 bg-white/5 p-3 text-center"
+                >
+                  <div className="mb-1 text-[11px] text-white/50">
+                    {c.name.replace(' County', '')}
+                  </div>
+                  <div className="text-lg font-bold tabular-nums text-white">
+                    {c.low.toFixed(1)}
+                    <span className="text-white/40">to</span>
+                    {c.high.toFixed(1)}%
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+          {/* ---- Thank you ---- */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: EASE_OUT }}
+            className="relative mb-6 py-8 text-center"
+            aria-labelledby="social-thanks-heading"
+          >
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: EASE_EXPO }}
+              className="mx-auto mb-8 h-[2px] w-12 origin-center bg-gradient-to-r from-coral to-golden"
+              aria-hidden="true"
+            />
+
+            <h2 id="social-thanks-heading" className="mb-6 text-3xl font-bold leading-tight text-white">
+              Thank You,
+              <br />
+              <span
+                className="bg-gradient-to-r from-sky via-white to-coral bg-clip-text"
+                style={{ WebkitTextFillColor: 'transparent' }}
+              >
+                Kansas City
+              </span>
+            </h2>
+
+            <p className="mx-auto mb-6 max-w-xs text-sm leading-relaxed text-white">
+              About 97,000 of us filled out a ballot on a Tuesday in August and said yes to
+              affordable homes, to the civic buildings we all share, to the East Side, to the water
+              coming out of the tap, and to keeping raw sewage out of our rivers.
+            </p>
+
+            <p className="mx-auto max-w-xs text-xs text-white/70">
+              This one belongs to every voter, volunteer, and neighbor who knocked a door, made a
+              call, or just showed up and voted.
+            </p>
+
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3, ease: EASE_EXPO }}
+              className="mx-auto mt-8 h-[2px] w-12 origin-center bg-gradient-to-r from-golden to-sky"
+              aria-hidden="true"
+            />
+          </motion.section>
+
+          {/* ---- Explore ---- */}
+          <p className="mb-4 text-center text-xs font-medium uppercase tracking-widest text-white/50">
+            Explore the full website
           </p>
-          <div className="grid grid-cols-3 gap-2">
-            {voteSteps.map((s, i) => (
+          <div className="mb-6 flex flex-wrap justify-center gap-3">
+            {EXPLORE_LINKS.map((link, i) => (
               <motion.div
-                key={s.date}
+                key={link.href}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white/5 rounded-xl p-3 text-center border border-white/10"
+                whileTap={reduce ? undefined : { scale: 0.97 }}
               >
-                <div className="text-[10px] text-white/45 uppercase tracking-wider mb-1">{s.kicker}</div>
-                <div className="text-sm font-bold text-white leading-tight">{s.date}</div>
-                <div className="text-[10px] text-white/55 mt-1 leading-snug">{s.title}</div>
+                {/* /ballot, not '/': the apex redirects to /victory, so an apex
+                    link here would bounce readers to the desktop results page. */}
+                <Link
+                  href={link.href}
+                  className="inline-block rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition-colors active:bg-white/20"
+                >
+                  {link.label}
+                </Link>
               </motion.div>
             ))}
           </div>
-        </motion.div>
 
-        {/* ---- CTA ---- */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-8 space-y-3"
-        >
-          <Link
-            href="/vote"
-            className="block w-full text-center bg-coral text-white font-bold text-base rounded-full px-6 py-4 shadow-lg shadow-coral/25 active:scale-[0.99] transition-transform"
-          >
-            Find your polling place
-          </Link>
-          <Link
-            href="/"
-            className="block w-full text-center bg-white/10 text-white font-semibold text-sm rounded-full px-6 py-3.5 border border-white/20 active:bg-white/20 transition-colors"
-          >
-            Explore the full website
-          </Link>
-        </motion.div>
-
-        {/* ---- Footer ---- */}
-        <div className="mt-auto pt-6 text-center">
-          <div className="flex justify-center mb-3">
-            <Image
-              src="/images/together-kc-footer.png"
-              alt="Together KC"
-              width={200}
-              height={60}
-              className="max-w-[160px] h-auto w-auto object-contain"
-            />
+          {/* ---- Footer ---- */}
+          <div className="mt-auto pt-6 text-center">
+            <p className="text-xs leading-relaxed text-white/40">
+              Paid for by Together KC, Dan Kopp, Treasurer.
+              <br />
+              Not authorized by any candidate or candidate committee.
+            </p>
           </div>
-          <p className="text-white/40 text-xs leading-relaxed">
-            Paid for by Together KC, Dan Kopp, Treasurer.
-            <br />
-            Not authorized by any candidate or candidate committee.
-          </p>
-        </div>
+        </main>
       </div>
-    </div>
+    </MotionConfig>
   );
 }
