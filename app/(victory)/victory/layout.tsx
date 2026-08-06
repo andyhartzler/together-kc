@@ -5,7 +5,7 @@ import type { Metadata, Viewport } from 'next';
 // a "%s | Together KC" template and this title already carries the org name.
 const TITLE = 'Kansas City Voted YES on All Five | Together KC';
 const DESCRIPTION =
-  'Kansas City passed all five questions on the August 4, 2026 ballot: affordable housing 74.6%, civic buildings 68.4%, Central City 68.1%, clean water 80.5%, and sewers 81.2%. About 97,000 ballots cast. Unofficial results.';
+  'Kansas City passed all five questions on the August 4, 2026 ballot: affordable housing 74.6%, civic buildings 68.4%, Central City 68.1%, clean water 80.5%, and sewers 81.2%. About 97,000 ballots cast.';
 const SHORT_DESCRIPTION =
   'All five August 4, 2026 ballot questions passed, from 68.1% to 81.2% YES. About $1.7 billion in bonds authorized. Thank you, Kansas City.';
 
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: 'Kansas City voted YES on all five: housing 74.6%, civic buildings 68.4%, Central City 68.1%, clean water 80.5%, sewers 81.2%. Unofficial results, August 4, 2026.',
+        alt: 'Kansas City voted YES on all five: housing 74.6%, civic buildings 68.4%, Central City 68.1%, clean water 80.5%, sewers 81.2%. August 4, 2026.',
       },
     ],
   },

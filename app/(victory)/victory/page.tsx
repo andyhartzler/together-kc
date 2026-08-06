@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MotionConfig, motion, useInView, useReducedMotion } from 'framer-motion';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
-import { TopicIcon } from '@/components/ui/TopicIcon';
 import { AUGUST_BALLOT } from '@/lib/constants';
 import Footer from '@/components/layout/Footer';
 
@@ -14,9 +13,12 @@ import Footer from '@/components/layout/Footer';
 //
 // Source of truth: the official county election board reports for the
 // August 4, 2026 City of Kansas City, Missouri special election, as reported
-// by the Jackson County, Clay County, and Platte County boards. These are
-// unofficial and not yet certified. A small portion of Kansas City sits in
-// Cass County and is NOT included in any figure here.
+// by the Jackson County, Clay County, and Platte County boards. These totals
+// are not yet certified. A small portion of Kansas City sits in Cass County
+// and is NOT included in any figure here.
+
+// VOTE WORDING RULE: this page never prints a no-vote count. Every figure is
+// stated as "<yes> yes of <total> votes", matching the etax victory page.
 //
 // Election-night partials that circulated in news coverage (75.6 / 69.3 /
 // 69.2 / 80.9 / 81.6) were incomplete. Do not reconcile these numbers toward
@@ -31,13 +33,12 @@ type CountyKey = 'jackson' | 'clay' | 'platte';
 
 interface CountyResult {
   yes: number;
-  no: number;
+  total: number;
   yesPercent: number;
 }
 
 interface MeasureResult {
   yes: number;
-  no: number;
   total: number;
   yesPercent: number;
   /** Share of the vote the question actually had to clear to pass. */
@@ -62,7 +63,6 @@ interface MeasureResult {
 const RESULTS: Record<MeasureSlug, MeasureResult> = {
   housing: {
     yes: 72489,
-    no: 24674,
     total: 97163,
     yesPercent: 74.61,
     thresholdPercent: 57.14,
@@ -72,14 +72,13 @@ const RESULTS: Record<MeasureSlug, MeasureResult> = {
     authorized: '$100 million in general obligation bonds authorized',
     ink: '#b3231e',
     counties: {
-      jackson: { yes: 46945, no: 9866, yesPercent: 82.63 },
-      clay: { yes: 17705, no: 10504, yesPercent: 62.76 },
-      platte: { yes: 7839, no: 4304, yesPercent: 64.56 },
+      jackson: { yes: 46945, total: 56811, yesPercent: 82.63 },
+      clay: { yes: 17705, total: 28209, yesPercent: 62.76 },
+      platte: { yes: 7839, total: 12143, yesPercent: 64.56 },
     },
   },
   'civic-buildings': {
     yes: 65908,
-    no: 30449,
     total: 96357,
     yesPercent: 68.4,
     thresholdPercent: 57.14,
@@ -89,14 +88,13 @@ const RESULTS: Record<MeasureSlug, MeasureResult> = {
     authorized: '$100 million in general obligation bonds authorized',
     ink: '#8a5a00',
     counties: {
-      jackson: { yes: 42752, no: 13606, yesPercent: 75.86 },
-      clay: { yes: 16174, no: 11866, yesPercent: 57.68 },
-      platte: { yes: 6982, no: 4977, yesPercent: 58.38 },
+      jackson: { yes: 42752, total: 56358, yesPercent: 75.86 },
+      clay: { yes: 16174, total: 28040, yesPercent: 57.68 },
+      platte: { yes: 6982, total: 11959, yesPercent: 58.38 },
     },
   },
   'central-city': {
     yes: 65724,
-    no: 30717,
     total: 96441,
     yesPercent: 68.15,
     thresholdPercent: 50,
@@ -106,14 +104,13 @@ const RESULTS: Record<MeasureSlug, MeasureResult> = {
     authorized: 'One-eighth-cent sales tax, renewed for 10 years',
     ink: '#a03d0f',
     counties: {
-      jackson: { yes: 43760, no: 12642, yesPercent: 77.59 },
-      clay: { yes: 15251, no: 12771, yesPercent: 54.43 },
-      platte: { yes: 6713, no: 5304, yesPercent: 55.86 },
+      jackson: { yes: 43760, total: 56402, yesPercent: 77.59 },
+      clay: { yes: 15251, total: 28022, yesPercent: 54.43 },
+      platte: { yes: 6713, total: 12017, yesPercent: 55.86 },
     },
   },
   'clean-water': {
     yes: 77747,
-    no: 18799,
     total: 96546,
     yesPercent: 80.53,
     thresholdPercent: 50,
@@ -123,14 +120,13 @@ const RESULTS: Record<MeasureSlug, MeasureResult> = {
     authorized: '$750 million in waterworks revenue bonds authorized',
     ink: '#17558f',
     counties: {
-      jackson: { yes: 47365, no: 8973, yesPercent: 84.07 },
-      clay: { yes: 21112, no: 7052, yesPercent: 74.96 },
-      platte: { yes: 9270, no: 2774, yesPercent: 76.97 },
+      jackson: { yes: 47365, total: 56338, yesPercent: 84.07 },
+      clay: { yes: 21112, total: 28164, yesPercent: 74.96 },
+      platte: { yes: 9270, total: 12044, yesPercent: 76.97 },
     },
   },
   sewers: {
     yes: 78603,
-    no: 18188,
     total: 96791,
     yesPercent: 81.21,
     thresholdPercent: 50,
@@ -140,10 +136,45 @@ const RESULTS: Record<MeasureSlug, MeasureResult> = {
     authorized: '$750 million in sanitary sewer revenue bonds authorized',
     ink: '#1e3a5f',
     counties: {
-      jackson: { yes: 48119, no: 8467, yesPercent: 85.04 },
-      clay: { yes: 21206, no: 6964, yesPercent: 75.28 },
-      platte: { yes: 9278, no: 2757, yesPercent: 77.09 },
+      jackson: { yes: 48119, total: 56586, yesPercent: 85.04 },
+      clay: { yes: 21206, total: 28170, yesPercent: 75.28 },
+      platte: { yes: 9278, total: 12035, yesPercent: 77.09 },
     },
+  },
+};
+
+// What each question was, what was riding on it, and how it landed. Kept to
+// three short beats so the expanded panel stays scannable.
+const BRIEFS: Record<MeasureSlug, { about: string; stake: string }> = {
+  housing: {
+    about:
+      'A $100 million general obligation bond to refill the Housing Trust Fund, which finances building and rehabbing homes for very low to moderate income households.',
+    stake:
+      'Kansas City is short roughly 64,000 affordable homes. The fund had been running on about $10 million a year. A yes roughly doubles that, and a no would have left the trust fund close to empty.',
+  },
+  'civic-buildings': {
+    about:
+      'A $100 million general obligation bond to repair and preserve the buildings the city owns together: Bartle Hall, the convention center, and City Hall, which opened in 1937.',
+    stake:
+      'Deferred repairs get more expensive every year, and the convention business KC competes for depends on these rooms being in working order.',
+  },
+  'central-city': {
+    about:
+      'A renewal of the one-eighth-cent Central City Economic Development sales tax for another 10 years, at exactly the rate it has been since 2017.',
+    stake:
+      'The tax has put more than $88 million into 58 East Side projects. It was set to expire on September 30, 2027, and a no would have ended it with no replacement.',
+  },
+  'clean-water': {
+    about:
+      'A $750 million revenue bond to replace aging water mains and upgrade treatment across a system of about 2,800 miles of pipe serving roughly 172,000 customers.',
+    stake:
+      'KC Water faces about $1.2 billion in five year capital needs. Revenue bonds are the cheapest way to pay for work that has to happen either way, so a no would have raised the long run cost.',
+  },
+  sewers: {
+    about:
+      'A $750 million revenue bond funding the Smart Sewer program, the federally required cleanup of the sewer system under a consent decree.',
+    stake:
+      'The city is legally obligated to capture 85% of wet weather flow by 2040 and keep raw sewage out of the Blue and Missouri rivers. The work is mandatory, so the only real question was how to pay for it.',
   },
 };
 
@@ -164,29 +195,9 @@ const ORDERED_MEASURES = [...AUGUST_BALLOT.measures].sort(
 
 const SUPERMAJORITY = 'Four-sevenths supermajority';
 
-// The two GO bonds happen to be Questions 1 and 2, so grouping by the bar they
-// had to clear does not disturb ballot order. Split from voteThreshold rather
-// than by index so it cannot drift if the constants change.
-const QUESTION_GROUPS = [
-  {
-    heading: 'The two that needed a supermajority',
-    measures: ORDERED_MEASURES.filter((m) => m.voteThreshold === SUPERMAJORITY),
-  },
-  {
-    heading: 'The three that needed a simple majority',
-    measures: ORDERED_MEASURES.filter((m) => m.voteThreshold !== SUPERMAJORITY),
-  },
-];
-
 // Bond authorization: the four bond questions only. The Central City question
 // is a sales tax renewal and adds no bond authorization.
 const BOND_TOTAL_BILLIONS = 1.7;
-
-// The dot plot scale. Every county figure on the page falls inside this band.
-const SCALE_MIN = 50;
-const SCALE_MAX = 90;
-const scalePos = (pct: number) =>
-  ((Math.min(Math.max(pct, SCALE_MIN), SCALE_MAX) - SCALE_MIN) / (SCALE_MAX - SCALE_MIN)) * 100;
 
 // ---------------------------------------------------------------------------
 // Confetti
@@ -349,179 +360,149 @@ function ConfettiBurst({
 // One ballot question: the headline result, the bar it had to clear, and the
 // margin it cleared it by.
 // ---------------------------------------------------------------------------
-function QuestionResult({
+function MeasureRow({
   measure,
   result,
-  delay,
+  index,
+  open,
+  onToggle,
 }: {
   measure: (typeof AUGUST_BALLOT.measures)[number];
   result: MeasureResult;
-  delay: number;
+  index: number;
+  open: boolean;
+  onToggle: () => void;
 }) {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-40px' });
+  const panelId = `measure-panel-${measure.slug}`;
+  const brief = BRIEFS[measure.slug];
   const supermajority = measure.voteThreshold === SUPERMAJORITY;
 
   return (
-    <motion.article
+    <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.6, delay, ease: EASE_OUT }}
-      className="relative overflow-hidden rounded-2xl border border-navy/10 bg-white p-5 shadow-lg shadow-navy/5 sm:p-8"
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.5, delay: index * 0.08, ease: EASE_OUT }}
     >
-      <div
-        className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full blur-3xl"
-        style={{ backgroundColor: measure.accent.swatch, opacity: 0.12 }}
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
-              <span
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                style={{ backgroundColor: `${measure.accent.swatch}1f`, color: result.ink }}
-                aria-hidden="true"
-              >
-                <TopicIcon id={measure.motif} className="h-5 w-5" />
-              </span>
-              <span
-                className="text-[11px] font-bold uppercase tracking-[0.16em] sm:text-xs"
-                style={{ color: result.ink }}
-              >
-                {measure.officialQuestion.number}
-              </span>
-              {/* Sits with the question number, not down in the footer row:
-                  the higher bar has to be read before the result, not after. */}
-              {supermajority ? (
-                <span className="rounded-full border border-navy/15 bg-navy/[0.04] px-2.5 py-1 text-[11px] font-semibold text-navy">
-                  Supermajority required
-                </span>
-              ) : null}
-            </div>
-            <h3 className="mt-3 text-xl font-bold leading-tight text-navy sm:text-2xl md:text-3xl">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls={panelId}
+        className="group block w-full cursor-pointer rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-4 sm:rounded-2xl"
+      >
+        <div className="mb-2 flex flex-wrap items-end justify-between gap-x-3 gap-y-1 px-1 sm:mb-3">
+          <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+            <span className="text-xl font-bold leading-tight text-navy sm:text-2xl md:text-3xl">
               {measure.name}
-            </h3>
-            <p className="mt-1.5 text-sm text-gray-600 sm:text-base">{measure.cardPunch}</p>
-          </div>
-
-          <div className="shrink-0 text-left sm:text-right">
-            <div
-              className="text-4xl font-bold leading-none tracking-tight tabular-nums sm:text-5xl md:text-6xl"
-              style={{ color: result.ink }}
-            >
-              <AnimatedCounter end={result.yesPercent} decimals={1} suffix="%" duration={1.6} />
-            </div>
-            <div
-              className="mt-1.5 text-xs font-bold uppercase tracking-[0.18em]"
-              style={{ color: result.ink }}
-            >
-              Voted yes
-            </div>
-          </div>
-        </div>
-
-        {/* Result bar with the threshold this question actually had to clear */}
-        <div className="mt-6 sm:mt-8">
-          <div className="relative">
-            <div className="relative h-10 overflow-hidden rounded-xl bg-navy/[0.06] sm:h-14">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={inView ? { width: `${result.yesPercent}%` } : undefined}
-                transition={{ duration: 1.5, delay: delay + 0.25, ease: EASE_EXPO }}
-                className="absolute inset-y-0 left-0 rounded-xl"
-                style={{
-                  background: `linear-gradient(90deg, ${measure.accent.swatch} 0%, ${result.ink} 100%)`,
-                }}
-              />
-
-              {/* The zone the question had to fill to pass, hatched over the
-                  fill. This is what makes four sevenths visible as an area
-                  rather than as a 23px shift in a dashed line: the two GO bond
-                  cards carry a wider hatch than the three majority cards. */}
-              <div
-                className="pointer-events-none absolute inset-y-0 left-0"
-                style={{
-                  width: `${result.thresholdPercent}%`,
-                  backgroundImage:
-                    'repeating-linear-gradient(135deg, rgba(255,255,255,0.30) 0 5px, rgba(255,255,255,0) 5px 11px)',
-                }}
-                aria-hidden="true"
-              />
-            </div>
-
-            {/* Threshold marker sits above the fill so you can see it cleared */}
-            <div
-              className="pointer-events-none absolute inset-y-0"
-              style={{ left: `${result.thresholdPercent}%` }}
-              aria-hidden="true"
-            >
-              <div
-                className="h-full w-[3px] -translate-x-1/2 rounded-full"
-                style={{
-                  backgroundImage:
-                    'repeating-linear-gradient(to bottom, #ffffff 0 5px, transparent 5px 10px)',
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Tick label under the marker, in a fixed-width box so it can never
-              run out of room at the right edge of a phone, and the wording on
-              its own full-width line below. */}
-          <div className="relative mt-2 h-4">
-            <div
-              className="absolute w-16 -translate-x-1/2 text-center text-[10px] font-bold tabular-nums text-navy/70 sm:text-[11px]"
-              style={{ left: `${result.thresholdPercent}%` }}
-            >
-              {result.thresholdTick}
-            </div>
-          </div>
-          <p className="mt-1.5 text-[11px] leading-tight text-gray-600 sm:text-xs">
-            {result.thresholdLine}
-          </p>
-        </div>
-
-        <div className="mt-4 flex flex-col gap-3 border-t border-navy/[0.07] pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-gray-600 sm:text-sm">
-            <span className="font-semibold text-navy tabular-nums">
-              {result.yes.toLocaleString()}
-            </span>{' '}
-            yes to{' '}
-            <span className="tabular-nums">{result.no.toLocaleString()}</span> no, of{' '}
-            <span className="tabular-nums">{result.total.toLocaleString()}</span> votes cast.{' '}
-            <span className="font-semibold" style={{ color: result.ink }}>
-              Cleared the bar by {result.marginPoints} points.
             </span>
-          </p>
-          <span
-            className="w-fit shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold"
-            style={{ backgroundColor: `${measure.accent.swatch}1a`, color: result.ink }}
-          >
-            {measure.costChip}
+            <span
+              className="text-[11px] font-bold uppercase tracking-[0.16em] sm:text-xs"
+              style={{ color: result.ink }}
+            >
+              {measure.officialQuestion.number}
+            </span>
+          </span>
+          <span className="text-xs tabular-nums text-gray-400 sm:text-sm">
+            {result.total.toLocaleString()} total votes
           </span>
         </div>
 
-        <p className="mt-3 text-[11px] leading-relaxed text-gray-500 sm:text-xs">
-          {result.authorized}
-        </p>
-      </div>
+        <div className="relative h-14 w-full overflow-hidden rounded-xl sm:h-20 sm:rounded-2xl">
+          <div className="absolute inset-0 rounded-xl bg-gray-100 sm:rounded-2xl" />
+          <motion.div
+            initial={{ width: 0 }}
+            animate={inView ? { width: `${result.yesPercent}%` } : undefined}
+            transition={{ duration: 1.5, delay: index * 0.14 + 0.2, ease: EASE_EXPO }}
+            className="absolute inset-y-0 left-0 overflow-hidden rounded-xl sm:rounded-2xl"
+            style={{
+              background: `linear-gradient(90deg, ${measure.accent.swatch} 0%, ${result.ink} 100%)`,
+            }}
+          >
+            <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-[200%] group-active:translate-x-[200%] motion-reduce:hidden" />
+            <div className="absolute inset-0 flex items-center justify-end px-3 sm:px-6">
+              <span className="text-xl font-bold tabular-nums text-white sm:text-3xl md:text-4xl">
+                {result.yesPercent.toFixed(1)}%
+              </span>
+              <span className="ml-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/70 sm:ml-2 sm:text-sm">
+                Yes
+              </span>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="mt-1.5 flex items-center gap-1.5 px-1 text-[11px] font-semibold text-navy/60 sm:text-xs">
+          <svg
+            viewBox="0 0 20 20"
+            className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            aria-hidden="true"
+          >
+            <path d="M5 8l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          {open ? 'Hide the details' : 'What this question was'}
+        </div>
+      </button>
 
       <motion.div
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: delay + 0.45, ease: EASE_EXPO }}
-        className="absolute bottom-0 left-0 right-0 h-1 origin-left"
-        style={{
-          background: `linear-gradient(90deg, ${measure.accent.swatch}, ${result.ink})`,
-        }}
-        aria-hidden="true"
-      />
-    </motion.article>
+        id={panelId}
+        initial={false}
+        animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+        transition={{ duration: 0.35, ease: EASE_OUT }}
+        className="overflow-hidden"
+      >
+        <div
+          className="mt-3 rounded-xl border border-navy/10 bg-light-gray p-5 sm:rounded-2xl sm:p-6"
+          style={{ borderLeftWidth: 4, borderLeftColor: measure.accent.swatch }}
+        >
+          <dl className="space-y-4">
+            <div>
+              <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-navy/60">
+                What it was
+              </dt>
+              <dd className="mt-1.5 text-sm leading-relaxed text-gray-700 sm:text-base">
+                {brief.about}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-navy/60">
+                What was at stake
+              </dt>
+              <dd className="mt-1.5 text-sm leading-relaxed text-gray-700 sm:text-base">
+                {brief.stake}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-navy/60">
+                The result
+              </dt>
+              <dd className="mt-1.5 text-sm leading-relaxed text-gray-700 sm:text-base">
+                <span className="font-semibold tabular-nums text-navy">
+                  {result.yes.toLocaleString()}
+                </span>{' '}
+                yes of{' '}
+                <span className="tabular-nums">{result.total.toLocaleString()}</span> total votes,
+                or{' '}
+                <span className="font-semibold" style={{ color: result.ink }}>
+                  {result.yesPercent.toFixed(1)}% yes
+                </span>
+                . {result.thresholdLine}
+                {supermajority ? ', because general obligation bonds cannot pass on a simple majority' : ''}
+                . It cleared that bar by {result.marginPoints} points.
+              </dd>
+            </div>
+          </dl>
+          <p className="mt-4 border-t border-navy/[0.07] pt-3 text-[11px] leading-relaxed text-gray-500 sm:text-xs">
+            {result.authorized}. {measure.costChip}.
+          </p>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -647,7 +628,7 @@ function CountyCard({
                     />
                   </div>
                   <p className="mt-1 text-[11px] text-gray-500 tabular-nums">
-                    {cell.yes.toLocaleString()} yes to {cell.no.toLocaleString()} no
+                    {cell.yes.toLocaleString()} yes of {cell.total.toLocaleString()} votes
                   </p>
                 </li>
               );
@@ -669,80 +650,13 @@ function CountyCard({
 // handed as text. Colour is keyed once above the list, the scale is labelled at
 // both ends, and each row keeps only the figure the cards cannot show: the gap.
 // ---------------------------------------------------------------------------
-function SpreadRow({
-  measure,
-  result,
-  index,
-}: {
-  measure: (typeof AUGUST_BALLOT.measures)[number];
-  result: MeasureResult;
-  index: number;
-}) {
-  const values = COUNTIES.map((c) => ({ ...c, pct: result.counties[c.key].yesPercent }));
-  const lowest = values.reduce((a, b) => (a.pct <= b.pct ? a : b));
-  const highest = values.reduce((a, b) => (a.pct >= b.pct ? a : b));
-  const gap = highest.pct - lowest.pct;
-
-  return (
-    <motion.li
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: EASE_OUT }}
-      className="py-4 first:pt-0 last:pb-0"
-    >
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="text-sm font-bold text-navy sm:text-base">
-          {measure.name}
-          <span className="ml-2 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-            {measure.officialQuestion.number}
-          </span>
-        </span>
-        <span className="shrink-0 text-xs font-semibold tabular-nums text-gray-500 sm:text-sm">
-          {gap.toFixed(1)} point gap
-        </span>
-      </div>
-
-      <div className="relative mx-2 mb-1 mt-4 h-3">
-        <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-navy/10" aria-hidden="true" />
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, delay: index * 0.08 + 0.15, ease: EASE_EXPO }}
-          className="absolute top-1/2 h-[3px] origin-left -translate-y-1/2 rounded-full"
-          style={{
-            left: `${scalePos(lowest.pct)}%`,
-            width: `${scalePos(highest.pct) - scalePos(lowest.pct)}%`,
-            background: `linear-gradient(90deg, ${lowest.swatch}, ${highest.swatch})`,
-          }}
-          aria-hidden="true"
-        />
-        {values.map((v) => (
-          <motion.span
-            key={v.key}
-            initial={{ opacity: 0, scale: 0.4 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: index * 0.08 + 0.4, ease: EASE_OUT }}
-            className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-white"
-            style={{ left: `${scalePos(v.pct)}%`, backgroundColor: v.swatch }}
-            title={`${v.name}: ${v.pct.toFixed(1)}% yes`}
-            aria-hidden="true"
-          />
-        ))}
-      </div>
-    </motion.li>
-  );
-}
-
 // ===========================================================================
 // Victory page
 // ===========================================================================
 export default function AugustVictoryPage() {
+  const [openMeasure, setOpenMeasure] = useState<MeasureSlug | null>(null);
   const reduce = useReducedMotion();
   const housing = RESULTS.housing;
-  const centralCity = RESULTS['central-city'];
 
   return (
     // reducedMotion="user" moves the preference out of the render branch and
@@ -829,7 +743,7 @@ export default function AugustVictoryPage() {
                   className="h-2 w-2 animate-pulse rounded-full bg-green-400 motion-reduce:animate-none sm:h-2.5 sm:w-2.5"
                   aria-hidden="true"
                 />
-                Unofficial results, August 4, 2026
+                Results, August 4, 2026
               </motion.p>
 
               <motion.h1
@@ -954,55 +868,20 @@ export default function AugustVictoryPage() {
                 </p>
               </motion.div>
 
-              {/* Grouped, not just ordered. The two GO bonds are Questions 1 and
-                  2, so this changes nothing about ballot order, but it puts the
-                  higher bar in a heading instead of leaving it to a 23px shift in
-                  a dashed marker. */}
-              {QUESTION_GROUPS.map((group) => (
-                <div key={group.heading} className="mt-8 first:mt-0 sm:mt-14">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-navy/70 sm:text-sm">
-                    {group.heading}
-                  </h3>
-                  <div className="mt-4 space-y-5 sm:mt-6 sm:space-y-7">
-                    {group.measures.map((m) => (
-                      <QuestionResult
-                        key={m.slug}
-                        measure={m}
-                        result={RESULTS[m.slug]}
-                        delay={ORDERED_MEASURES.indexOf(m) * 0.06}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              {/* The four-sevenths story, said plainly */}
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, ease: EASE_OUT }}
-                className="mt-10 rounded-2xl border border-navy/10 bg-light-gray p-6 sm:mt-14 sm:p-8"
-              >
-                <h3 className="text-lg font-bold text-navy sm:text-xl">
-                  The two hardest questions on the ballot
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-gray-700 sm:text-base">
-                  Because they are general obligation bonds, the affordable housing question and
-                  the civic buildings question could not pass on a simple majority. Missouri
-                  required four sevenths of the vote, which is 57.1%. Kansas City gave affordable
-                  housing {housing.yesPercent.toFixed(1)}% and civic buildings{' '}
-                  {RESULTS['civic-buildings'].yesPercent.toFixed(1)}%, clearing the bar by{' '}
-                  {housing.marginPoints} and {RESULTS['civic-buildings'].marginPoints} points.
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                  None of the five raises your tax rate. The water and sewer bonds are revenue
-                  bonds repaid from utility fees. The two general obligation bonds are timed to
-                  replace older debt that is being paid off, so the property tax rate stays flat.
-                  The Central City question renews an existing sales tax at the same one-eighth-cent
-                  rate it has been since 2017.
-                </p>
-              </motion.div>
+              <div className="space-y-7 sm:space-y-10">
+                {ORDERED_MEASURES.map((m, i) => (
+                  <MeasureRow
+                    key={m.slug}
+                    measure={m}
+                    result={RESULTS[m.slug]}
+                    index={i}
+                    open={openMeasure === m.slug}
+                    onToggle={() =>
+                      setOpenMeasure((cur) => (cur === m.slug ? null : m.slug))
+                    }
+                  />
+                ))}
+              </div>
             </div>
           </section>
 
@@ -1042,62 +921,6 @@ export default function AugustVictoryPage() {
                 ))}
               </div>
 
-              {/* Read the same data the other way: by question, across counties */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, ease: EASE_OUT }}
-                className="mx-auto mt-12 max-w-3xl sm:mt-20"
-              >
-                <h3 className="text-xl font-bold text-navy sm:text-2xl md:text-3xl">
-                  Jackson County led on every question
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                  The Jackson County side of the city backed all five by wider margins than the
-                  Northland. The widest split was the Central City sales tax renewal:{' '}
-                  {centralCity.counties.jackson.yesPercent.toFixed(1)}% yes in Jackson County
-                  against {centralCity.counties.clay.yesPercent.toFixed(1)}% in Clay County. The
-                  narrowest was clean water, where all three counties landed within ten points of
-                  each other.
-                </p>
-
-                {/* Colour is keyed once, here, rather than restated on all five
-                    rows. The exact percentages are on the county cards above. */}
-                <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-navy/[0.07] pb-3">
-                  <p className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] sm:text-xs">
-                    {COUNTIES.map((c) => (
-                      <span key={c.key} className="inline-flex items-center gap-1.5">
-                        <span
-                          className="h-2 w-2 rounded-full"
-                          style={{ backgroundColor: c.swatch }}
-                          aria-hidden="true"
-                        />
-                        <span className="font-semibold" style={{ color: c.ink }}>
-                          {c.name.replace(' County', '')}
-                        </span>
-                      </span>
-                    ))}
-                  </p>
-                  <p className="text-[11px] text-gray-500 sm:text-xs">Yes share, 50% to 90%</p>
-                </div>
-
-                <ul className="divide-y divide-navy/[0.07]">
-                  {ORDERED_MEASURES.map((m, i) => (
-                    <SpreadRow key={m.slug} measure={m} result={RESULTS[m.slug]} index={i} />
-                  ))}
-                </ul>
-
-                <div className="mx-2 mt-2 flex items-center justify-between border-t border-navy/[0.07] pt-2 text-[10px] font-semibold tabular-nums text-gray-500 sm:text-[11px]">
-                  <span>50%</span>
-                  <span>90%</span>
-                </div>
-
-                <p className="mt-4 text-[11px] leading-relaxed text-gray-500 sm:text-xs">
-                  Each dot is one county&apos;s yes share, plotted on a shared 50% to 90% scale.
-                </p>
-              </motion.div>
-
               <motion.p
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -1105,7 +928,7 @@ export default function AugustVictoryPage() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="mx-auto mt-10 max-w-3xl text-center text-xs leading-relaxed text-gray-600 sm:mt-14 sm:text-sm"
               >
-                Unofficial results as reported by the Jackson County, Clay County, and Platte
+                Results as reported by the Jackson County, Clay County, and Platte
                 County election boards. Platte County reported 13 of 13 precincts. These totals
                 are not yet certified. A small portion of Kansas City lies in Cass County and is
                 not included in the figures on this page.
@@ -1173,22 +996,30 @@ export default function AugustVictoryPage() {
                 className="mt-12 text-center sm:mt-16"
               >
                 <p className="mb-5 text-xs font-medium uppercase tracking-widest text-gray-500 sm:mb-6 sm:text-sm">
-                  What comes next
+                  Explore the full website
                 </p>
-                <motion.div
-                  whileHover={reduce ? undefined : { y: -3, scale: 1.03 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                  className="inline-block"
-                >
-                  {/* Points at /ballot, not '/': the apex now redirects here, so
-                      an apex link on this page would send readers in a circle. */}
-                  <Link
-                    href="/ballot"
-                    className="inline-block rounded-full bg-navy px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-navy/10 transition-colors duration-200 hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 sm:px-9 sm:py-4 sm:text-base"
-                  >
-                    Explore the full site
-                  </Link>
-                </motion.div>
+                <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                  {/* Point at /ballot, not '/': the apex redirects here, so an
+                      apex link on this page would send readers in a circle. */}
+                  {[
+                    { label: 'Home', href: '/ballot' },
+                    { label: 'The Five Questions', href: '/ballot#questions' },
+                    { label: 'FAQs', href: '/ballot#faqs' },
+                  ].map((link) => (
+                    <motion.div
+                      key={link.href}
+                      whileHover={reduce ? undefined : { y: -3, scale: 1.03 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                    >
+                      <Link
+                        href={link.href}
+                        className="inline-block rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-navy/10 transition-colors duration-200 hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 sm:px-8 sm:py-3.5 sm:text-base"
+                      >
+                        {link.label}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
               </motion.div>
             </div>
           </section>
