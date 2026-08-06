@@ -19,7 +19,7 @@ export const organizationSchema = {
   url: 'https://together-kc.com',
   logo: 'https://together-kc.com/images/og-august.png',
   description:
-    'Together KC is a Kansas City civic campaign urging voters to vote YES on all five Kansas City questions on the August 4, 2026 ballot.',
+    'Together KC is a Kansas City civic campaign that backed all five Kansas City questions on the August 4, 2026 ballot. All five passed.',
   email: 'action@together-kc.com',
   areaServed: {
     '@type': 'City',
@@ -42,7 +42,7 @@ export const websiteSchema = {
   name: 'Together KC',
   url: 'https://together-kc.com',
   description:
-    'Five Kansas City questions are on the August 4, 2026 ballot: clean water, sewers, affordable housing, civic buildings, and Central City reinvestment. None of them raises your tax rate. Vote YES on all five.',
+    'Five Kansas City questions were on the August 4, 2026 ballot: clean water, sewers, affordable housing, civic buildings, and Central City reinvestment. All five passed, and none of them raises your tax rate.',
   publisher: {
     '@type': 'PoliticalOrganization',
     name: 'Together KC',

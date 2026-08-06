@@ -125,7 +125,7 @@ export default function MeasureDetail({
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-3">
           <Link
-            href="/"
+            href="/ballot#questions"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy/70 hover:text-coral transition-colors shrink-0"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,7 +190,7 @@ export default function MeasureDetail({
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 sm:pt-28 sm:pb-24">
           <Link
-            href="/"
+            href="/ballot#questions"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-white/75 hover:text-white transition-colors mb-9 sm:mb-12"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -847,7 +847,7 @@ export default function MeasureDetail({
           </motion.div>
 
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease: EASE, delay: 0.3 }} className="mt-10">
-            <Link href="/" className="inline-flex items-center gap-1.5 text-white/75 hover:text-white text-sm font-semibold transition-colors">
+            <Link href="/ballot#questions" className="inline-flex items-center gap-1.5 text-white/75 hover:text-white text-sm font-semibold transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>

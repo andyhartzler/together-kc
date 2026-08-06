@@ -26,7 +26,7 @@ export default function MeasureNotFound() {
           </p>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <Link
-              href="/"
+              href="/ballot#questions"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-coral text-white font-semibold px-6 py-3 text-base hover:bg-coral/85 transition-colors"
             >
               See all five questions

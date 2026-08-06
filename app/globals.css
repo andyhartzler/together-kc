@@ -30,9 +30,13 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/* Smooth scrolling, but not for anyone who has asked the system for less
+   motion. Without the query, a reduced-motion visitor tapping an in-page cue
+   still gets a full-viewport animated scroll. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Custom scrollbar */

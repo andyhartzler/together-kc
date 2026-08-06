@@ -29,7 +29,8 @@ const ETAX_LINKS = [
 
 // August 4, 2026 ballot links: the footer's primary nav for this cycle.
 const AUGUST_LINKS = [
-  { label: 'The Five Questions', href: '/#questions' },
+  { label: 'Results', href: '/victory' },
+  { label: 'The Five Questions', href: '/ballot#questions' },
   { label: 'Where to Vote', href: '/vote' },
   { label: 'Press & Media', href: '/press' },
   { label: 'Share', href: '/social' },

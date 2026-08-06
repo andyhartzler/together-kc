@@ -10,11 +10,13 @@ import { cn } from '@/lib/utils';
 // August-section navigation. Intentionally standalone: it does NOT use the
 // shared NAV_LINKS (those serve the archived e-tax pages under /etax).
 // Absolute hrefs so the anchors resolve from the /questions detail pages too.
+// The hub's anchors are on /ballot: since the August 4, 2026 result went up,
+// the apex redirects to /victory (one entry in next.config.ts).
 const AUGUST_NAV_LINKS = [
-  { label: 'The Five Questions', href: '/#questions' },
-  { label: 'How to Vote', href: '/#vote' },
+  { label: 'The Five Questions', href: '/ballot#questions' },
+  { label: 'How to Vote', href: '/ballot#vote' },
   { label: 'Find Your Polling Place', href: '/vote' },
-  { label: 'FAQs', href: '/#faqs' },
+  { label: 'FAQs', href: '/ballot#faqs' },
 ] as const;
 
 export default function AugustNav() {

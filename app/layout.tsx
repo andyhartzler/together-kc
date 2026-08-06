@@ -28,10 +28,14 @@ export const metadata: Metadata = {
   },
   description:
     'Five Kansas City questions are on the August 4, 2026 ballot: clean water, sewers, affordable housing, civic buildings, and Central City reinvestment. None of them raises your tax rate. Vote YES on all five.',
+  // Post-election. The vote-instruction terms ("Vote YES on all five", "how to
+  // vote Kansas City August 2026") were dropped on August 5, 2026: the apex now
+  // lands on the result page, and telling searchers how to vote in an election
+  // that closed the day before is the wrong promise to make.
   keywords: [
     // Primary keywords
     'August 4 2026 Kansas City ballot',
-    'Vote YES on all five',
+    'Kansas City August 4 2026 election results',
     'Kansas City ballot questions',
     'KC clean water bonds',
     'KC sewer bonds',
@@ -39,14 +43,13 @@ export const metadata: Metadata = {
     'Kansas City affordable housing bond',
     'Kansas City civic buildings bond',
     'Central City reinvestment Kansas City',
-    'Vote YES Kansas City',
     'Together KC',
     // Local keywords
     'Kansas City Missouri election',
     'KCMO August election',
     'Jackson County election',
     // Long-tail keywords
-    'how to vote Kansas City August 2026',
+    'Kansas City ballot questions results 2026',
     'Kansas City ballot guide 2026',
   ],
   authors: [{ name: SITE_CONFIG.organization }],
@@ -94,9 +97,11 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {
-    canonical: 'https://together-kc.com',
-  },
+  // No site-wide canonical. This used to hardcode https://together-kc.com,
+  // which leaked onto every route that did not override it (/vote, /social,
+  // /press, the /questions detail pages). Since the apex now 307s to /victory,
+  // that would have pointed the whole site at a redirecting URL. Pages that
+  // need a canonical declare their own: /victory and /ballot both do.
   category: 'politics',
   other: {
     // Geo meta tags for local SEO

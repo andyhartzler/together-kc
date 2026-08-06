@@ -318,7 +318,7 @@ export default function PrivacyPage() {
 
         <div className="mt-12 flex flex-wrap gap-4">
           <Link
-            href="/"
+            href="/ballot"
             className="inline-flex items-center rounded-full bg-navy text-white text-sm font-semibold px-5 py-2.5 hover:bg-navy/90 transition-colors"
           >
             Back to the August 4 Ballot
