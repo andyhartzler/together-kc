@@ -376,10 +376,13 @@ export default function SocialLandingPage() {
               id="social-hero-heading"
               className="mb-4 text-[32px] font-bold leading-tight text-white"
             >
+              {/* Explicit break so the second line always reads "to all five"
+                  rather than letting "five" wrap off on its own. */}
               Kansas City said{' '}
               <span className="text-coral" style={{ textShadow: '0 0 40px rgba(229,57,53,.5)' }}>
                 YES
-              </span>{' '}
+              </span>
+              <br />
               to all five
             </h1>
 
